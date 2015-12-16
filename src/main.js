@@ -1,12 +1,14 @@
 window.onload = function () {
     window.user = new(function User() {
-        Module.watchProperty(this, 'firstName', {
-            value: 'Sean'
+        Module.watchProperties(this, {
+            firstName: {
+                value: 'Sean'
+            },
+            lastName: {
+                value: 'Johnson'
+            },
+            fullName: {}
         });
-        Module.watchProperty(this, 'lastName', {
-            value: 'Johnson'
-        });
-        Module.watchProperty(this, 'fullName');
 
         this.binding = new Binding(function (firstName, lastName) {
             return 'Full Name: ' + firstName + ' ' + lastName;

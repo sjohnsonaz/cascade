@@ -240,6 +240,14 @@ var Module = (function () {
         }
     }
 
+    Module.watchProperties = function (obj, descriptor) {
+        for (var property in descriptor) {
+            if (descriptor.hasOwnProperty(property)) {
+                Module.watchProperty(obj, property, descriptor[property]);
+            }
+        }
+    };
+
     Module.watchProperty = function (obj, property, descriptor) {
         descriptor = merge({}, descriptor);
 
