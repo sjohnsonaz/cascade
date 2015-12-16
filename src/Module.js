@@ -335,7 +335,26 @@ var Module = (function () {
         }
     };
 
-    Module.handlers = {};
+    Module.bind = function (bindingDefinition, sources, destination) {
+        if (typeof bindingDefinition === 'string') {
+            bindingDefinition = Module.handlers[bindingDefinition];
+        }
+        var update = bindingDefinition ? bindingDefinition.update : undefined;
+        var init = bindingDefinition ? bindingDefinition.init : undefined;
+        var twoWay = bindingDefinition ? bindingDefinition.twoWay : undefined;
+        return new Binding(update, init, sources, destination, twoWay);
+    };
+
+    Module.handlers = {
+        'join': {
+            update: function () {
+                return arguments.join(', ');
+            }
+        },
+        'sync': {
+            twoWay: true
+        }
+    };
 
     function merge(a, b, c) {
         if (b) {

@@ -13,8 +13,8 @@ window.onload = function () {
     });
     input.addEventListener('change', function () {
         input.val = input.value;
-    })
-    window.binding = new Binding(undefined, undefined, user.$module.references.firstName, input.$module.references.val, true);
+    });
+    window.binding = Module.bind('sync', user.$module.references.firstName, input.$module.references.val);
 
     user.$module.subscribe('fullName', function (value) {
         document.getElementById('output').innerHTML = value;
