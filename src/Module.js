@@ -6,6 +6,7 @@ var Module = (function () {
         this.propertyCache = {}; // Cached property values
         this.publishLocks = {}; // Locks by object
         this.publishStops = {}; // Locks
+        this.references = {};
     }
 
     Module.prototype = {
@@ -326,6 +327,12 @@ var Module = (function () {
                 }
             }
         }, definition));
+
+        if (!obj.$module.references[property]) {
+            Object.defineProperty(obj.$module.references, property, {
+                value: new Reference(obj, property)
+            });
+        }
     };
 
     Module.handlers = {};

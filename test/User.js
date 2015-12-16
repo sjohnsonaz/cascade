@@ -13,9 +13,9 @@ var User = (function () {
         this.binding = new Binding(function (firstName, lastName) {
             return 'Full Name: ' + firstName + ' ' + lastName;
         }, undefined, [
-            new Reference(this, 'firstName'),
-            new Reference(this, 'lastName')
-        ], new Reference(this, 'fullName'), false);
+            this.$module.references.firstName,
+            this.$module.references.lastName
+        ], this.$module.references.fullName, false);
     }
 
     User.prototype = {
