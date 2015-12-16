@@ -1,22 +1,5 @@
 window.onload = function () {
-    window.user = new(function User() {
-        Module.watchProperties(this, {
-            firstName: {
-                value: 'Sean'
-            },
-            lastName: {
-                value: 'Johnson'
-            },
-            fullName: {}
-        });
-
-        this.binding = new Binding(function (firstName, lastName) {
-            return 'Full Name: ' + firstName + ' ' + lastName;
-        }, undefined, [
-            new Reference(this, 'firstName'),
-            new Reference(this, 'lastName')
-        ], new Reference(this, 'fullName'), false);
-    })();
+    window.user = new User();
 
     window.input = document.getElementById('input');
     Module.watchProperty(input, 'val', {
