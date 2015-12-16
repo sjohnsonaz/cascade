@@ -1,7 +1,11 @@
 window.onload = function () {
     window.user = new(function User() {
-        Module.watchProperty(this, 'firstName', undefined, 'Sean');
-        Module.watchProperty(this, 'lastName', undefined, 'Johnson');
+        Module.watchProperty(this, 'firstName', {
+            value: 'Sean'
+        });
+        Module.watchProperty(this, 'lastName', {
+            value: 'Johnson'
+        });
         Module.watchProperty(this, 'fullName');
 
         this.binding = new Binding(function (firstName, lastName) {
@@ -13,12 +17,16 @@ window.onload = function () {
     })();
 
     window.input = document.getElementById('input');
-    Module.watchProperty(input, 'val', undefined, undefined, undefined, undefined, input, undefined, 'value', function (name) {
-        return input[name];
-    }, function (name, value) {
-        input[name] = value;
+    Module.watchProperty(input, 'val', {
+        innerName: 'value',
+        getter: function (name) {
+            return input[name];
+        },
+        setter: function (name, value) {
+            input[name] = value;
+        }
     });
-    input.addEventListener('change', function() {
+    input.addEventListener('change', function () {
         input.val = input.value;
     })
     window.binding = new Binding(undefined, undefined, new Reference(user, 'firstName'), new Reference(input, 'val'), true);

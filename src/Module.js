@@ -240,7 +240,18 @@ var Module = (function () {
         }
     }
 
-    Module.watchProperty = function (obj, property, descriptor, value, get, set, thisArg, definition, innerName, getter, setter) {
+    Module.watchProperty = function (obj, property, descriptor) {
+        descriptor = merge({}, descriptor);
+
+        var value = descriptor.value;
+        var get = descriptor.get;
+        var set = descriptor.set;
+        var thisArg = descriptor.thisArg;
+        var definition = descriptor.definition;
+        var innerName = descriptor.innerName;
+        var getter = descriptor.getter;
+        var setter = descriptor.setter;
+
         Module.init(obj);
         innerName = innerName || property;
         var hidden;
