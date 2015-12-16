@@ -1,0 +1,12 @@
+{
+    "name": "Module",
+    "version": "0.1.0",
+    "description": "",
+    "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
+    "contributors": [],
+    "main": "src/main.js",
+    "repository": {},
+    "bugs": {},
+    "dependencies": {},
+    "devDependencies": {}
+}
