@@ -244,13 +244,17 @@ var Module = (function () {
     Module.watchProperties = function (obj, descriptor) {
         for (var property in descriptor) {
             if (descriptor.hasOwnProperty(property)) {
-                Module.watchProperty(obj, property, descriptor[property]);
+                if (!descriptor[property].array) {
+                    Module.watchProperty(obj, property, descriptor[property]);
+                } else {
+                    Module.watchArray(obj, property, descriptor[property].value);
+                }
             }
         }
     };
 
     Module.watchProperty = function (obj, property, descriptor) {
-        descriptor = merge({}, descriptor);
+        descriptor = Object.assign({}, descriptor);
 
         var value = descriptor.value;
         var get = descriptor.get;
@@ -300,7 +304,7 @@ var Module = (function () {
         obj.$module.propertyCache[property] = function (value) {
             cache = value;
         };
-        Object.defineProperty(obj, property, merge({
+        Object.defineProperty(obj, property, Object.assign({
             configurable: true,
             enumerable: true,
             get: typeof get === 'function' ? function () {
@@ -335,6 +339,10 @@ var Module = (function () {
         }
     };
 
+    Module.watchArray = function (obj, property, value) {
+        obj[property] = ArrayModule(value);
+    };
+
     Module.bind = function (bindingDefinition, sources, destination) {
         if (typeof bindingDefinition === 'string') {
             bindingDefinition = Module.handlers[bindingDefinition];
@@ -355,24 +363,6 @@ var Module = (function () {
             twoWay: true
         }
     };
-
-    function merge(a, b, c) {
-        if (b) {
-            for (var member in b) {
-                if (b.hasOwnProperty(member)) {
-                    a[member] = b[member];
-                }
-            }
-        }
-        if (c) {
-            for (var member in c) {
-                if (b.hasOwnProperty(member)) {
-                    a[member] = c[member];
-                }
-            }
-        }
-        return a;
-    }
 
     return Module;
 })();

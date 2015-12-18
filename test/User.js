@@ -7,7 +7,11 @@ var User = (function () {
             lastName: {
                 value: 'Johnson'
             },
-            fullName: {}
+            fullName: {},
+            phone: {
+                array: true,
+                value: [1, 2, 3]
+            }
         });
 
         this.binding = Module.bind('username', [
