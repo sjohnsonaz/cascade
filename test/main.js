@@ -19,4 +19,14 @@ window.onload = function () {
     user.$module.subscribe('fullName', function (value) {
         document.getElementById('output').innerHTML = value;
     });
+
+    window.oldArray = new Array();
+    window.newArray = new ArrayModule();
+    oldArray[0] = 1;
+    newArray[0] = 2;
+    console.log(oldArray);
+    console.log(newArray);
+    for (var index = 0, length = newArray.length; index < length; index++) {
+        console.log(newArray[index]);
+    }
 };
