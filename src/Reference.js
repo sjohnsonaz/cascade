@@ -20,7 +20,7 @@ var Reference = (function () {
         lock: function (lock, locker) {
             this.object.$module.lock(this.property, lock, locker);
         },
-        equalsSubscription(subscription) {
+        equalsSubscription: function (subscription) {
             return this.object.$module == subscription.publisher && this.property == subscription.property;
         }
     };
