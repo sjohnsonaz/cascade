@@ -135,24 +135,77 @@ if (!Object.keys) {
 }
 
 /*
+ * Object.assign()
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+ */
+if (typeof Object.assign != 'function') {
+    (function () {
+        Object.assign = function (target) {
+            'use strict';
+            if (target === undefined || target === null) {
+                throw new TypeError('Cannot convert undefined or null to object');
+            }
+
+            var output = Object(target);
+            for (var index = 1; index < arguments.length; index++) {
+                var source = arguments[index];
+                if (source !== undefined && source !== null) {
+                    for (var nextKey in source) {
+                        if (source.hasOwnProperty(nextKey)) {
+                            output[nextKey] = source[nextKey];
+                        }
+                    }
+                }
+            }
+            return output;
+        };
+    })();
+}
+
+/*
  * Object.create()
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
  */
 if (typeof Object.create != 'function') {
-    (function () {
-        var F = function () {};
-        Object.create = function (o) {
+    // Production steps of ECMA-262, Edition 5, 15.2.3.5
+    // Reference: http://es5.github.io/#x15.2.3.5
+    Object.create = (function () {
+        // To save on memory, use a shared constructor
+        function Temp() {}
+
+        // make a safe reference to Object.prototype.hasOwnProperty
+        var hasOwn = Object.prototype.hasOwnProperty;
+
+        return function (O) {
+            // 1. If Type(O) is not Object or Null throw a TypeError exception.
+            if (typeof O != 'object') {
+                throw TypeError('Object prototype may only be an Object or null');
+            }
+
+            // 2. Let obj be the result of creating a new object as if by the
+            //    expression new Object() where Object is the standard built-in
+            //    constructor with that name
+            // 3. Set the [[Prototype]] internal property of obj to O.
+            Temp.prototype = O;
+            var obj = new Temp();
+            Temp.prototype = null; // Let's not keep a stray reference to O...
+
+            // 4. If the argument Properties is present and not undefined, add
+            //    own properties to obj as if by calling the standard built-in
+            //    function Object.defineProperties with arguments obj and
+            //    Properties.
             if (arguments.length > 1) {
-                throw Error('Second argument not supported');
+                // Object.defineProperties does ToObject on its first argument.
+                var Properties = Object(arguments[1]);
+                for (var prop in Properties) {
+                    if (hasOwn.call(Properties, prop)) {
+                        obj[prop] = Properties[prop];
+                    }
+                }
             }
-            if (o === null) {
-                throw Error('Cannot set a null [[Prototype]]');
-            }
-            if (typeof o != 'object') {
-                throw TypeError('Argument must be an object');
-            }
-            F.prototype = o;
-            return new F();
+
+            // 5. Return obj
+            return obj;
         };
     })();
 }
