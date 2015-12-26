@@ -13,7 +13,14 @@ var Template = (function () {
         });
         var template = document.createElement('template');
         template.innerHTML = text;
-        return template;
+        var fragment = template.content;
+        if (!fragment) {
+            var fragment = document.createDocumentFragment();
+            while(template.firstChild) {
+                fragment.appendChild(template.firstChild);
+            }
+        }
+        return fragment;
     };
 
     Template.build = function (templateFragment, context) {

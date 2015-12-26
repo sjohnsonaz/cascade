@@ -51,7 +51,7 @@ window.onload = function () {
             <div data-bind="a"></div>\
         </div>\
     ');
-    window.builtTemplate = Template.build(template.content, {
+    window.builtTemplate = Template.build(template, {
         a: '1234'
     });
     document.body.appendChild(builtTemplate);
