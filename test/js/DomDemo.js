@@ -15,7 +15,9 @@ var DomDemo = (function () {
                         return 'I contain ' + this.a;
                     }
                 },
-                Dom.createElement('li', undefined, 0),
+                Dom.createElement('li', {
+                    className: 'blue'
+                }, 0),
                 Dom.createElement('li', undefined, 1),
                 Dom.createElement('li', undefined, 2),
                 Dom.createElement('li', undefined, 3),
@@ -41,4 +43,17 @@ var DomDemo = (function () {
 
 window.onload = function () {
     window.application = new DomDemo(document.body);
+    window.template = Template.parse('\
+        <div>\
+            <div>test0</div>\
+            {{ test1 }}\
+            <div>test2</div>\
+            <div data-bind="a"></div>\
+        </div>\
+    ');
+    window.builtTemplate = Template.build(template.content, {
+        a: '1234'
+    });
+    document.body.appendChild(builtTemplate);
+    console.log(template);
 };

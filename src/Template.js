@@ -7,6 +7,41 @@ var Template = (function () {
 
     };
 
+    Template.parse = function (text) {
+        text = text.replace(/\{\{(.*)\}\}/g, function (match, value, offset, string) {
+            return '<!-- ' + value.trim() + ' -->';
+        });
+        var template = document.createElement('template');
+        template.innerHTML = text;
+        return template;
+    };
+
+    Template.build = function (templateFragment, context) {
+        var fragment = Template.cloneNode(templateFragment, context);
+        return fragment;
+    };
+
+    Template.cloneNode = function (node, context) {
+        var copy = node.cloneNode();
+        Template.bindNode(copy, context);
+        var children = node.childNodes;
+        for (var index = 0, length = children.length; index < length; index++) {
+            var child = children[index];
+            copy.appendChild(Template.cloneNode(child, context));
+        }
+        return copy;
+    };
+
+    Template.bindNode = function (node, context) {
+        if (node.attributes) {
+            var dataBind = node.attributes['data-bind'];
+            if (dataBind) {
+                var func = Template.createEval(dataBind.value);
+                node.innerHTML = func(context);
+            }
+        }
+    }
+
     Template.formatString = function (pattern, values) {
         if (typeof pattern === 'string') {
             if (!(values instanceof Array) && typeof values !== 'object') {
