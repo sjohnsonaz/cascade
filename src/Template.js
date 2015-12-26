@@ -16,11 +16,28 @@ var Template = (function () {
         var fragment = template.content;
         if (!fragment) {
             var fragment = document.createDocumentFragment();
-            while(template.firstChild) {
+            while (template.firstChild) {
                 fragment.appendChild(template.firstChild);
             }
         }
+        Template.createBindings(fragment);
         return fragment;
+    };
+
+    Template.createBindings = function (node) {
+        if (node.attributes) {
+            var dataBind = node.attributes['data-bind'];
+            if (dataBind) {
+                var func = Template.createEval(dataBind.value);
+                node.binding = func;
+            }
+        }
+
+        var children = node.childNodes;
+        for (var index = 0, length = children.length; index < length; index++) {
+            var child = children[index];
+            Template.createBindings(child);
+        }
     };
 
     Template.build = function (templateFragment, context) {
@@ -30,7 +47,7 @@ var Template = (function () {
 
     Template.cloneNode = function (node, context) {
         var copy = node.cloneNode();
-        Template.bindNode(copy, context);
+        Template.bindNode(copy, node, context);
         var children = node.childNodes;
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
@@ -39,15 +56,12 @@ var Template = (function () {
         return copy;
     };
 
-    Template.bindNode = function (node, context) {
-        if (node.attributes) {
-            var dataBind = node.attributes['data-bind'];
-            if (dataBind) {
-                var func = Template.createEval(dataBind.value);
-                node.innerHTML = func(context);
-            }
+    Template.bindNode = function (copy, node, context) {
+        if (node.binding) {
+            var func = node.binding;
+            copy.innerHTML = func(context);
         }
-    }
+    };
 
     Template.formatString = function (pattern, values) {
         if (typeof pattern === 'string') {
