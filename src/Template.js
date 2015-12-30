@@ -69,8 +69,11 @@ var Template = (function () {
             var binding = node.binding;
             var handler = node.handler;
             var references = binding(context);
-            if (references instanceof Reference) {
-                references = references.value;
+            for(var index = 0, length = references.length; index < length;index++) {
+                var reference = references[index];
+                if (reference instanceof Reference) {
+                    references[index] = reference.value;
+                }
             }
             return handler(node, references, context);
         }
@@ -120,12 +123,16 @@ var Template = (function () {
         }
     };
     Template.createBindingEval = function (code) {
-        return new Function('values', '\
-            with (values) {\
-                with (values.$data.$module ? values.$data.$module.references : values.$data) {\
-                    return (' + code + ');\
-                }\
-            }\
+        return new Function('values', '\r\
+            with (values) {\r\
+                with (values.$data.$module ? values.$data.$module.references : values.$data) {\r\
+                    var references = (' + code + ');\r\
+                    if (!(references instanceof Array)) {\r\
+                        references = [references];\r\
+                    }\r\
+                    return references;\r\
+                }\r\
+            }\r\
         ');
     };
     Template.createEval = function (code) {
@@ -146,11 +153,11 @@ var Template = (function () {
         ');
     };
     Template.handlers = {
-        html: function (node, value, context) {
-            node.innerHTML = value;
+        html: function (node, values, context) {
+            node.innerHTML = values[0];
         },
-        'with': function (node, value, context) {
-            return value;
+        'with': function (node, values, context) {
+            return values[0];
         }
     };
 
