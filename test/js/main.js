@@ -1,5 +1,5 @@
 window.onload = function () {
-    window.user = new User();
+    window.user = new User('Sean', 'Johnson');
 
     window.input = document.getElementById('input');
     Module.watchProperty(input, 'val', {

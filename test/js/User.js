@@ -1,11 +1,11 @@
 var User = (function () {
-    function User() {
+    function User(firstName, lastName) {
         Module.watchProperties(this, {
             firstName: {
-                value: 'Sean'
+                value: firstName
             },
             lastName: {
-                value: 'Johnson'
+                value: lastName
             },
             fullName: {},
             phone: {
