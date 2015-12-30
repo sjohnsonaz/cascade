@@ -48,11 +48,17 @@ window.onload = function () {
             <div>test0</div>\
             {{ test1 }}\
             <div>test2</div>\
-            <div data-bind="a"></div>\
+            <div data-handler="html" data-bind="a"></div>\
+            <div data-handler="with" data-bind="$child(\'b\')">\
+                <div data-handler="html" data-bind="c"></div>\
+            </div>\
         </div>\
     ');
     window.builtTemplate = Template.build(template, {
-        a: '1234'
+        a: '1234',
+        b: {
+            c: 'abcd'
+        }
     });
     document.body.appendChild(builtTemplate);
     console.log(template);

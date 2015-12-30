@@ -27,9 +27,12 @@ var Template = (function () {
     Template.createBindings = function (node) {
         if (node.attributes) {
             var dataBind = node.attributes['data-bind'];
-            if (dataBind) {
-                var func = Template.createEval(dataBind.value);
-                node.binding = func;
+            var dataHandler = node.attributes['data-handler'];
+            if (dataBind || dataHandler) {
+                node.removeAttribute('data-bind');
+                node.removeAttribute('data-handler');
+                node.binding = Template.createBindingEval(dataBind.value);
+                node.handler = Template.handlers[dataHandler.value];
             }
         }
 
@@ -40,14 +43,19 @@ var Template = (function () {
         }
     };
 
-    Template.build = function (templateFragment, context) {
+    Template.build = function (templateFragment, data) {
+        var context = new Context(data);
         var fragment = Template.cloneNode(templateFragment, context);
         return fragment;
     };
 
     Template.cloneNode = function (node, context) {
         var copy = node.cloneNode();
-        Template.bindNode(copy, node, context);
+        var newContext = Template.bindNode(copy, node, context);
+        if (newContext instanceof Context) {
+            context = newContext;
+        }
+
         var children = node.childNodes;
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
@@ -58,9 +66,11 @@ var Template = (function () {
 
     Template.bindNode = function (copy, node, context) {
         if (node.binding) {
-            var func = node.binding;
-            copy.innerHTML = func(context);
+            var binding = node.binding;
+            var handler = node.handler;
+            return handler(node, binding(context), context);
         }
+        return context;
     };
 
     Template.formatString = function (pattern, values) {
@@ -105,6 +115,15 @@ var Template = (function () {
             return pattern;
         }
     };
+    Template.createBindingEval = function (code) {
+        return new Function('values', '\
+            with (values) {\
+                with (values.$data) {\
+                    return (' + code + ');\
+                }\
+            }\
+        ');
+    }
     Template.createEval = function (code) {
         return new Function('values', '\
             with (values) {\
@@ -121,6 +140,14 @@ var Template = (function () {
                 })();\
             }\
         ');
+    };
+    Template.handlers = {
+        html: function (node, value, context) {
+            node.innerHTML = value;
+        },
+        'with': function (node, value, context) {
+            return value;
+        }
     };
 
     return Template;
