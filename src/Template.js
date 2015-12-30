@@ -69,15 +69,25 @@ var Template = (function () {
             var binding = node.binding;
             var handler = node.handler;
             var references = binding(context);
-            for(var index = 0, length = references.length; index < length;index++) {
-                var reference = references[index];
-                if (reference instanceof Reference) {
-                    references[index] = reference.value;
+            var newContext;
+            for (var index in references) {
+                if (references.hasOwnProperty(index)) {
+                    var reference = references[index];
+                    handler = Template.handlers[index];
+                    if (!(reference instanceof Array)) {
+                        reference = [reference];
+                    }
+                    for (var index = 0, length = reference.length; index < length; index++) {
+                        var item = reference[index];
+                        if (item instanceof Reference) {
+                            reference[index] = item.value;
+                        }
+                    }
+                    newContext = handler(node, reference, context) || newContext;
                 }
             }
-            return handler(node, references, context);
         }
-        return context;
+        return newContext || context;
     };
 
     Template.formatString = function (pattern, values) {
@@ -126,11 +136,7 @@ var Template = (function () {
         return new Function('values', '\r\
             with (values) {\r\
                 with (values.$data.$module ? values.$data.$module.references : values.$data) {\r\
-                    var references = (' + code + ');\r\
-                    if (!(references instanceof Array)) {\r\
-                        references = [references];\r\
-                    }\r\
-                    return references;\r\
+                    return ({' + code + '});\r\
                 }\r\
             }\r\
         ');
