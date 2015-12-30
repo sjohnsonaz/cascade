@@ -25,7 +25,7 @@ var Subscriber = (function () {
                 this.subscriptions.splice(index, 1);
             }
         }
-    }
+    };
 
     return Subscriber;
 })();
