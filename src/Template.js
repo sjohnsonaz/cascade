@@ -68,7 +68,11 @@ var Template = (function () {
         if (node.binding) {
             var binding = node.binding;
             var handler = node.handler;
-            return handler(node, binding(context), context);
+            var references = binding(context);
+            if (references instanceof Reference) {
+                references = references.value;
+            }
+            return handler(node, references, context);
         }
         return context;
     };
@@ -118,12 +122,12 @@ var Template = (function () {
     Template.createBindingEval = function (code) {
         return new Function('values', '\
             with (values) {\
-                with (values.$data) {\
+                with (values.$data.$module ? values.$data.$module.references : values.$data) {\
                     return (' + code + ');\
                 }\
             }\
         ');
-    }
+    };
     Template.createEval = function (code) {
         return new Function('values', '\
             with (values) {\

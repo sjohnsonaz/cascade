@@ -6,7 +6,8 @@ window.onload = function () {
             <div>test2</div>\
             <div data-handler="html" data-bind="a"></div>\
             <div data-handler="with" data-bind="$child(\'user\')">\
-                <div data-handler="html" data-bind="firstName"></div>\
+                <span data-handler="html" data-bind="firstName"></span>\
+                <span data-handler="html" data-bind="lastName"></span>\
             </div>\
         </div>\
     ');
