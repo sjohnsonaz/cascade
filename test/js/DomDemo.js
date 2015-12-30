@@ -43,23 +43,4 @@ var DomDemo = (function () {
 
 window.onload = function () {
     window.application = new DomDemo(document.body);
-    window.template = Template.parse('\
-        <div>\
-            <div>test0</div>\
-            {{ test1 }}\
-            <div>test2</div>\
-            <div data-handler="html" data-bind="a"></div>\
-            <div data-handler="with" data-bind="$child(\'b\')">\
-                <div data-handler="html" data-bind="c"></div>\
-            </div>\
-        </div>\
-    ');
-    window.builtTemplate = Template.build(template, {
-        a: '1234',
-        b: {
-            c: 'abcd'
-        }
-    });
-    document.body.appendChild(builtTemplate);
-    console.log(template);
 };
