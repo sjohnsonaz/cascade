@@ -55,15 +55,19 @@ var Template = (function () {
     function cloneNode(node, context, callback) {
         var copy = node.cloneNode();
         if (node.binding) {
-            var newContext = bindNode(copy, node.binding, context, cloneNode);
-            if (newContext instanceof Context) {
-                context = newContext;
+            bindNode(copy, node.binding, context, function (context) {
+                var children = node.childNodes;
+                for (var index = 0, length = children.length; index < length; index++) {
+                    var child = children[index];
+                    copy.appendChild(cloneNode(child, context));
+                }
+            });
+        } else {
+            var children = node.childNodes;
+            for (var index = 0, length = children.length; index < length; index++) {
+                var child = children[index];
+                copy.appendChild(cloneNode(child, context));
             }
-        }
-        var children = node.childNodes;
-        for (var index = 0, length = children.length; index < length; index++) {
-            var child = children[index];
-            copy.appendChild(cloneNode(child, context));
         }
         return copy;
     };
@@ -90,17 +94,17 @@ var Template = (function () {
                     //references[index] = reference.$data;
                     //}
                 }
-                //(function () {
-                //Module.bind({
-                //update: function () {
-                //newContext = handler(node, arguments, context, references) || newContext;
-                newContext = handler(node, values, context, references) || newContext;
-                //}
-                //}, references);
-                //})();
+                (function () {
+                    Module.bind({
+                        update: function () {
+                            newContext = handler(node, arguments, context, references) || newContext;
+                            //newContext = handler(node, values, context, references) || newContext;
+                            callback(newContext || context);
+                        }
+                    }, references);
+                })();
             }
         }
-        return newContext || context;
     };
 
     Template.formatString = function (pattern, values) {
