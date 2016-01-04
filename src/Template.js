@@ -7,7 +7,10 @@ var Template = (function () {
 
     };
 
-    Template.parse = function (text) {
+    /**
+     * public
+     */
+    function parse(text) {
         text = text.replace(/\{\{(.*)\}\}/g, function (match, value, offset, string) {
             return '<!-- ' + value.trim() + ' -->';
         });
@@ -20,11 +23,11 @@ var Template = (function () {
                 fragment.appendChild(template.firstChild);
             }
         }
-        Template.createBindings(fragment);
+        createBindings(fragment);
         return fragment;
-    };
+    }
 
-    Template.createBindings = function (node) {
+    function createBindings(node) {
         if (node.attributes) {
             var dataBind = node.attributes['data-bind'];
             if (dataBind) {
@@ -36,33 +39,36 @@ var Template = (function () {
         var children = node.childNodes;
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
-            Template.createBindings(child);
+            createBindings(child);
         }
-    };
+    }
 
-    Template.build = function (templateFragment, data) {
+    /**
+     * public
+     */
+    function build(templateFragment, data) {
         var context = new Context(data);
-        var fragment = Template.cloneNode(templateFragment, context);
+        var fragment = cloneNode(templateFragment, context);
         return fragment;
-    };
+    }
 
-    Template.cloneNode = function (node, context, callback) {
+    function cloneNode(node, context, callback) {
         var copy = node.cloneNode();
         if (node.binding) {
-            bindNode(copy, binding, context, cloneNode);
+            var newContext = bindNode(copy, node.binding, context, cloneNode);
+            if (newContext instanceof Context) {
+                context = newContext;
+            }
         }
-    };
-
-    function cloneNode(node, context) {
         var children = node.childNodes;
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
-            copy.appendChild(Template.cloneNode(child, context));
+            copy.appendChild(cloneNode(child, context));
         }
         return copy;
-    }
+    };
 
-    function bindNode(node, binding, context) {
+    function bindNode(node, binding, context, callback) {
         var handlers = binding(context);
         var newContext;
         for (var name in handlers) {
@@ -74,21 +80,21 @@ var Template = (function () {
                 }
                 for (var index = 0, length = references.length; index < length; index++) {
                     var reference = references[index];
-                    if (reference instanceof Context) {
-                        references[index] = reference.$data;
+                    if (reference instanceof Reference) {
+                        references[index] = reference.value;
                     }
+                    //if (reference instanceof Context) {
+                    //references[index] = reference.$data;
+                    //}
                 }
-                (function () {
-                    Module.bind({
-                        update: function () {
-                            newContext = handler(node, arguments, context, references) || newContext;
-                            if (newContext instanceof Context) {
-                                context = newContext;
-                            }
-
-                        }
-                    }, references);
-                })();
+                //(function () {
+                //Module.bind({
+                //update: function () {
+                //newContext = handler(node, arguments, context, references) || newContext;
+                newContext = handler(node, references, context) || newContext;
+                //}
+                //}, references);
+                //})();
             }
         }
         return newContext || context;
@@ -162,6 +168,8 @@ var Template = (function () {
             }\
         ');
     };
+    Template.parse = parse;
+    Template.build = build;
     Template.handlers = {
         html: function (node, values, context) {
             node.innerHTML = values[0];
