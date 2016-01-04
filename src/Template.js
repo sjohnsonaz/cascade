@@ -74,7 +74,6 @@ var Template = (function () {
 
     function bindNode(node, binding, context, callback) {
         var handlers = binding(context);
-        var newContext;
         for (var name in handlers) {
             if (handlers.hasOwnProperty(name)) {
                 var references = handlers[name];
@@ -96,11 +95,26 @@ var Template = (function () {
                 }
                 (function () {
                     Module.bind({
-                        update: function () {
-                            newContext = handler(node, arguments, context, references) || newContext;
-                            //newContext = handler(node, values, context, references) || newContext;
+                        init: function () {
+                            var newContext;
+                            if (handler) {
+                                if (handler.init) {
+                                    newContext = handler.init(node, arguments, context, references);
+                                } else if (handler.update) {
+                                    newContext = handler.update(node, arguments, context, references);
+                                }
+                            }
                             callback(newContext || context);
-                        }
+                        },
+                        update: function () {
+                            if (handler && handler.update) {
+                                var newContext = handler.update(node, arguments, context, references);
+                                if (newContext) {
+                                    callback(newContext);
+                                }
+                            }
+                        },
+                        twoWay: handler && handler.twoWay
                     }, references);
                 })();
             }
@@ -152,14 +166,14 @@ var Template = (function () {
     Template.createBindingEval = function (code) {
         return new Function('values', '\r\
             with (values) {\r\
-                with (values.$data) {\
-                    if (values.$data.$module) {\
+                with (values.$data) {\r\
+                    if (values.$data.$module) {\r\
                         with (values.$data.$module.references) {\r\
                             return ({' + code + '});\r\
                         }\r\
-                    } else {\
+                    } else {\r\
                         return ({' + code + '});\r\
-                    }\
+                    }\r\
                 }\r\
             }\r\
         ');
@@ -184,11 +198,29 @@ var Template = (function () {
     Template.parse = parse;
     Template.build = build;
     Template.handlers = {
-        html: function (node, values, context) {
-            node.innerHTML = values[0];
+        html: {
+            update: function (node, values, context) {
+                node.innerHTML = values[0];
+            }
         },
-        'with': function (node, values, context, references) {
-            return Context.child(values[0], context);
+        'with': {
+            update: function (node, values, context, references) {
+                return Context.child(values[0], context);
+            }
+        },
+        value: {
+            init: function (node, values, context, references) {
+                node.value = values[0];
+                node.addEventListener('change', function () {
+                    if (references && references[0] && references[0] instanceof Reference) {
+                        references[0].object[references[0].property] = node.value;
+                    }
+                });
+            },
+            update: function (node, values, context) {
+                node.value = values[0];
+            },
+            twoWay: true
         }
     };
 
