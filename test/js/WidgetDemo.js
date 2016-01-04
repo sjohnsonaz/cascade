@@ -4,10 +4,10 @@ window.onload = function () {
             <div>test0</div>\
             {{ test1 }}\
             <div>test2</div>\
-            <div data-handler="" data-bind="html: a"></div>\
-            <div data-handler="with" data-bind="with: $child(\'user\')">\
-                <span data-handler="html" data-bind="html: firstName"></span>\
-                <span data-handler="html" data-bind="html: lastName"></span>\
+            <div data-bind="html: a"></div>\
+            <div data-bind="with: $child(\'user\')">\
+                <span data-bind="html: firstName"></span>\
+                <span data-bind="html: lastName"></span>\
             </div>\
         </div>\
     ');

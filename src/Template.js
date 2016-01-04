@@ -27,12 +27,9 @@ var Template = (function () {
     Template.createBindings = function (node) {
         if (node.attributes) {
             var dataBind = node.attributes['data-bind'];
-            var dataHandler = node.attributes['data-handler'];
-            if (dataBind || dataHandler) {
+            if (dataBind) {
                 node.removeAttribute('data-bind');
-                node.removeAttribute('data-handler');
                 node.binding = Template.createBindingEval(dataBind.value);
-                node.handler = Template.handlers[dataHandler.value];
             }
         }
 
