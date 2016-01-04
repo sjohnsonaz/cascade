@@ -27,7 +27,12 @@ var Binding = (function () {
                 if (index == length - 1) {
                     this.subscriptionComplete = true;
                 }
-                this.sources[index].subscribe(this);
+                var source = this.sources[index];
+                if (source instanceof Reference) {
+                    this.sources[index].subscribe(this);
+                } else {
+                    this.cache[index] = source;
+                }
             }
         } else {
             this.subscriptionComplete = true;
