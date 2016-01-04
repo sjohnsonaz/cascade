@@ -20,14 +20,16 @@ var Context = (function () {
                 }
             }
             return parent;
-        },
-        $child: function (name) {
-            if (!this.$children[name]) {
-                this.$children[name] = new Context(this.$data[name], this.$root, this, this.$depth + 1);
-            }
-            return this.$children[name];
         }
     };
+
+    Context.child = function (value, current) {
+        if (current) {
+            return new Context(value, current.$root, current);
+        } else {
+            return new Context(value);
+        }
+    }
 
     return Context;
 })();

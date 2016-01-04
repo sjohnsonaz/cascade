@@ -78,10 +78,13 @@ var Template = (function () {
                 if (!(references instanceof Array)) {
                     references = [references];
                 }
+                var values = [];
                 for (var index = 0, length = references.length; index < length; index++) {
                     var reference = references[index];
                     if (reference instanceof Reference) {
-                        references[index] = reference.value;
+                        values[index] = reference.value;
+                    } else {
+                        values[index] = reference;
                     }
                     //if (reference instanceof Context) {
                     //references[index] = reference.$data;
@@ -91,7 +94,7 @@ var Template = (function () {
                 //Module.bind({
                 //update: function () {
                 //newContext = handler(node, arguments, context, references) || newContext;
-                newContext = handler(node, references, context) || newContext;
+                newContext = handler(node, values, context, references) || newContext;
                 //}
                 //}, references);
                 //})();
@@ -145,8 +148,14 @@ var Template = (function () {
     Template.createBindingEval = function (code) {
         return new Function('values', '\r\
             with (values) {\r\
-                with (values.$data.$module ? values.$data.$module.references : values.$data) {\r\
-                    return ({' + code + '});\r\
+                with (values.$data) {\
+                    if (values.$data.$module) {\
+                        with (values.$data.$module.references) {\r\
+                            return ({' + code + '});\r\
+                        }\r\
+                    } else {\
+                        return ({' + code + '});\r\
+                    }\
                 }\r\
             }\r\
         ');
@@ -174,8 +183,8 @@ var Template = (function () {
         html: function (node, values, context) {
             node.innerHTML = values[0];
         },
-        'with': function (node, values, context) {
-            return values[0];
+        'with': function (node, values, context, references) {
+            return Context.createContext(values[0], context);
         }
     };
 
