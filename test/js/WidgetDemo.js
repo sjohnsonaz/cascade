@@ -5,7 +5,7 @@ window.onload = function () {
             {{ test1 }}\
             <div>test2</div>\
             <div data-bind="html: a"></div>\
-            <div data-bind="with: $child(\'user\')">\
+            <div data-bind="with: user">\
                 <span data-bind="html: firstName"></span>\
                 <span data-bind="html: lastName"></span>\
             </div>\

@@ -184,7 +184,7 @@ var Template = (function () {
             node.innerHTML = values[0];
         },
         'with': function (node, values, context, references) {
-            return Context.createContext(values[0], context);
+            return Context.child(values[0], context);
         }
     };
 
