@@ -49,42 +49,49 @@ var Template = (function () {
         return fragment;
     };
 
-    Template.cloneNode = function (node, context) {
+    Template.cloneNode = function (node, context, callback) {
         var copy = node.cloneNode();
-        var newContext = Template.bindNode(copy, node, context);
-        if (newContext instanceof Context) {
-            context = newContext;
+        if (node.binding) {
+            bindNode(copy, binding, context, cloneNode);
         }
+    };
 
+    function cloneNode(node, context) {
         var children = node.childNodes;
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
             copy.appendChild(Template.cloneNode(child, context));
         }
         return copy;
-    };
+    }
 
-    Template.bindNode = function (copy, node, context) {
-        if (node.binding) {
-            var binding = node.binding;
-            var handler = node.handler;
-            var references = binding(context);
-            var newContext;
-            for (var index in references) {
-                if (references.hasOwnProperty(index)) {
-                    var reference = references[index];
-                    handler = Template.handlers[index];
-                    if (!(reference instanceof Array)) {
-                        reference = [reference];
-                    }
-                    for (var index = 0, length = reference.length; index < length; index++) {
-                        var item = reference[index];
-                        if (item instanceof Reference) {
-                            reference[index] = item.value;
-                        }
-                    }
-                    newContext = handler(node, reference, context) || newContext;
+    function bindNode(node, binding, context) {
+        var handlers = binding(context);
+        var newContext;
+        for (var name in handlers) {
+            if (handlers.hasOwnProperty(name)) {
+                var references = handlers[name];
+                var handler = Template.handlers[name];
+                if (!(references instanceof Array)) {
+                    references = [references];
                 }
+                for (var index = 0, length = references.length; index < length; index++) {
+                    var reference = references[index];
+                    if (reference instanceof Context) {
+                        references[index] = reference.$data;
+                    }
+                }
+                (function () {
+                    Module.bind({
+                        update: function () {
+                            newContext = handler(node, arguments, context, references) || newContext;
+                            if (newContext instanceof Context) {
+                                context = newContext;
+                            }
+
+                        }
+                    }, references);
+                })();
             }
         }
         return newContext || context;
