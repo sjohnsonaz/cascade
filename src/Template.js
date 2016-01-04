@@ -164,11 +164,11 @@ var Template = (function () {
         }
     };
     Template.createBindingEval = function (code) {
-        return new Function('values', '\r\
-            with (values) {\r\
-                with (values.$data) {\r\
-                    if (values.$data.$module) {\r\
-                        with (values.$data.$module.references) {\r\
+        return new Function('$values', '\r\
+            with ($values) {\r\
+                with ($data) {\r\
+                    if ($data.$module) {\r\
+                        with ($module.references) {\r\
                             return ({' + code + '});\r\
                         }\r\
                     } else {\r\
@@ -219,8 +219,7 @@ var Template = (function () {
             },
             update: function (node, values, context) {
                 node.value = values[0];
-            },
-            twoWay: true
+            }
         }
     };
 
