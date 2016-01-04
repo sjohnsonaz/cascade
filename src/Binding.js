@@ -31,7 +31,7 @@ var Binding = (function () {
                 if (source instanceof Reference) {
                     this.sources[index].subscribe(this);
                 } else {
-                    this.cache[index] = source;
+                    this.notifyStatic(source, index);
                 }
             }
         } else {
@@ -54,8 +54,12 @@ var Binding = (function () {
             this.method(value, property, publisher, subscription);
         }
     };
-    Binding.prototype.bindingMethod = function (value, property, publisher, subscription) {
-        if (!this.twoWay) {
+    Binding.prototype.notifyStatic = function (value, index) {
+        this.cache[index] = value;
+        this.method(value, undefined, undefined, undefined, true);
+    };
+    Binding.prototype.bindingMethod = function (value, property, publisher, subscription, isStatic) {
+        if (!this.twoWay || isStatic) {
             var result;
             if (!this.initialized) {
                 this.initialized = true;
