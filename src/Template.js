@@ -100,6 +100,7 @@ var Template = (function () {
                         var child = children[index];
                         copy.appendChild(cloneNode(child, context));
                     }
+                    return copy;
                 });
             } else {
                 var children = node.childNodes;
@@ -151,13 +152,17 @@ var Template = (function () {
                                     newContext = handler.update(node, arguments, context, references);
                                 }
                             }
-                            callback(newContext || context);
+                            var copy = callback(newContext || context);
                         },
                         update: function () {
                             if (handler && handler.update) {
                                 var newContext = handler.update(node, arguments, context, references);
                                 if (newContext) {
-                                    callback(newContext);
+                                    var copy = callback(newContext);
+                                    if (copy instanceof DocumentFragment) {
+                                        copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
+                                        copy.fragmentParentNode.appendChild(copy);
+                                    }
                                 }
                             }
                         },
