@@ -11,8 +11,15 @@ var Template = (function () {
      * public
      */
     function parse(text) {
-        text = text.replace(/\{\{(.*)\}\}/g, function (match, value, offset, string) {
-            return '<!-- ' + value.trim() + ' -->';
+        text = text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function (match, $1, $2, $3, offset, string) {
+            if ($3) {
+                return '<!-- ' + $3.trim() + ' -->';
+            } else {
+                return '\
+                    <!-- ' + $1.trim() + ' -->\r' +
+                    $2.trim() + '\r' +
+                    '<!-- close -->';
+            }
         });
         var template = document.createElement('template');
         template.innerHTML = text;

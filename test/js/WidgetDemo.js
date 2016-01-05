@@ -2,14 +2,24 @@ window.onload = function () {
     window.template = Template.parse('\
         <div>\
             <div>test0</div>\
-            {{ test1 }}\
-            <div>test2</div>\
+            @if (true) {\
+                <div>test1</div>\
+        	}\
+            @foreach([1]) {\
+                <div>test1</div>\
+			}\
+            @test\
             <div data-bind="html: a"></div>\
             <div data-bind="test: a">test binding</div>\
             <div data-bind="with: user">\
-                <input type="text" data-bind="value: firstName" />\
-                <span data-bind="html: firstName"></span>\
-                <span data-bind="html: lastName"></span>\
+                <div>\
+                    <input type="text" data-bind="value: firstName" />\
+                </div>\
+                <div>\
+                    <span data-bind="html: firstName"></span>\
+                    <span data-bind="html: lastName"></span>\
+                </div>\
+                <div data-bind="html: $parent.$data.a"></div>\
             </div>\
         </div>\
     ');
