@@ -35,7 +35,7 @@ var Template = (function () {
     }
 
     function createBindings(node) {
-        if (node.nodeType === Node.COMMENT_NODE) { // node instanceof Comment
+        if (node instanceof Comment) { // node.nodeType === Node.COMMENT_NODE
             var commentText = node.textContent.trim();
             if (commentText.startsWith('bind ')) {
                 node.binding = Template.createBindingEval(commentText.substring(5));
@@ -50,12 +50,28 @@ var Template = (function () {
                     node.binding = Template.createBindingEval(dataBind.value);
                 }
             }
-
-            var children = node.childNodes;
-            for (var index = 0, length = children.length; index < length; index++) {
-                var child = children[index];
-                createBindings(child);
-            }
+            var nest = [];
+            Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
+                createBindings(currentValue);
+                if (currentValue instanceof Comment && currentValue.binding) {
+                    if (currentValue.binding !== 'close') {
+                        currentValue.fragment = document.createDocumentFragment();
+                        if (nest[0]) {
+                            node.removeChild(currentValue);
+                            nest[0].fragment.appendChild(currentValue);
+                        }
+                        nest.unshift(currentValue);
+                    } else {
+                        node.removeChild(currentValue);
+                        nest.shift();
+                    }
+                } else {
+                    if (nest[0]) {
+                        node.removeChild(currentValue);
+                        nest[0].fragment.appendChild(currentValue);
+                    }
+                }
+            });
         }
     }
 
@@ -69,14 +85,10 @@ var Template = (function () {
     }
 
     function cloneNode(node, context, callback) {
-        if (node.nodeType === Node.COMMENT_NODE) { // node instanceof Comment
+        if (node instanceof Comment) { // node.nodeType === Node.COMMENT_NODE
             if (node.binding) {
-                if (node.binding === 'close') {
-                    console.log('close');
-                } else {
-                    var copy = document.createDocumentFragment();
-                    console.log(node.binding(context));
-                }
+                console.log(node.binding(context));
+                return cloneNode(node.fragment, context);
             }
         } else {
             var copy = node.cloneNode();

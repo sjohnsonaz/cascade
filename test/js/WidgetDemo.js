@@ -7,7 +7,7 @@ window.onload = function () {
                 <div>test1</div>\
         	}\
             @foreach:[1] {\
-                <div>test1</div>\
+                <div>test2</div>\
 			}\
             <div data-bind="html: a"></div>\
             <div data-bind="test: a">test binding</div>\
