@@ -89,12 +89,7 @@ var Template = (function () {
         if (node instanceof Comment) { // node.nodeType === Node.COMMENT_NODE
             if (node.binding && node.binding !== 'close') {
                 //console.log(node.binding(context));
-                var fragment = document.createDocumentFragment()
-                fragment.appendChild(copy);
-                fragment.appendChild(cloneNode(node.fragment, context))
-                return fragment;
-            } else {
-                return copy;
+                copy.fragment = cloneNode(node.fragment, context);
             }
         } else {
             if (node.binding) {
@@ -112,16 +107,17 @@ var Template = (function () {
                     var child = children[index];
                     var childNode = cloneNode(child, context);
                     if (childNode) {
-                        if (childNode instanceof DocumentFragment) {
-                            childNode.fragmentParentNode = copy;
-                            childNode.fragmentChildNodes = Array.prototype.slice.call(childNode.childNodes);
-                        }
                         copy.appendChild(childNode);
+                        if (childNode instanceof Comment && childNode.fragment) {
+                            childNode.fragment.fragmentParentNode = copy;
+                            childNode.fragment.fragmentChildNodes = Array.prototype.slice.call(childNode.fragment.childNodes);
+                            copy.appendChild(childNode.fragment);
+                        }
                     }
                 }
             }
-            return copy;
         }
+        return copy;
     };
 
     function bindNode(node, binding, context, callback) {
