@@ -16,9 +16,9 @@ var Template = (function () {
                 return '<!-- ' + $3.trim() + ' -->';
             } else {
                 return '\
-                    <!-- ' + $1.trim() + ' -->\r' +
+                    <!-- bind ' + $1.trim() + ' -->\r' +
                     $2.trim() + '\r' +
-                    '<!-- close -->';
+                    '<!-- /bind -->';
             }
         });
         var template = document.createElement('template');
@@ -35,18 +35,27 @@ var Template = (function () {
     }
 
     function createBindings(node) {
-        if (node.attributes) {
-            var dataBind = node.attributes['data-bind'];
-            if (dataBind) {
-                node.removeAttribute('data-bind');
-                node.binding = Template.createBindingEval(dataBind.value);
+        if (node.nodeType === Node.COMMENT_NODE) { // node instanceof Comment
+            var commentText = node.textContent.trim();
+            if (commentText.startsWith('bind ')) {
+                node.binding = Template.createBindingEval(commentText.substring(5));
+            } else if (commentText.startsWith('/bind')) {
+                node.binding = 'close';
             }
-        }
+        } else {
+            if (node.attributes) {
+                var dataBind = node.attributes['data-bind'];
+                if (dataBind) {
+                    node.removeAttribute('data-bind');
+                    node.binding = Template.createBindingEval(dataBind.value);
+                }
+            }
 
-        var children = node.childNodes;
-        for (var index = 0, length = children.length; index < length; index++) {
-            var child = children[index];
-            createBindings(child);
+            var children = node.childNodes;
+            for (var index = 0, length = children.length; index < length; index++) {
+                var child = children[index];
+                createBindings(child);
+            }
         }
     }
 
@@ -60,23 +69,37 @@ var Template = (function () {
     }
 
     function cloneNode(node, context, callback) {
-        var copy = node.cloneNode();
-        if (node.binding) {
-            bindNode(copy, node.binding, context, function (context) {
+        if (node.nodeType === Node.COMMENT_NODE) { // node instanceof Comment
+            if (node.binding) {
+                if (node.binding === 'close') {
+                    console.log('close');
+                } else {
+                    var copy = document.createDocumentFragment();
+                    console.log(node.binding(context));
+                }
+            }
+        } else {
+            var copy = node.cloneNode();
+            if (node.binding) {
+                bindNode(copy, node.binding, context, function (context) {
+                    var children = node.childNodes;
+                    for (var index = 0, length = children.length; index < length; index++) {
+                        var child = children[index];
+                        copy.appendChild(cloneNode(child, context));
+                    }
+                });
+            } else {
                 var children = node.childNodes;
                 for (var index = 0, length = children.length; index < length; index++) {
                     var child = children[index];
-                    copy.appendChild(cloneNode(child, context));
+                    var childNode = cloneNode(child, context);
+                    if (childNode) {
+                        copy.appendChild(childNode);
+                    }
                 }
-            });
-        } else {
-            var children = node.childNodes;
-            for (var index = 0, length = children.length; index < length; index++) {
-                var child = children[index];
-                copy.appendChild(cloneNode(child, context));
             }
+            return copy;
         }
-        return copy;
     };
 
     function bindNode(node, binding, context, callback) {

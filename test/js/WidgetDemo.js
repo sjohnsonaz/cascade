@@ -1,14 +1,14 @@
 window.onload = function () {
     window.template = Template.parse('\
+        <h1>Widget Demo</h1>\
         <div>\
             <div>test0</div>\
-            @if (true) {\
+            @if :true {\
                 <div>test1</div>\
         	}\
-            @foreach([1]) {\
+            @foreach:[1] {\
                 <div>test1</div>\
 			}\
-            @test\
             <div data-bind="html: a"></div>\
             <div data-bind="test: a">test binding</div>\
             <div data-bind="with: user">\
