@@ -37,8 +37,13 @@ var Binding = (function () {
         } else {
             this.subscriptionComplete = true;
 
-            this.sources[0].subscribe(this);
-            this.destination.subscribe(this);
+            if (this.sources[0]) {
+                this.sources[0].subscribe(this);
+            }
+
+            if (this.destination) {
+                this.destination.subscribe(this);
+            }
         }
     }
 
@@ -67,10 +72,11 @@ var Binding = (function () {
                     //result = this.init(this.cache);
                     result = this.init.apply(this, this.cache);
                 }
-            }
-            if (this.update) {
-                //result = this.update(this.cache);
-                result = this.update.apply(this, this.cache);
+            } else {
+                if (this.update) {
+                    //result = this.update(this.cache);
+                    result = this.update.apply(this, this.cache);
+                }
             }
             if (this.destination) {
                 this.destination.value = result;
@@ -83,18 +89,19 @@ var Binding = (function () {
                     //result = this.init(this.cache);
                     result = this.init.call(this, this.cache[0], false);
                 }
-            }
-            //result = this.update(this.cache);
-            if (this.sources[0].equalsSubscription(subscription)) {
-                result = this.update ? this.update.call(this, this.cache[0], false) : this.cache[0];
-                this.destination.lock(true, this);
-                this.destination.value = result;
-                this.destination.lock(false, this);
-            } else if (this.destination.equalsSubscription(subscription)) {
-                result = this.update ? this.update.call(this, this.cache[1], true) : this.cache[1];
-                this.sources[0].lock(true, this);
-                this.sources[0].value = result;
-                this.sources[0].lock(false, this);
+            } else {
+                //result = this.update(this.cache);
+                if (this.sources[0].equalsSubscription(subscription)) {
+                    result = this.update ? this.update.call(this, this.cache[0], false) : this.cache[0];
+                    this.destination.lock(true, this);
+                    this.destination.value = result;
+                    this.destination.lock(false, this);
+                } else if (this.destination.equalsSubscription(subscription)) {
+                    result = this.update ? this.update.call(this, this.cache[1], true) : this.cache[1];
+                    this.sources[0].lock(true, this);
+                    this.sources[0].value = result;
+                    this.sources[0].lock(false, this);
+                }
             }
         }
     };
