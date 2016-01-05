@@ -21,6 +21,7 @@ window.onload = function () {
                 </div>\
                 <div data-bind="html: $parent.$data.a"></div>\
             }\
+            <div data-bind="html: a"></div>\
         </div>\
     ');
     window.viewModel = {

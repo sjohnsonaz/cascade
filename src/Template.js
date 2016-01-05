@@ -110,6 +110,7 @@ var Template = (function () {
                         copy.appendChild(childNode);
                         if (childNode instanceof Comment && childNode.fragment) {
                             childNode.fragment.fragmentParentNode = copy;
+                            childNode.fragment.fragmentCommentNode = childNode;
                             childNode.fragment.fragmentChildNodes = Array.prototype.slice.call(childNode.fragment.childNodes);
                             copy.appendChild(childNode.fragment);
                         }
@@ -161,7 +162,7 @@ var Template = (function () {
                                     var copy = callback(newContext);
                                     if (copy instanceof DocumentFragment) {
                                         copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
-                                        copy.fragmentParentNode.appendChild(copy);
+                                        copy.fragmentParentNode.insertBefore(copy, copy.fragmentCommentNode.nextSibling);
                                     }
                                 }
                             }
