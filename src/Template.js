@@ -63,7 +63,6 @@ var Template = (function () {
                         }
                         nest.unshift(currentValue);
                     } else {
-                        node.removeChild(currentValue);
                         nest.shift();
                     }
                 } else {
@@ -86,13 +85,18 @@ var Template = (function () {
     }
 
     function cloneNode(node, context, callback) {
+        var copy = node.cloneNode();
         if (node instanceof Comment) { // node.nodeType === Node.COMMENT_NODE
-            if (node.binding) {
-                console.log(node.binding(context));
-                return cloneNode(node.fragment, context);
+            if (node.binding && node.binding !== 'close') {
+                //console.log(node.binding(context));
+                var fragment = document.createDocumentFragment()
+                fragment.appendChild(copy);
+                fragment.appendChild(cloneNode(node.fragment, context))
+                return fragment;
+            } else {
+                return copy;
             }
         } else {
-            var copy = node.cloneNode();
             if (node.binding) {
                 bindNode(copy, node.binding, context, function (context) {
                     var children = node.childNodes;
