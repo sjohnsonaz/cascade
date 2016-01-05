@@ -56,6 +56,7 @@ var Template = (function () {
                 if (currentValue instanceof Comment && currentValue.binding) {
                     if (currentValue.binding !== 'close') {
                         currentValue.fragment = document.createDocumentFragment();
+                        currentValue.fragment.binding = currentValue.binding;
                         if (nest[0]) {
                             node.removeChild(currentValue);
                             nest[0].fragment.appendChild(currentValue);
@@ -106,6 +107,10 @@ var Template = (function () {
                     var child = children[index];
                     var childNode = cloneNode(child, context);
                     if (childNode) {
+                        if (childNode instanceof DocumentFragment) {
+                            childNode.fragmentParentNode = copy;
+                            childNode.fragmentChildNodes = Array.prototype.slice.call(childNode.childNodes);
+                        }
                         copy.appendChild(childNode);
                     }
                 }
@@ -247,7 +252,19 @@ var Template = (function () {
         },
         'with': {
             update: function (node, values, context, references) {
-                return Context.child(values[0], context);
+                if (values[0]) {
+                    return Context.child(values[0], context);
+                } else {
+                    if (node instanceof DocumentFragment) {
+                        for (var index = 0, length = node.fragmentChildNodes.length; index < length; index++) {
+                            node.fragmentParentNode.removeChild(node.fragmentChildNodes[index]);
+                        }
+                    } else {
+                        while (node.firstChild) {
+                            node.removeChild(node.firstChild);
+                        }
+                    }
+                }
             }
         },
         value: {
