@@ -2,9 +2,12 @@ window.onload = function () {
     window.template = Template.parse('\
         <h1>Widget Demo</h1>\
         <div>\
-            <div>test0</div>\
+            <div>Regular text</div>\
             @if: false {\
-                <div>test1</div>\
+                <div>boolean constant</div>\
+        	}\
+            @if: user {\
+                <div>boolean variable</div>\
         	}\
             @foreach: [1] {\
                 <div>test2</div>\

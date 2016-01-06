@@ -93,7 +93,7 @@ var Template = (function () {
         } else {
             if (comment) {
                 copy.fragmentCommentNode = comment;
-                copy.fragmentChildNodes = [];
+                copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
             }
             if (node.binding) {
                 bindNode(copy, node.binding, context, function (context) {
@@ -156,13 +156,15 @@ var Template = (function () {
                                     newContext = handler.update(node, arguments, context, references);
                                 }
                             }
-                            var copy = callback(newContext || context);
+                            if (newContext !== false) {
+                                var copy = callback(newContext || context);
+                            }
                         },
                         update: function () {
                             if (handler && handler.update) {
                                 var newContext = handler.update(node, arguments, context, references);
-                                if (newContext) {
-                                    var copy = callback(newContext);
+                                if (newContext !== false) {
+                                    var copy = callback(newContext || context);
                                     if (copy instanceof DocumentFragment) {
                                         copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
                                         copy.fragmentCommentNode.parentNode.insertBefore(copy, copy.fragmentCommentNode.nextSibling);
@@ -273,6 +275,7 @@ var Template = (function () {
                             node.removeChild(node.firstChild);
                         }
                     }
+                    return false;
                 }
             }
         },
@@ -290,6 +293,7 @@ var Template = (function () {
                             node.removeChild(node.firstChild);
                         }
                     }
+                    return false;
                 }
             }
         },
