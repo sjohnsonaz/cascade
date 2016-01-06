@@ -3,7 +3,7 @@ window.onload = function () {
         <h1>Widget Demo</h1>\
         <div>\
             <div>test0</div>\
-            @if: true {\
+            @if: false {\
                 <div>test1</div>\
         	}\
             @foreach: [1] {\

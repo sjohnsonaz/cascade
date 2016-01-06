@@ -84,14 +84,17 @@ var Template = (function () {
         return fragment;
     }
 
-    function cloneNode(node, context, callback) {
+    function cloneNode(node, context, comment) {
         var copy = node.cloneNode();
         if (node instanceof Comment) { // node.nodeType === Node.COMMENT_NODE
             if (node.binding && node.binding !== 'close') {
-                //console.log(node.binding(context));
-                copy.fragment = cloneNode(node.fragment, context);
+                copy.fragment = cloneNode(node.fragment, context, node);
             }
         } else {
+            if (comment) {
+                copy.fragmentCommentNode = comment;
+                copy.fragmentChildNodes = [];
+            }
             if (node.binding) {
                 bindNode(copy, node.binding, context, function (context) {
                     var children = node.childNodes;
@@ -99,6 +102,7 @@ var Template = (function () {
                         var child = children[index];
                         copy.appendChild(cloneNode(child, context));
                     }
+                    copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
                     return copy;
                 });
             } else {
@@ -109,7 +113,6 @@ var Template = (function () {
                     if (childNode) {
                         copy.appendChild(childNode);
                         if (childNode instanceof Comment && childNode.fragment) {
-                            childNode.fragment.fragmentParentNode = copy;
                             childNode.fragment.fragmentCommentNode = childNode;
                             childNode.fragment.fragmentChildNodes = Array.prototype.slice.call(childNode.fragment.childNodes);
                             copy.appendChild(childNode.fragment);
@@ -162,7 +165,7 @@ var Template = (function () {
                                     var copy = callback(newContext);
                                     if (copy instanceof DocumentFragment) {
                                         copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
-                                        copy.fragmentParentNode.insertBefore(copy, copy.fragmentCommentNode.nextSibling);
+                                        copy.fragmentCommentNode.parentNode.insertBefore(copy, copy.fragmentCommentNode.nextSibling);
                                     }
                                 }
                             }
@@ -263,7 +266,24 @@ var Template = (function () {
                 } else {
                     if (node instanceof DocumentFragment) {
                         for (var index = 0, length = node.fragmentChildNodes.length; index < length; index++) {
-                            node.fragmentParentNode.removeChild(node.fragmentChildNodes[index]);
+                            node.fragmentCommentNode.parentNode.removeChild(node.fragmentChildNodes[index]);
+                        }
+                    } else {
+                        while (node.firstChild) {
+                            node.removeChild(node.firstChild);
+                        }
+                    }
+                }
+            }
+        },
+        'if': {
+            update: function (node, values, context, references) {
+                if (values[0]) {
+                    return context;
+                } else {
+                    if (node instanceof DocumentFragment) {
+                        for (var index = 0, length = node.fragmentChildNodes.length; index < length; index++) {
+                            node.fragmentCommentNode.parentNode.removeChild(node.fragmentChildNodes[index]);
                         }
                     } else {
                         while (node.firstChild) {
