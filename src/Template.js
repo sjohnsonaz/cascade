@@ -148,23 +148,35 @@ var Template = (function () {
                 (function () {
                     Module.bind({
                         init: function () {
-                            var newContext;
+                            var result;
                             if (handler) {
                                 if (handler.init) {
-                                    newContext = handler.init(node, arguments, context, references);
+                                    result = handler.init(node, arguments, context, references);
                                 } else if (handler.update) {
-                                    newContext = handler.update(node, arguments, context, references);
+                                    result = handler.update(node, arguments, context, references);
                                 }
                             }
-                            if (newContext !== false) {
-                                var copy = callback(newContext || context);
+                            if (result !== false) {
+                                if (result) {
+                                    if (result instanceof Array) {
+                                        for (var index = 0, length = result.length; index < length; index++) {
+                                            callback(Context.child(result[index], context));
+                                        }
+                                    } else if (result instanceof Context) {
+                                        callback(result);
+                                    } else {
+                                        callback(Context.child(result, context));
+                                    }
+                                } else {
+                                    callback(context);
+                                }
                             }
                         },
                         update: function () {
                             if (handler && handler.update) {
-                                var newContext = handler.update(node, arguments, context, references);
-                                if (newContext !== false) {
-                                    var copy = callback(newContext || context);
+                                var result = handler.update(node, arguments, context, references);
+                                if (result !== false) {
+                                    var copy = callback(result || context);
                                     if (copy instanceof DocumentFragment) {
                                         copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
                                         copy.fragmentCommentNode.parentNode.insertBefore(copy, copy.fragmentCommentNode.nextSibling);
@@ -295,6 +307,11 @@ var Template = (function () {
                     }
                     return false;
                 }
+            }
+        },
+        foreach: {
+            update: function (node, values, context, references) {
+                return values[0] ? values[0] : false;
             }
         },
         value: {
