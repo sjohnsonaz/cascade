@@ -9,9 +9,15 @@ window.onload = function () {
             @if: user {\
                 <div>boolean variable</div>\
         	}\
-            @foreach: array {\
-                <div data-bind="html: $data"></div>\
-			}\
+            <ul>\
+                <li>Static row</li>\
+                @foreach: array {\
+                <li>\
+                    <span data-bind="html: firstName"></span>\
+                    <span data-bind="html: lastName"></span>\
+                </li>\
+			    }\
+            </ul>\
             <div data-bind="html: a"></div>\
             <div data-bind="test: a">test binding</div>\
             @with: user {\
@@ -34,7 +40,12 @@ window.onload = function () {
         },
     };
     Module.watchProperty(viewModel, 'array', {
-        value: [5, 6, 7, 8],
+        value: [
+            new User('A', 'A'),
+            new User('B', 'B'),
+            new User('C', 'C'),
+            new User('D', 'D')
+        ],
         array: true
     });
     Module.watchProperty(viewModel, 'user', {
