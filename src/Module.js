@@ -22,6 +22,18 @@ var Module = (function () {
                 // TODO: Do we need to create a Subscription if subscriber IS a Subscription?
                 var subscription = new Subscription(this, property, subscriber);
                 this.subscribers[property].push(subscription);
+
+                if (this.self[property] instanceof ArrayModule) {
+                    this.self[property].subscribe(function (action, insertActions, deleteActions) {
+                        subscriber.handleArray(action, insertActions, deleteActions);
+                        console.log({
+                            action: action,
+                            insertActions: insertActions,
+                            deleteActions: deleteActions
+                        });
+                    });
+                }
+
                 if (!deferNotify) {
                     this.publish(property, subscription);
                 }
@@ -244,11 +256,7 @@ var Module = (function () {
     Module.watchProperties = function (obj, descriptor) {
         for (var property in descriptor) {
             if (descriptor.hasOwnProperty(property)) {
-                if (!descriptor[property].array) {
-                    Module.watchProperty(obj, property, descriptor[property]);
-                } else {
-                    Module.watchArray(obj, property, descriptor[property].value);
-                }
+                Module.watchProperty(obj, property, descriptor[property]);
             }
         }
     };
@@ -264,6 +272,11 @@ var Module = (function () {
         var innerName = descriptor.innerName;
         var getter = descriptor.getter;
         var setter = descriptor.setter;
+        var array = descriptor.array;
+
+        if (array) {
+            value = ArrayModule(value);
+        }
 
         Module.init(obj);
         innerName = innerName || property;
@@ -339,10 +352,6 @@ var Module = (function () {
         }
     };
 
-    Module.watchArray = function (obj, property, value) {
-        obj[property] = ArrayModule(value);
-    };
-
     Module.bind = function (bindingDefinition, sources, destination) {
         if (typeof bindingDefinition === 'string') {
             bindingDefinition = Module.handlers[bindingDefinition];
@@ -350,7 +359,8 @@ var Module = (function () {
         var update = bindingDefinition ? bindingDefinition.update : undefined;
         var init = bindingDefinition ? bindingDefinition.init : undefined;
         var twoWay = bindingDefinition ? bindingDefinition.twoWay : undefined;
-        return new Binding(update, init, sources, destination, twoWay);
+        var updateArray = bindingDefinition ? bindingDefinition.updateArray : undefined;
+        return new Binding(update, init, sources, destination, twoWay, updateArray);
     };
 
     Module.handlers = {

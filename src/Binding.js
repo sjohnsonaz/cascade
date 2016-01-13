@@ -1,5 +1,5 @@
 var Binding = (function () {
-    function Binding(update, init, sources, destination, twoWay) {
+    function Binding(update, init, sources, destination, twoWay, updateArray) {
         Subscriber.call(this, this.bindingMethod);
         this.update = update;
         this.init = init;
@@ -12,6 +12,7 @@ var Binding = (function () {
             value: !!twoWay,
             enumerable: true
         });
+        this.updateArray = updateArray;
 
         //this.cache = {};
         if (!this.twoWay) {
@@ -104,6 +105,10 @@ var Binding = (function () {
                 }
             }
         }
+    };
+
+    Binding.prototype.handleArray = function (action, insertActions, deleteActions) {
+        this.updateArray(action, insertActions, deleteActions);
     };
 
     return Binding;
