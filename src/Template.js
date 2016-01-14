@@ -184,7 +184,41 @@ var Template = (function () {
                                 }
                             }
                         },
-                        twoWay: handler && handler.twoWay
+                        twoWay: handler && handler.twoWay,
+                        updateArray: function (array, action, insertActions, deleteActions) {
+                            if (handler && handler.update) {
+                                var result = handler.update(node, [array], context, references);
+                                if (result !== false) {
+                                    if (result instanceof Array) {
+                                        for (var index = 0, length = result.length; index < length; index++) {
+                                            var copy = callback(Context.child(result[index], context));
+                                            if (copy instanceof DocumentFragment) {
+                                                copy.fragmentChildNodes = Array.prototype.slice.call(copy.childNodes);
+                                                copy.fragmentCommentNode.parentNode.insertBefore(copy, copy.fragmentCommentNode.nextSibling);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            /*
+                            for (var index in insertActions) {
+                                if (insertAction.hasOwnProperty(index)) {
+                                    var insertAction = insertActions[index];
+                                    callback(insertAction)
+                                }
+                            }
+
+                            for (var index in deleteActions) {
+                                if (deleteActions.hasOwnProperty(index)) {
+                                    var deleteAction = deleteActions[index];
+                                }
+                            }
+
+                            if (handler && handler.updateArray) {
+                                handler.updateArray(action, insertActions, deleteActions);
+                            }
+                            */
+                        }
                     }, references);
                 })();
             }
@@ -236,13 +270,15 @@ var Template = (function () {
     Template.createBindingEval = function (code) {
         return new Function('$values', '\r\
             with ($values) {\r\
-                with ($data) {\r\
-                    if ($data.$module) {\r\
-                        with ($module.references) {\r\
+                if ($values.$data) {\r\
+                    with ($data) {\r\
+                        if ($data.$module) {\r\
+                            with ($module.references) {\r\
+                                return ({' + code + '});\r\
+                            }\r\
+                        } else {\r\
                             return ({' + code + '});\r\
                         }\r\
-                    } else {\r\
-                        return ({' + code + '});\r\
                     }\r\
                 }\r\
             }\r\
