@@ -108,7 +108,7 @@ var Binding = (function () {
     };
 
     Binding.prototype.handleArray = function (action, insertActions, deleteActions) {
-        this.updateArray(action, insertActions, deleteActions);
+        this.updateArray(this.cache[0], action, insertActions, deleteActions);
     };
 
     return Binding;
