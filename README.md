@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Module
-Create simple publish and subscribe connections between objects.
-=======
-# Widget
->>>>>>> Widget/master
+# Build Cascade
+
+Framework for Templating, data binding, and Components.
