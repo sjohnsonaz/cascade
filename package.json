@@ -1,10 +1,17 @@
 {
+<<<<<<< HEAD
     "name": "Module",
+=======
+    "name": "Widget",
+>>>>>>> Widget/master
     "version": "0.1.0",
     "description": "",
     "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
     "contributors": [],
+<<<<<<< HEAD
     "main": "src/main.js",
+=======
+>>>>>>> Widget/master
     "repository": {},
     "bugs": {},
     "dependencies": {},
