@@ -11,7 +11,14 @@ var Template = (function () {
      * public
      */
     function parse(text) {
-        text = text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function (match, $1, $2, $3, offset, string) {
+        text = replaceControlStatements(text);
+        var fragment = createTemplateFragment(text);
+        createBindings(fragment);
+        return fragment;
+    }
+
+    function replaceControlStatements(text) {
+        return text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function (match, $1, $2, $3, offset, string) {
             if ($3) {
                 return '<!-- ' + $3.trim() + ' -->';
             } else {
@@ -21,6 +28,9 @@ var Template = (function () {
                     '<!-- /bind -->';
             }
         });
+    }
+
+    function createTemplateFragment(text) {
         var template = document.createElement('template');
         template.innerHTML = text;
         var fragment = template.content;
@@ -30,7 +40,6 @@ var Template = (function () {
                 fragment.appendChild(template.firstChild);
             }
         }
-        createBindings(fragment);
         return fragment;
     }
 
