@@ -54,8 +54,9 @@ var Subscribable = (function () {
 })();
 
 var Observable = (function () {
-    function Observable() {
+    function Observable(value) {
         Define.super(Subscribable, this);
+        this.value = value;
     }
 
     Define.extend(Observable, Subscribable, {

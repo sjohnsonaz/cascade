@@ -18,7 +18,7 @@ var Define = (function () {
     };
 
     Define.super = function ($constructor, thisArg) {
-        $constructor.apply(thisArg, Array.prototype.splice.call(arguments, 0, 2));
+        $constructor.apply(thisArg, []);//Array.prototype.splice.call(arguments, 0, 2));
     };
 
     Define.superConstructor = function (thisArg) {
