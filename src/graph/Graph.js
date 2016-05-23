@@ -27,7 +27,12 @@ var Graph = (function () {
 
     function attachGraph(obj) {
         if (!obj._graph) {
-            obj._graph = new Graph();
+            Object.defineProperty(obj, '_graph', {
+                configurable: true,
+                writable: true,
+                enumerable: false,
+                value: new Graph()
+            });
         }
     }
 
@@ -44,6 +49,8 @@ var Graph = (function () {
         var observable = new Observable(value);
         createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
+            enumerable: true,
+            configurable: true,
             get: function () {
                 return observable.getValue();
             },
@@ -57,6 +64,8 @@ var Graph = (function () {
         var computed = new Computed(definition);
         createProperty(obj, property, computed);
         Object.defineProperty(obj, property, {
+            enumerable: true,
+            configurable: true,
             get: function () {
                 return computed.getValue();
             }
