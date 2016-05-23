@@ -4,28 +4,36 @@ window.onload = function () {
         Graph.createObservable(this, 'a', 1);
         Graph.createObservable(this, 'b', 2);
         Graph.createObservable(this, 'c', 3);
+        Graph.createObservable(this, 'd', 4);
         Graph.createComputed(this, 'ab', function () {
             return self.a + self.b;
         });
-        Graph.createComputed(this, 'bc', function () {
-            return self.b + self.c;
-        });
-        Graph.createComputed(this, 'cd', function () {
-            return self.c + self.d;
+        Graph.createComputed(this, 'ac', function () {
+            return self.a + self.c;
         });
         Graph.createComputed(this, 'ad', function () {
             return self.a + self.d;
         });
-        Graph.createComputed(this, 'abc', function () {
-            return self.ab + self.bc + self.cd + self.ad;
+        Graph.createComputed(this, 'bc', function () {
+            return self.b + self.c;
+        });
+        Graph.createComputed(this, 'bd', function () {
+            return self.b + self.d;
+        });
+        Graph.createComputed(this, 'cd', function () {
+            return self.c + self.d;
+        });
+        Graph.createComputed(this, 'abcd', function () {
+            return self.ab + self.ac + self.ad + self.bc + self.bd + self.cd;
         });
         var runs = 0;
-        this._graph.subscribables.abc.subscribe(function (value) {
+        this._graph.subscribables.abcd.subscribe(function (value) {
             runs++;
         });
         this.a = 11;
         this.b = 12;
         this.c = 13;
+        this.d = 14;
         console.log(runs);
     }
 };
