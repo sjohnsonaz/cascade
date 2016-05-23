@@ -1,9 +1,9 @@
-window.onload = function() {
-    window.viewModel = new function() {
+window.onload = function () {
+    window.viewModel = new function () {
         var self = this;
-        this.test = new Observable(1);
-        this.computed = new Computed(function() {
-            return self.test.getValue();
+        Graph.createObservable(this, 'test', 1);
+        Graph.createComputed(this, 'computed', function () {
+            return self.test;
         });
     }
 };
