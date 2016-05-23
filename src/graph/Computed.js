@@ -11,7 +11,11 @@ var Computed = (function () {
 
     Define.extend(Computed, Subscribable, {
         notify: function () {
+            var value = this.value;
             this.runDefinition(this.definition);
+            if (this.value !== value) {
+                this.publish();
+            }
         },
         runDefinition: function (definition) {
             for (var index = 0, length = this.references.length; index < length; index++) {

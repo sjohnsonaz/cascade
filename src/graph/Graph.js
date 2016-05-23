@@ -34,7 +34,8 @@ var Graph = (function () {
     function createProperty(obj, property, subscribable) {
         attachGraph(obj);
         if (obj._graph.subscribables[property]) {
-            // delete subscriptions
+            // TODO: move or delete subscriptions?
+            subscribable.subscribers = obj._graph.subscribables[property].subscribers;
         }
         obj._graph.subscribables[property] = subscribable;
     }

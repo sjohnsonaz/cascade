@@ -6,5 +6,9 @@ window.onload = function () {
         Graph.createComputed(this, 'computed', function () {
             return self.a + self.b;
         });
+        this._graph.subscribables.computed.subscribe(function (value) {
+            console.log(value);
+        });
+        this.a = 10;
     }
 };
