@@ -2,7 +2,7 @@ var Computed = (function () {
     function Computed(definition) {
         Define.super(Subscribable, this);
 
-        this.subscriptions = [];
+        this.references = [];
         this.definition = definition;
         this.runDefinition(definition);
 
@@ -10,16 +10,13 @@ var Computed = (function () {
     }
 
     Define.extend(Computed, Subscribable, {
-        getValue: function () {
-            var context = Graph.getContext();
-            if (context) {
-                context.references.push(this);
-            }
-            return this.value;
+        notify: function () {
+            this.runDefinition(this.definition);
         },
         runDefinition: function (definition) {
-            for (var index = 0, length = this.subscriptions.length; index < length; index++) {
-                var subscription = this.subscriptions[index];
+            for (var index = 0, length = this.references.length; index < length; index++) {
+                var reference = this.references[index];
+                reference.unsubscribe(this);
             }
 
             var context = Graph.pushContext();
@@ -28,6 +25,7 @@ var Computed = (function () {
 
             for (var index = 0, length = context.references.length; index < length; index++) {
                 var reference = context.references[index];
+                reference.subscribeOnly(this);
             }
         }
     });
