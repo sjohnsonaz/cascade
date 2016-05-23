@@ -1,6 +1,12 @@
 var Computed = (function () {
+    var id = 0;
+
+    var computedQueue = new ComputedQueue();
+
     function Computed(definition) {
         Define.super(Subscribable, this);
+        this.id = id;
+        id++;
 
         this.references = [];
         this.definition = definition;
@@ -11,6 +17,12 @@ var Computed = (function () {
 
     Define.extend(Computed, Subscribable, {
         notify: function () {
+            if (computedQueue.completed) {
+                computedQueue = new ComputedQueue();
+            }
+            computedQueue.add(this);
+        },
+        runUpdate: function () {
             var value = this.value;
             this.runDefinition(this.definition);
             if (this.value !== value) {
@@ -27,6 +39,7 @@ var Computed = (function () {
             this.value = definition();
             Graph.popContext();
 
+            //TODO: Prevent redundant subscription.
             for (var index = 0, length = context.references.length; index < length; index++) {
                 var reference = context.references[index];
                 reference.subscribeOnly(this);

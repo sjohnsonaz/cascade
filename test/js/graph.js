@@ -1,6 +1,7 @@
 window.onload = function () {
     window.viewModel = new function () {
         var self = this;
+        this.runs = 0;
         Graph.createObservable(this, 'a', 1);
         Graph.createObservable(this, 'b', 2);
         Graph.createObservable(this, 'c', 3);
@@ -26,14 +27,13 @@ window.onload = function () {
         Graph.createComputed(this, 'abcd', function () {
             return self.ab + self.ac + self.ad + self.bc + self.bd + self.cd;
         });
-        var runs = 0;
         this._graph.subscribables.abcd.subscribe(function (value) {
-            runs++;
+            self.runs++;
+            console.log('Value: ' + value + ', Runs: ' + self.runs);
         });
         this.a = 11;
         this.b = 12;
         this.c = 13;
         this.d = 14;
-        console.log(runs);
     }
 };
