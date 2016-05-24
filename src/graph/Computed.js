@@ -17,10 +17,14 @@ var Computed = (function () {
 
     Define.extend(Computed, Subscribable, {
         notify: function () {
-            if (computedQueue.completed) {
-                computedQueue = new ComputedQueue();
+            if (Subscribable.sync) {
+                this.runUpdate();
+            } else {
+                if (computedQueue.completed) {
+                    computedQueue = new ComputedQueue();
+                }
+                computedQueue.add(this);
             }
-            computedQueue.add(this);
         },
         runUpdate: function () {
             var value = this.value;

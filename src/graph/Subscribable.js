@@ -67,5 +67,7 @@ var Subscribable = (function () {
     Subscribable.pushContext = pushContext;
     Subscribable.popContext = popContext;
 
+    Subscribable.sync = false;
+
     return Subscribable;
 })();

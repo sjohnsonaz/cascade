@@ -1,6 +1,8 @@
 window.onload = function () {
+    console.time('tests');
     runAllTests([test0, test1], function (output) {
         window.tests = output;
+        console.timeEnd('tests');
     })
 };
 
