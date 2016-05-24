@@ -9,22 +9,6 @@ var Graph = (function () {
         }
     };
 
-    Graph.computedContexts = [];
-
-    function getContext() {
-        return Graph.computedContexts[Graph.computedContexts.length - 1];
-    }
-
-    function pushContext() {
-        var context = new ComputedContext();
-        Graph.computedContexts.push(context);
-        return context;
-    }
-
-    function popContext() {
-        return Graph.computedContexts.pop();
-    }
-
     function attachGraph(obj) {
         if (!obj._graph) {
             Object.defineProperty(obj, '_graph', {
@@ -74,9 +58,6 @@ var Graph = (function () {
 
     Graph.createObservable = createObservable;
     Graph.createComputed = createComputed;
-    Graph.getContext = getContext;
-    Graph.pushContext = pushContext;
-    Graph.popContext = popContext;
 
     return Graph;
 })();

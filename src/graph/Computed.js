@@ -30,14 +30,15 @@ var Computed = (function () {
             }
         },
         runDefinition: function (definition) {
+            //TODO: Reduce unsubscribe calls.
             for (var index = 0, length = this.references.length; index < length; index++) {
                 var reference = this.references[index];
                 reference.unsubscribe(this);
             }
 
-            var context = Graph.pushContext();
+            var context = Subscribable.pushContext();
             this.value = definition();
-            Graph.popContext();
+            Subscribable.popContext();
 
             //TODO: Prevent redundant subscription.
             for (var index = 0, length = context.references.length; index < length; index++) {
