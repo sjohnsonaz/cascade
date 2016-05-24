@@ -6,7 +6,6 @@ var Subscribable = (function () {
 
     Subscribable.prototype = {
         getValue: function () {
-            var context = getContext();
             if (context) {
                 context.push(this);
             }
@@ -48,19 +47,21 @@ var Subscribable = (function () {
     };
 
     var computedContexts = [];
+    var context = undefined;
 
     function getContext() {
-        return computedContexts[computedContexts.length - 1];
+        return context;
     }
 
     function pushContext() {
-        var context = [];
+        context = [];
         computedContexts.push(context);
         return context;
     }
 
     function popContext() {
-        return computedContexts.pop();
+        context = computedContexts.pop();
+        return context;
     }
 
     Subscribable.getContext = getContext;
