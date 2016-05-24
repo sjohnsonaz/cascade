@@ -36,13 +36,13 @@ var Computed = (function () {
                 reference.unsubscribe(this);
             }
 
-            var context = Subscribable.pushContext();
+            Subscribable.pushContext();
             this.value = definition();
-            Subscribable.popContext();
+            var context = Subscribable.popContext();
 
             //TODO: Prevent redundant subscription.
-            for (var index = 0, length = context.references.length; index < length; index++) {
-                var reference = context.references[index];
+            for (var index = 0, length = context.length; index < length; index++) {
+                var reference = context[index];
                 reference.subscribeOnly(this);
             }
         }

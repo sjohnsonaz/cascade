@@ -8,7 +8,7 @@ var Subscribable = (function () {
         getValue: function () {
             var context = getContext();
             if (context) {
-                context.references.push(this);
+                context.push(this);
             }
             return this.value;
         },
@@ -54,7 +54,7 @@ var Subscribable = (function () {
     }
 
     function pushContext() {
-        var context = new ComputedContext();
+        var context = [];
         computedContexts.push(context);
         return context;
     }
