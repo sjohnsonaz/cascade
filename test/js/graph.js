@@ -1,6 +1,6 @@
 window.onload = function () {
     console.time('tests');
-    runAllTests([test0, test1], function (output) {
+    runAllTests([test0, test1, test2], function (output) {
         window.tests = output;
         console.timeEnd('tests');
     })
@@ -93,5 +93,30 @@ function test1(callback) {
         }
     });
     viewModel.a = 11;
+    complete = true;
+}
+
+function test2(callback) {
+    console.log('test 2');
+    var viewModel = {};
+    viewModel.runs = 0;
+    Graph.createObservable(viewModel, 'a', [1, 2, 3]);
+    Graph.createComputed(viewModel, 'loop', function () {
+        var a = viewModel.a;
+        var total = 0;
+        for (var index = 0, length = a.length; index < length; index++) {
+            total += a[index];
+        }
+        return total;
+    });
+    var complete = false;
+    viewModel._graph.subscribables.loop.subscribe(function (value) {
+        viewModel.runs++;
+        if (complete) {
+            console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
+            callback(viewModel);
+        }
+    });
+    viewModel.a = [1, 2, 3, 4];
     complete = true;
 }
