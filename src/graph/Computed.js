@@ -4,7 +4,7 @@ var Computed = (function () {
     var computedQueue = new ComputedQueue();
 
     function Computed(definition) {
-        Define.super(Subscribable, this);
+        Define.super(Observable, this);
         this.id = id;
         id++;
 
@@ -15,9 +15,10 @@ var Computed = (function () {
         return this.value;
     }
 
-    Define.extend(Computed, Subscribable, {
+    Define.extend(Computed, Observable, {
+        setValue: function (value) {},
         notify: function () {
-            if (Subscribable.sync) {
+            if (Observable.sync) {
                 this.runUpdate();
             } else {
                 if (computedQueue.completed) {
@@ -40,9 +41,9 @@ var Computed = (function () {
                 reference.unsubscribe(this);
             }
 
-            Subscribable.pushContext();
+            Observable.pushContext();
             this.value = definition();
-            var context = Subscribable.popContext();
+            var context = Observable.popContext();
 
             //TODO: Prevent redundant subscription.
             for (var index = 0, length = context.length; index < length; index++) {

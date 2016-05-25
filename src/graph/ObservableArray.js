@@ -1,10 +1,10 @@
 var ObservableArray = (function () {
     function ObservableArray(value) {
-        Define.super(Subscribable, this);
+        Define.super(Observable, this);
         this.value = value;
     }
 
-    Define.extend(ObservableArray, Subscribable, {
+    Define.extend(ObservableArray, Observable, {
         setValue: function (value) {
             if (this.value !== value) {
                 this.value = value;

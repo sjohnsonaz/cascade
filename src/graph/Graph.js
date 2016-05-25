@@ -1,11 +1,11 @@
 var Graph = (function () {
     function Graph() {
-        this.subscribables = {};
+        this.observables = {};
     }
 
     Graph.prototype = {
         peekValue: function (obj, property) {
-            return obj.subscribables[property].value;
+            return obj.observables[property].value;
         }
     };
 
@@ -20,13 +20,13 @@ var Graph = (function () {
         }
     }
 
-    function createProperty(obj, property, subscribable) {
+    function createProperty(obj, property, observable) {
         attachGraph(obj);
-        if (obj._graph.subscribables[property]) {
+        if (obj._graph.observables[property]) {
             // TODO: move or delete subscriptions?
-            subscribable.subscribers = obj._graph.subscribables[property].subscribers;
+            observable.subscribers = obj._graph.observables[property].subscribers;
         }
-        obj._graph.subscribables[property] = subscribable;
+        obj._graph.observables[property] = observable;
     }
 
     function createObservable(obj, property, value) {

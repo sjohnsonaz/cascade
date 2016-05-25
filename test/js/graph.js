@@ -54,7 +54,7 @@ function test0(callback) {
         return viewModel.ab + viewModel.ac + viewModel.ad + viewModel.bc + viewModel.bd + viewModel.cd;
     });
     var complete = false;
-    viewModel._graph.subscribables.abcd.subscribe(function (value) {
+    viewModel._graph.observables.abcd.subscribe(function (value) {
         viewModel.runs++;
         if (complete) {
             console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
@@ -85,7 +85,7 @@ function test1(callback) {
         return viewModel.a + viewModel.ab;
     });
     var complete = false;
-    viewModel._graph.subscribables.aab.subscribe(function (value) {
+    viewModel._graph.observables.aab.subscribe(function (value) {
         viewModel.runs++;
         if (complete) {
             console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
@@ -110,7 +110,7 @@ function test2(callback) {
         return total;
     });
     var complete = false;
-    viewModel._graph.subscribables.loop.subscribe(function (value) {
+    viewModel._graph.observables.loop.subscribe(function (value) {
         viewModel.runs++;
         if (complete) {
             console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
