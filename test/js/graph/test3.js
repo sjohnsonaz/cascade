@@ -10,7 +10,13 @@ TestRunner.test({
             return viewModel.a + viewModel.b;
         });
         viewModel.a = 11;
-        console.log('Value: ' + viewModel.ab + ', Runs: ' + viewModel.runs);
-        callback();
+        callback(viewModel);
+    },
+    assert: function (result, callback) {
+        if (result.ab == 13 && result.runs == 2) {
+            callback(true);
+        } else {
+            callback(false);
+        }
     }
 });

@@ -15,30 +15,51 @@ var TestRunner = (function () {
 
     TestRunner.run = function (callback, tests) {
         tests = tests || TestRunner.tests;
-        var index = 0;
-        var output = [];
-        if (index < tests.length) {
+        var results = [];
+        if (tests.length) {
             console.log('Running tests...');
             console.time('Test time');
-            runTest(tests, index, function iterate(data) {
-                output.push(data);
-                index++;
-                if (index < tests.length) {
-                    runTest(tests, index, iterate);
-                } else {
-                    console.timeEnd('Test time');
-                    callback(output);
+            runTests(tests, results, function () {
+                console.timeEnd('Test time');
+                var pass = 0;
+                var fail = 0;
+                for (var index = 0, length = results.length; index < length; index++) {
+                    if (results[index].pass) {
+                        pass++;
+                    } else {
+                        fail++;
+                    }
                 }
+                console.log('Tests: ' + results.length + ', Pass: ' + pass + ', Fail: ' + fail);
+                callback();
             });
         } else {
             console.log('No tests to run.');
         }
     }
 
-    function runTest(tests, index, callback) {
-        var test = tests[index];
-        console.log('Running: ' + test.name || 'test');
-        test.test(test.input, callback);
+    function runTests(tests, results, callback) {
+        var test = tests.shift();
+        if (test) {
+            results.push(test);
+            console.log('Running: ' + test.name || 'test');
+            test.test(test.input, function (result) {
+                test.result = result;
+                if (test.assert) {
+                    test.assert(result, function (pass) {
+                        test.pass = pass;
+                        console.log('Pass: ' + pass);
+                        runTests(tests, results, callback);
+                    });
+                } else {
+                    test.pass = true;
+                    console.log('Pass: ' + true);
+                    runTests(tests, results, callback);
+                }
+            });
+        } else {
+            callback();
+        }
     }
 
     return TestRunner;

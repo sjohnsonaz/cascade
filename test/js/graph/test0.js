@@ -32,8 +32,10 @@ TestRunner.test({
         viewModel._graph.observables.abcd.subscribe(function (value) {
             viewModel.runs++;
             if (complete) {
-                console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
-                callback(viewModel);
+                callback({
+                    value: value,
+                    runs: viewModel.runs
+                });
             }
         });
         viewModel.a = 11;
@@ -41,5 +43,12 @@ TestRunner.test({
         viewModel.c = 13;
         viewModel.d = 14;
         complete = true;
+    },
+    assert: function (result, callback) {
+        if (result.value == 150 && result.runs == 2) {
+            callback(true);
+        } else {
+            callback(false);
+        }
     }
 });

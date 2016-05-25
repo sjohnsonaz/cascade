@@ -19,11 +19,20 @@ TestRunner.test({
         viewModel._graph.observables.aab.subscribe(function (value) {
             viewModel.runs++;
             if (complete) {
-                console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
-                callback(viewModel);
+                callback({
+                    value: value,
+                    runs: viewModel.runs
+                });
             }
         });
         viewModel.a = 11;
         complete = true;
+    },
+    assert: function (result, callback) {
+        if (result.value == 24 && result.runs == 2) {
+            callback(true);
+        } else {
+            callback(false);
+        }
     }
 });
