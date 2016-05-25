@@ -11,16 +11,25 @@ var Computed = (function () {
         this.references = [];
         this.definition = definition;
         this.runDefinition(definition);
+        this.dirty = false;
 
         return this.value;
     }
 
     Define.extend(Computed, Observable, {
+        getValue: function (value) {
+            Observable.prototype.getValue.apply(this, value);
+            if (this.dirty) {
+                this.runUpdate();
+            }
+            return this.value;
+        },
         setValue: function (value) {},
         notify: function () {
             if (Observable.sync) {
                 this.runUpdate();
             } else {
+                this.dirty = true;
                 if (computedQueue.completed) {
                     computedQueue = new ComputedQueue();
                 }
@@ -28,10 +37,13 @@ var Computed = (function () {
             }
         },
         runUpdate: function () {
-            var value = this.value;
-            this.runDefinition(this.definition);
-            if (this.value !== value) {
-                this.publish();
+            if (this.dirty) {
+                var value = this.value;
+                this.runDefinition(this.definition);
+                this.dirty = false;
+                if (this.value !== value) {
+                    this.publish();
+                }
             }
         },
         runDefinition: function (definition) {
