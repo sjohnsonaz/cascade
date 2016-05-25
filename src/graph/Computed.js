@@ -62,6 +62,13 @@ var Computed = (function () {
                 var reference = context[index];
                 reference.subscribeOnly(this);
             }
+            this.references = context;
+        },
+        dispose: function () {
+            for (var index = 0, length = this.references.length; index < length; index++) {
+                var reference = this.references[index];
+                reference.unsubscribe(this);
+            }
         }
     });
 

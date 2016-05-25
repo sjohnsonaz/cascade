@@ -49,7 +49,8 @@ var Observable = (function () {
                     subscriber(this.value);
                 }
             }
-        }
+        },
+        dispose: function () {}
     };
 
     var computedContexts = [];

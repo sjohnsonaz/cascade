@@ -6,6 +6,13 @@ var Graph = (function () {
     Graph.prototype = {
         peekValue: function (obj, property) {
             return obj.observables[property].value;
+        },
+        dispose: function () {
+            for (var index in this.observables) {
+                if (this.observables.hasOwnProperty(index)) {
+                    this.observables[index].dispose();
+                }
+            }
         }
     };
 
