@@ -1,5 +1,5 @@
 TestRunner.test({
-    name: 'test 2',
+    name: 'Changes to Arrays are observed.',
     test: function (input, callback) {
         var viewModel = {};
         viewModel.runs = 0;

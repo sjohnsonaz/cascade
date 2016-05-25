@@ -1,22 +1,21 @@
 TestRunner.test({
-    name: 'test 3',
+    name: 'Changes can be pulled.',
     test: function (input, callback) {
-        var viewModel = {};
-        viewModel.runs = 0;
-        Graph.createObservable(viewModel, 'a', 1);
-        Graph.createObservable(viewModel, 'b', 2);
-        Graph.createComputed(viewModel, 'ab', function () {
-            viewModel.runs++;
-            return viewModel.a + viewModel.b;
+        var runs = 0;
+        var model = {};
+        Graph.createObservable(model, 'a', 1);
+        Graph.createObservable(model, 'b', 2);
+        Graph.createComputed(model, 'ab', function () {
+            runs++;
+            return model.a + model.b;
         });
-        viewModel.a = 11;
-        callback(viewModel);
+        model.a = 11;
+        callback({
+            ab: model.ab,
+            runs: runs
+        });
     },
     assert: function (result, callback) {
-        if (result.ab == 13 && result.runs == 2) {
-            callback(true);
-        } else {
-            callback(false);
-        }
+        callback(result.ab == 13 && result.runs == 2);
     }
 });

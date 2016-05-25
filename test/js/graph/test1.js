@@ -1,5 +1,5 @@
 TestRunner.test({
-    name: 'test 1',
+    name: 'Changes result in minimal updates to mixed level Computed properties.',
     test: function (input, callback) {
         var viewModel = {};
         viewModel.runs = 0;

@@ -1,5 +1,5 @@
 TestRunner.test({
-    name: 'test 0',
+    name: 'Changes result in minimal updates.',
     test: function (input, callback) {
         var viewModel = {};
         viewModel.runs = 0;

@@ -1,22 +1,32 @@
 TestRunner.test({
-    name: 'test 4',
+    name: 'Changes push after pull.',
     test: function (input, callback) {
-        var viewModel = {};
-        viewModel.runs = 0;
-        Graph.createObservable(viewModel, 'a', 1);
-        Graph.createObservable(viewModel, 'b', 2);
-        Graph.createComputed(viewModel, 'ab', function () {
-            viewModel.runs++;
-            return viewModel.a + viewModel.b;
+        var runsAB = 0;
+        var runsABC = 0;
+        var model = {};
+        Graph.createObservable(model, 'a', 1);
+        Graph.createObservable(model, 'b', 2);
+        Graph.createObservable(model, 'c', 3);
+        Graph.createComputed(model, 'ab', function () {
+            runsAB++;
+            return model.a + model.b;
         });
-        viewModel.a = 11;
-        callback(viewModel);
+        Graph.createComputed(model, 'abc', function () {
+            runsABC++;
+            if (complete) {
+                callback({
+                    ab: ab,
+                    runsAB: runsAB,
+                    runsABC: runsABC
+                });
+            }
+            return model.ab + model.c;
+        });
+        model.a = 11;
+        var ab = model.ab;
+        var complete = true;
     },
     assert: function (result, callback) {
-        if (result.ab == 13 && result.runs == 2) {
-            callback(true);
-        } else {
-            callback(false);
-        }
+        callback(result.ab == 13 && result.runsAB == 2 && result.runsABC == 2);
     }
 });
