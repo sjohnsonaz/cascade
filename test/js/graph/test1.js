@@ -1,0 +1,29 @@
+TestRunner.test({
+    name: 'test 1',
+    test: function (input, callback) {
+        var viewModel = {};
+        viewModel.runs = 0;
+        Graph.createObservable(viewModel, 'a', 1);
+        Graph.createObservable(viewModel, 'b', 2);
+        Graph.createObservable(viewModel, 'c', 3);
+        Graph.createComputed(viewModel, 'ab', function () {
+            return viewModel.a + viewModel.b;
+        });
+        Graph.createComputed(viewModel, 'bc', function () {
+            return viewModel.b + viewModel.c;
+        });
+        Graph.createComputed(viewModel, 'aab', function () {
+            return viewModel.a + viewModel.ab;
+        });
+        var complete = false;
+        viewModel._graph.observables.aab.subscribe(function (value) {
+            viewModel.runs++;
+            if (complete) {
+                console.log('Value: ' + value + ', Runs: ' + viewModel.runs);
+                callback(viewModel);
+            }
+        });
+        viewModel.a = 11;
+        complete = true;
+    }
+});
