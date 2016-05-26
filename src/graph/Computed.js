@@ -29,11 +29,20 @@ var Computed = (function () {
             if (Observable.sync) {
                 this.runUpdate();
             } else {
-                this.dirty = true;
+                this.notifyDirty();
                 if (computedQueue.completed) {
                     computedQueue = new ComputedQueue();
                 }
                 computedQueue.add(this);
+            }
+        },
+        notifyDirty: function () {
+            this.dirty = true;
+            for (var index = 0, length = this.subscribers.length; index < length; index++) {
+                var subscriber = this.subscribers[index];
+                if (subscriber instanceof Computed) {
+                    subscriber.notifyDirty();
+                }
             }
         },
         runUpdate: function () {
