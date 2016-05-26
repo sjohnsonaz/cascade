@@ -1,28 +1,62 @@
 TestRunner.test({
-    name: 'Changes can be pulled to multiple layers.',
+    name: 'Changes can be pulled to deep layers.',
     test: function (input, callback) {
-        var runsAB = 0;
+        var runsB = 0;
         var runsC = 0;
+        var runsD = 0;
+        var runsE = 0;
         var model = {};
         Graph.createObservable(model, 'a', 1);
-        Graph.createObservable(model, 'b', 2);
-        Graph.createComputed(model, 'ab', function () {
-            runsAB++;
-            return model.a + model.b;
+        Graph.createComputed(model, 'b', function () {
+            runsB++;
+            return model.a;
         });
         Graph.createComputed(model, 'c', function () {
             runsC++;
-            return model.ab;
+            return model.b;
+        });
+        Graph.createComputed(model, 'd', function () {
+            runsD++;
+            return model.c;
+        });
+        Graph.createComputed(model, 'e', function () {
+            runsE++;
+            return model.d;
+        });
+        model._graph.observables.e.subscribe(function (value) {
+            if (result) {
+                result.finalE = value;
+                result.finalRunsE = runsE
+                callback(result);
+            }
         });
         model.a = 11;
-        var c = model.c;
-        callback({
-            c: c,
-            runsAB: runsAB,
-            runsC: runsC
-        });
+        var d = model.d;
+        var result = {
+            a: model._graph.observables.a.value,
+            b: model._graph.observables.b.value,
+            c: model._graph.observables.c.value,
+            d: d,
+            e: model._graph.observables.e.value,
+            runsB: runsB,
+            runsC: runsC,
+            runsD: runsD,
+            runsE: runsE
+        };
     },
     assert: function (result, callback) {
-        callback(result.c == 13 && result.runsAB == 2 && result.runsC == 2);
+        callback(
+            result.a == 11 &&
+            result.b == 11 &&
+            result.c == 11 &&
+            result.d == 11 &&
+            result.e == 1 &&
+            result.finalE == 11 &&
+            result.runsB == 2 &&
+            result.runsC == 2 &&
+            result.runsD == 2 &&
+            result.runsE == 1 &&
+            result.finalRunsE == 2
+        );
     }
 });
