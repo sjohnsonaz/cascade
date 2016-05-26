@@ -75,7 +75,5 @@ var Observable = (function () {
     Observable.pushContext = pushContext;
     Observable.popContext = popContext;
 
-    Observable.sync = false;
-
     return Observable;
 })();

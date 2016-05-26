@@ -26,15 +26,11 @@ var Computed = (function () {
         },
         setValue: function (value) {},
         notify: function () {
-            if (Observable.sync) {
-                this.runUpdate();
-            } else {
-                this.notifyDirty();
-                if (computedQueue.completed) {
-                    computedQueue = new ComputedQueue();
-                }
-                computedQueue.add(this);
+            this.notifyDirty();
+            if (computedQueue.completed) {
+                computedQueue = new ComputedQueue();
             }
+            computedQueue.add(this);
         },
         notifyDirty: function () {
             if (!this.dirty) {
