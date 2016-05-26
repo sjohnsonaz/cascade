@@ -37,11 +37,13 @@ var Computed = (function () {
             }
         },
         notifyDirty: function () {
-            this.dirty = true;
-            for (var index = 0, length = this.subscribers.length; index < length; index++) {
-                var subscriber = this.subscribers[index];
-                if (subscriber instanceof Computed) {
-                    subscriber.notifyDirty();
+            if (!this.dirty) {
+                this.dirty = true;
+                for (var index = 0, length = this.subscribers.length; index < length; index++) {
+                    var subscriber = this.subscribers[index];
+                    if (subscriber instanceof Computed) {
+                        subscriber.notifyDirty();
+                    }
                 }
             }
         },
