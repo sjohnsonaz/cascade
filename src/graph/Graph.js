@@ -13,8 +13,37 @@ var Graph = (function () {
                     this.observables[index].dispose();
                 }
             }
+        },
+        disposeAll: function () {
+            for (var index in this.observables) {
+                if (this.observables.hasOwnProperty(index)) {
+                    var observable = this.observables[index];
+                    if (observable.value && observable.value._graph) {
+                        observable.value._graph.disposeAll();
+                    }
+                    observable.dispose();
+                }
+            }
         }
     };
+
+    function disposeAll(obj) {
+        var graph = obj._graph;
+        for (var index in obj) {
+            if (obj.hasOwnProperty(index)) {
+                if (graph && graph.observables[index]) {
+                    var observable = graph.observables[index];
+                    var value = observable.value;
+                    observable.dispose();
+                } else {
+                    var value = obj[index];
+                }
+                if (value) {
+                    disposeAll(value);
+                }
+            }
+        }
+    }
 
     function attachGraph(obj) {
         if (!obj._graph) {
@@ -63,6 +92,7 @@ var Graph = (function () {
         });
     }
 
+    Graph.disposeAll = disposeAll;
     Graph.createObservable = createObservable;
     Graph.createComputed = createComputed;
 
