@@ -6,6 +6,7 @@ var Template = (function () {
     Template.prototype = {
         build: function (data) {
             var node = this.fragment.cloneNode(true);
+            return node;
         }
     };
 

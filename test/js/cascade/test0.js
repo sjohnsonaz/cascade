@@ -10,6 +10,7 @@ TestRunner.test({
                 <div>boolean constant true</div>\
         	}\
         ');
+        document.body.appendChild(template.build());
         callback(template);
     },
     assert: function (result, callback) {
