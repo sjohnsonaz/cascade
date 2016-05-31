@@ -23,8 +23,8 @@ var Template = (function () {
                 return '<!-- ' + $3.trim() + ' -->';
             } else {
                 return '\
-                    <!-- bind ' + $1.trim() + ' -->\r' +
-                    $2.trim() + '\r' +
+                    <!-- bind ' + $1.trim() + ' -->\r\n' +
+                    $2.trim() + '\r\n' +
                     '<!-- /bind -->';
             }
         });
@@ -44,43 +44,57 @@ var Template = (function () {
     }
 
     function createBindings(node) {
-        if (node instanceof Comment) { // node.nodeType === Node.COMMENT_NODE
-            var commentText = node.textContent.trim();
-            if (commentText.startsWith('bind ')) {
-                node.binding = createBindingEval(commentText.substring(5));
-            } else if (commentText.startsWith('/bind')) {
-                node.binding = 'close';
-            }
-        } else {
-            if (node.attributes) {
-                var dataBind = node.attributes['data-bind'];
-                if (dataBind) {
-                    node.removeAttribute('data-bind');
-                    node.binding = createBindingEval(dataBind.value);
-                }
-            }
-            var nest = [];
-            Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
-                createBindings(currentValue);
-                if (currentValue instanceof Comment && currentValue.binding) {
-                    if (currentValue.binding !== 'close') {
-                        currentValue.fragment = document.createDocumentFragment();
-                        currentValue.fragment.binding = currentValue.binding;
-                        if (nest[0]) {
-                            node.removeChild(currentValue);
-                            nest[0].fragment.appendChild(currentValue);
-                        }
-                        nest.unshift(currentValue);
-                    } else {
-                        nest.shift();
+        //if (context) {
+        //context.children.push(node);
+        //}
+        switch (node.nodeType) {
+            case Node.COMMENT_NODE:
+                var commentText = node.textContent.trim();
+                var commentContext;
+                if (commentText.startsWith('bind ')) {
+                    commentContext = pushContext(node);
+                    node.context = commentContext;
+                    node.binding = createBindingEval(commentText.substring(5));
+                } else if (commentText.startsWith('/bind')) {
+                    commentContext = popContext();
+                    if (!commentContext.virtual) {
+                        throw 'Context mismatch';
                     }
-                } else {
-                    if (nest[0]) {
-                        node.removeChild(currentValue);
-                        nest[0].fragment.appendChild(currentValue);
+                    var startComment = commentContext.node;
+                    startComment.fragment = document.createDocumentFragment();
+                    for (var contextIndex = 0, contextLength = commentContext.children.length; contextIndex < contextLength; contextIndex++) {
+                        startComment.fragment.appendChild(commentContext.children[contextIndex]);
                     }
                 }
-            });
+                break;
+            case Node.TEXT_NODE:
+                break;
+            case Node.DOCUMENT_FRAGMENT_NODE:
+                if (node.childNodes.length) {
+                    pushContext(node);
+                    for (var index = 0, length = node.childNodes.length; index < length; index++) {
+                        createBindings(node.childNodes[index]);
+                    }
+                    popContext();
+                }
+                break;
+            default:
+                var dataBind;
+                if (node.attributes) {
+                    dataBind = node.attributes['data-bind'];
+                    if (dataBind) {
+                        node.removeAttribute('data-bind');
+                        node.binding = createBindingEval(dataBind.value);
+                    }
+                }
+                if (node.childNodes.length) {
+                    pushContext(node);
+                    for (var index = 0, length = node.childNodes.length; index < length; index++) {
+                        createBindings(node.childNodes[index]);
+                    }
+                    popContext();
+                }
+                break;
         }
     }
 
@@ -91,6 +105,32 @@ var Template = (function () {
             }\r\
         ');
     };
+
+    var nodeContexts = [];
+    var context = undefined;
+
+    function getContext() {
+        return context;
+    }
+
+    function pushContext(node) {
+        context = {
+            virtual: node.nodeType === Node.COMMENT_NODE,
+            node: node,
+            children: []
+        };
+        nodeContexts.push(context);
+        return context;
+    }
+
+    function popContext() {
+        context = nodeContexts.pop();
+        return context;
+    }
+
+    Template.getContext = getContext;
+    Template.pushContext = pushContext;
+    Template.popContext = popContext;
 
     Template.parse = parse;
     Template.createBindingEval = createBindingEval;
