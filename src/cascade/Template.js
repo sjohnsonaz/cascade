@@ -44,9 +44,10 @@ var Template = (function () {
     }
 
     function createBindings(node) {
-        //if (context) {
-        //context.children.push(node);
-        //}
+        var context = getContext();
+        if (context) {
+            context.children.push(node);
+        }
         switch (node.nodeType) {
             case Node.COMMENT_NODE:
                 var commentText = node.textContent.trim();
@@ -72,9 +73,9 @@ var Template = (function () {
             case Node.DOCUMENT_FRAGMENT_NODE:
                 if (node.childNodes.length) {
                     pushContext(node);
-                    for (var index = 0, length = node.childNodes.length; index < length; index++) {
-                        createBindings(node.childNodes[index]);
-                    }
+                    Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
+                        createBindings(currentValue);
+                    });
                     popContext();
                 }
                 break;
@@ -89,9 +90,9 @@ var Template = (function () {
                 }
                 if (node.childNodes.length) {
                     pushContext(node);
-                    for (var index = 0, length = node.childNodes.length; index < length; index++) {
-                        createBindings(node.childNodes[index]);
-                    }
+                    Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
+                        createBindings(currentValue);
+                    });
                     popContext();
                 }
                 break;
@@ -107,25 +108,23 @@ var Template = (function () {
     };
 
     var nodeContexts = [];
-    var context = undefined;
 
     function getContext() {
-        return context;
+        return nodeContexts[0];
     }
 
     function pushContext(node) {
-        context = {
+        var context = {
             virtual: node.nodeType === Node.COMMENT_NODE,
             node: node,
             children: []
         };
-        nodeContexts.push(context);
+        nodeContexts.unshift(context);
         return context;
     }
 
     function popContext() {
-        context = nodeContexts.pop();
-        return context;
+        return nodeContexts.shift();
     }
 
     Template.getContext = getContext;
