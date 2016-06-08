@@ -5,10 +5,36 @@ var Template = (function () {
 
     Template.prototype = {
         build: function (data) {
-            var node = this.fragment.cloneNode(true);
+            var node = renderNode(this.fragment, {}); //this.fragment.cloneNode(true);
             return node;
         }
     };
+
+    function renderNode(node, data) {
+        var copy = node.cloneNode(false);
+        if (node.binding) {
+            var value = node.binding(data);
+            if (value.if) {
+                if (node.nodeType === Node.COMMENT_NODE) {
+                    var comment = copy;
+                    copy = document.createDocumentFragment();
+                    copy.appendChild(comment);
+                    for (var index = 0, length = node.fragment.childNodes.length; index < length; index++) {
+                        copy.appendChild(renderNode(node.fragment.childNodes[index], data));
+                    }
+                } else {
+                    for (var index = 0, length = node.childNodes.length; index < length; index++) {
+                        copy.appendChild(renderNode(node.childNodes[index], data));
+                    }
+                }
+            }
+        } else {
+            for (var index = 0, length = node.childNodes.length; index < length; index++) {
+                copy.appendChild(renderNode(node.childNodes[index], data));
+            }
+        }
+        return copy;
+    }
 
     function parse(text) {
         text = replaceControlStatements(text);
