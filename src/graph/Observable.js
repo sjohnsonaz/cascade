@@ -62,13 +62,14 @@ var Observable = (function () {
 
     function pushContext() {
         context = [];
-        computedContexts.push(context);
+        computedContexts.unshift(context);
         return context;
     }
 
     function popContext() {
-        context = computedContexts.pop();
-        return context;
+        var oldContext = computedContexts.shift();
+        context = computedContexts[0];
+        return oldContext;
     }
 
     Observable.getContext = getContext;
