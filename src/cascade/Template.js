@@ -5,7 +5,7 @@ var Template = (function () {
 
     Template.prototype = {
         build: function (data) {
-            var node = renderNode(this.fragment, {}); //this.fragment.cloneNode(true);
+            var node = renderNode(this.fragment, data || {}); //this.fragment.cloneNode(true);
             return node;
         }
     };
@@ -14,7 +14,7 @@ var Template = (function () {
         var copy = node.cloneNode(false);
         if (node.binding) {
             var value = node.binding(data);
-            if (value.if) {
+            if (value.if !== false) {
                 if (node.nodeType === Node.COMMENT_NODE) {
                     var comment = copy;
                     copy = document.createDocumentFragment();
@@ -23,8 +23,12 @@ var Template = (function () {
                         copy.appendChild(renderNode(node.fragment.childNodes[index], data));
                     }
                 } else {
-                    for (var index = 0, length = node.childNodes.length; index < length; index++) {
-                        copy.appendChild(renderNode(node.childNodes[index], data));
+                    if (value.html) {
+                        copy.innerHTML = value.html;
+                    } else {
+                        for (var index = 0, length = node.childNodes.length; index < length; index++) {
+                            copy.appendChild(renderNode(node.childNodes[index], data));
+                        }
                     }
                 }
             }
