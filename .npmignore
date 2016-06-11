@@ -1,0 +1,10 @@
+node_modules/
+typings/
+src/
+dist/__tests__/
+*.log
+*.tgz
+.gitignore
+.npmignore
+tsconfig.json
+typings.json

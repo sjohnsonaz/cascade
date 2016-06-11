@@ -4,9 +4,23 @@
   "description": "",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
   "contributors": [],
-  "main": "src/main.js",
+  "main": "dist/src/main.js",
+  "typings": "dist/src/main.d.ts",
+  "scripts": {
+    "install": "typings install",
+    "build": "tsc",
+    "prepublish": "tsc",
+    "test": "jest"
+  },
   "repository": {},
   "bugs": {},
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "jest-cli": "^12.1.1",
+    "typescript": "^1.8.10"
+  },
+  "jest": {
+    "verbose": true,
+    "rootDir": "dist/"
+  }
 }
