@@ -1,3 +1,6 @@
+import TestRunner from '../TestRunner';
+import Template from '../../../src/cascade/Template';
+
 TestRunner.test({
     name: 'Values can be used in a Template.',
     test: function (input, callback) {

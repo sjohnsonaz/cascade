@@ -1,25 +1,20 @@
-var TestRunner = (function () {
-    function TestRunner() {
-
+export default class TestRunner {
+    constructor() {
     }
 
-    TestRunner.prototype = {
+    static tests: Array<any> = [];
 
-    };
-
-    TestRunner.tests = [];
-
-    TestRunner.test = function (test) {
+    static test(test) {
         TestRunner.tests.push(test);
-    };
+    }
 
-    TestRunner.run = function (callback, tests) {
+    static run(callback, tests?: any) {
         tests = tests || TestRunner.tests;
         var results = [];
         if (tests.length) {
             console.log('Running tests...');
             console.time('Test time');
-            runTests(tests, results, function () {
+            TestRunner.runTests(tests, results, function() {
                 console.timeEnd('Test time');
                 var pass = 0;
                 var fail = 0;
@@ -38,29 +33,27 @@ var TestRunner = (function () {
         }
     }
 
-    function runTests(tests, results, callback) {
+    private static runTests(tests, results, callback) {
         var test = tests.shift();
         if (test) {
             results.push(test);
             console.log('Running: ' + test.name || 'test');
-            test.test(test.input, function (result) {
+            test.test(test.input, function(result) {
                 test.result = result;
                 if (test.assert) {
-                    test.assert(result, function (pass) {
+                    test.assert(result, function(pass) {
                         test.pass = pass;
                         console.log('Pass: ' + pass);
-                        runTests(tests, results, callback);
+                        TestRunner.runTests(tests, results, callback);
                     });
                 } else {
                     test.pass = true;
                     console.log('Pass: ' + true);
-                    runTests(tests, results, callback);
+                    TestRunner.runTests(tests, results, callback);
                 }
             });
         } else {
             callback();
         }
     }
-
-    return TestRunner;
-})();
+}

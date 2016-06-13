@@ -1,3 +1,6 @@
+import TestRunner from '../TestRunner';
+import Template from '../../../src/cascade/Template';
+
 TestRunner.test({
     name: 'Conditional bindings control node creation.',
     test: function (input, callback) {

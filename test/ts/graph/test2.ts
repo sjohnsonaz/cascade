@@ -1,10 +1,13 @@
+import TestRunner from '../TestRunner';
+import Graph from '../../../src/graph/Graph';
+
 TestRunner.test({
     name: 'Changes to Arrays are observed.',
-    test: function (input, callback) {
-        var viewModel = {};
+    test: function(input, callback) {
+        var viewModel: any = {};
         viewModel.runs = 0;
         Graph.createObservable(viewModel, 'a', [1, 2, 3]);
-        Graph.createComputed(viewModel, 'loop', function () {
+        Graph.createComputed(viewModel, 'loop', function() {
             var a = viewModel.a;
             var total = 0;
             for (var index = 0, length = a.length; index < length; index++) {
@@ -13,7 +16,7 @@ TestRunner.test({
             return total;
         });
         var complete = false;
-        viewModel._graph.observables.loop.subscribe(function (value) {
+        viewModel._graph.observables.loop.subscribe(function(value) {
             viewModel.runs++;
             if (complete) {
                 callback({
@@ -25,7 +28,7 @@ TestRunner.test({
         viewModel.a = [1, 2, 3, 4];
         complete = true;
     },
-    assert: function (result, callback) {
+    assert: function(result, callback) {
         if (result.value == 10 && result.runs == 2) {
             callback(true);
         } else {

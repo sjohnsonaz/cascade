@@ -6,7 +6,7 @@ export default class Template {
         this.fragment = Template.parse(text);
     }
 
-    build(data) {
+    build(data?: any) {
         var node = Template.renderNode(this.fragment, data || {}); //this.fragment.cloneNode(true);
         return node;
     }

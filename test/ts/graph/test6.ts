@@ -1,3 +1,6 @@
+import TestRunner from '../TestRunner';
+import Graph from '../../../src/graph/Graph';
+
 TestRunner.test({
     name: 'Observables may be disposed recursively.',
     test: function (input, callback) {

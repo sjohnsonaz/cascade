@@ -1,10 +1,12 @@
 module.exports = {
     entry: {
         'Graph': './src/modules/Graph.ts',
-        'Template': './src/modules/Template.ts'
+        'Template': './src/modules/Template.ts',
+        'graphTest': './test/ts/graph.ts',
+        'cascadeTest': './test/ts/cascade.ts'
     },
     output: {
-        filename: './dist/[name].js',
+        filename: './dist/bundle/[name].js',
         libraryTarget: 'var',
         library: '[name]'
     },

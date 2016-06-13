@@ -1,20 +1,23 @@
+import TestRunner from '../TestRunner';
+import Graph from '../../../src/graph/Graph';
+
 TestRunner.test({
     name: 'Changes can be pulled to multiple layers - higher first.',
-    test: function (input, callback) {
+    test: function(input, callback) {
         var runsB = 0;
         var runsC = 0;
         var runsD = 0;
-        var model = {};
+        var model: any = {};
         Graph.createObservable(model, 'a', 1);
-        Graph.createComputed(model, 'b', function () {
+        Graph.createComputed(model, 'b', function() {
             runsB++;
             return model.a;
         });
-        Graph.createComputed(model, 'c', function () {
+        Graph.createComputed(model, 'c', function() {
             runsC++;
             return model.b;
         });
-        Graph.createComputed(model, 'd', function () {
+        Graph.createComputed(model, 'd', function() {
             runsD++;
             return model.c;
         });
@@ -27,7 +30,7 @@ TestRunner.test({
             runsD: runsD
         });
     },
-    assert: function (result, callback) {
+    assert: function(result, callback) {
         callback(
             result.b == 11 &&
             result.c == 11 &&

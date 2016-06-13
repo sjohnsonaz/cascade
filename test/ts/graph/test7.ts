@@ -1,29 +1,32 @@
+import TestRunner from '../TestRunner';
+import Graph from '../../../src/graph/Graph';
+
 TestRunner.test({
     name: 'Changes can be pulled to deep layers.',
-    test: function (input, callback) {
+    test: function(input, callback) {
         var runsB = 0;
         var runsC = 0;
         var runsD = 0;
         var runsE = 0;
-        var model = {};
+        var model: any = {};
         Graph.createObservable(model, 'a', 1);
-        Graph.createComputed(model, 'b', function () {
+        Graph.createComputed(model, 'b', function() {
             runsB++;
             return model.a;
         });
-        Graph.createComputed(model, 'c', function () {
+        Graph.createComputed(model, 'c', function() {
             runsC++;
             return model.b;
         });
-        Graph.createComputed(model, 'd', function () {
+        Graph.createComputed(model, 'd', function() {
             runsD++;
             return model.c;
         });
-        Graph.createComputed(model, 'e', function () {
+        Graph.createComputed(model, 'e', function() {
             runsE++;
             return model.d;
         });
-        model._graph.observables.e.subscribe(function (value) {
+        model._graph.observables.e.subscribe(function(value) {
             if (result) {
                 result.finalE = value;
                 result.finalRunsE = runsE
@@ -32,7 +35,7 @@ TestRunner.test({
         });
         model.a = 11;
         var d = model.d;
-        var result = {
+        var result: any = {
             a: model._graph.observables.a.value,
             b: model._graph.observables.b.value,
             c: model._graph.observables.c.value,
@@ -44,7 +47,7 @@ TestRunner.test({
             runsE: runsE
         };
     },
-    assert: function (result, callback) {
+    assert: function(result, callback) {
         callback(
             result.a == 11 &&
             result.b == 11 &&

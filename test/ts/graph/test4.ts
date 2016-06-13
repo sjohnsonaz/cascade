@@ -1,17 +1,20 @@
+import TestRunner from '../TestRunner';
+import Graph from '../../../src/graph/Graph';
+
 TestRunner.test({
     name: 'Changes push after pull.',
-    test: function (input, callback) {
+    test: function(input, callback) {
         var runsAB = 0;
         var runsABC = 0;
-        var model = {};
+        var model: any = {};
         Graph.createObservable(model, 'a', 1);
         Graph.createObservable(model, 'b', 2);
         Graph.createObservable(model, 'c', 3);
-        Graph.createComputed(model, 'ab', function () {
+        Graph.createComputed(model, 'ab', function() {
             runsAB++;
             return model.a + model.b;
         });
-        Graph.createComputed(model, 'abc', function () {
+        Graph.createComputed(model, 'abc', function() {
             runsABC++;
             if (complete) {
                 callback({
@@ -26,7 +29,7 @@ TestRunner.test({
         var ab = model.ab;
         var complete = true;
     },
-    assert: function (result, callback) {
+    assert: function(result, callback) {
         callback(result.ab == 13 && result.runsAB == 2 && result.runsABC == 2);
     }
 });
