@@ -1,80 +1,76 @@
-var Observable = (function () {
-    function Observable(value) {
+var computedContexts: Array<any> = [];
+var context: any = undefined;
+
+export default class Observable {
+    value: any;
+    subscribers: Array<any>;
+
+    constructor(value) {
         this.value = value;
         this.subscribers = [];
     }
 
-    Observable.prototype = {
-        getValue: function () {
-            if (context) {
-                context.push(this);
+    getValue() {
+        if (context) {
+            context.push(this);
+        }
+        return this.value;
+    }
+    setValue(value) {
+        if (this.value !== value) {
+            this.value = value;
+            this.publish();
+        }
+    }
+    subscribeOnly(subscriber) {
+        if (subscriber) {
+            this.subscribers.push(subscriber);
+        }
+    }
+    subscribe(subscriber) {
+        if (subscriber) {
+            this.subscribers.push(subscriber);
+            if (typeof subscriber.notify === 'function') {
+                subscriber.notify(this.value);
+            } else if (typeof subscriber === 'function') {
+                subscriber(this.value);
             }
-            return this.value;
-        },
-        setValue: function (value) {
-            if (this.value !== value) {
-                this.value = value;
-                this.publish();
+        }
+    }
+    unsubscribe(subscriber) {
+        if (subscriber) {
+            var index = this.subscribers.indexOf(subscriber);
+            if (index >= 0) {
+                this.subscribers.splice(index, 1);
             }
-        },
-        subscribeOnly: function (subscriber) {
-            if (subscriber) {
-                this.subscribers.push(subscriber);
+        }
+    }
+    publish() {
+        for (var index = 0, length = this.subscribers.length; index < length; index++) {
+            var subscriber = this.subscribers[index];
+            if (typeof subscriber.notify === 'function') {
+                subscriber.notify(this.value);
+            } else if (typeof subscriber === 'function') {
+                subscriber(this.value);
             }
-        },
-        subscribe: function (subscriber) {
-            if (subscriber) {
-                this.subscribers.push(subscriber);
-                if (typeof subscriber.notify === 'function') {
-                    subscriber.notify(this.value);
-                } else if (typeof subscriber === 'function') {
-                    subscriber(this.value);
-                }
-            }
-        },
-        unsubscribe: function (subscriber) {
-            if (subscriber) {
-                var index = this.subscribers.indexOf(subscriber);
-                if (index >= 0) {
-                    this.subscribers.splice(index, 1);
-                }
-            }
-        },
-        publish: function () {
-            for (var index = 0, length = this.subscribers.length; index < length; index++) {
-                var subscriber = this.subscribers[index];
-                if (typeof subscriber.notify === 'function') {
-                    subscriber.notify(this.value);
-                } else if (typeof subscriber === 'function') {
-                    subscriber(this.value);
-                }
-            }
-        },
-        dispose: function () {}
-    };
+        }
+    }
+    dispose() { }
 
-    var computedContexts = [];
-    var context = undefined;
 
-    function getContext() {
+    static getContext() {
         return context;
     }
 
-    function pushContext() {
+    static pushContext() {
         context = [];
         computedContexts.unshift(context);
         return context;
     }
 
-    function popContext() {
+    static popContext() {
         var oldContext = computedContexts.shift();
         context = computedContexts[0];
         return oldContext;
     }
-
-    Observable.getContext = getContext;
-    Observable.pushContext = pushContext;
-    Observable.popContext = popContext;
-
-    return Observable;
-})();
+}

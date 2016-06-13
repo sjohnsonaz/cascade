@@ -1,11 +1,5 @@
-var Cascade = (function () {
-    function Cascade() {
+export default class Clascade {
+    constructor() {
 
     }
-
-    Cascade.prototype = {
-
-    };
-
-    return Cascade;
-})();
+}

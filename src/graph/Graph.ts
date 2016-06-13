@@ -1,33 +1,38 @@
-var Graph = (function () {
-    function Graph() {
+import Observable from './Observable';
+import Computed from './Computed';
+
+export default class Graph {
+    observables: Object;
+
+    constructor() {
         this.observables = {};
     }
 
-    Graph.prototype = {
-        peekValue: function (obj, property) {
-            return obj.observables[property].value;
-        },
-        dispose: function () {
-            for (var index in this.observables) {
-                if (this.observables.hasOwnProperty(index)) {
-                    this.observables[index].dispose();
-                }
-            }
-        },
-        disposeAll: function () {
-            for (var index in this.observables) {
-                if (this.observables.hasOwnProperty(index)) {
-                    var observable = this.observables[index];
-                    if (observable.value && observable.value._graph) {
-                        observable.value._graph.disposeAll();
-                    }
-                    observable.dispose();
-                }
+    peekValue(obj, property) {
+        return obj.observables[property].value;
+    }
+
+    dispose() {
+        for (var index in this.observables) {
+            if (this.observables.hasOwnProperty(index)) {
+                this.observables[index].dispose();
             }
         }
-    };
+    }
 
-    function disposeAll(obj) {
+    disposeAll() {
+        for (var index in this.observables) {
+            if (this.observables.hasOwnProperty(index)) {
+                var observable = this.observables[index];
+                if (observable.value && observable.value._graph) {
+                    observable.value._graph.disposeAll();
+                }
+                observable.dispose();
+            }
+        }
+    }
+
+    static disposeAll(obj) {
         var graph = obj._graph;
         for (var index in obj) {
             if (obj.hasOwnProperty(index)) {
@@ -39,13 +44,13 @@ var Graph = (function () {
                     var value = obj[index];
                 }
                 if (value) {
-                    disposeAll(value);
+                    Graph.disposeAll(value);
                 }
             }
         }
     }
 
-    function attachGraph(obj) {
+    static attachGraph(obj) {
         if (!obj._graph) {
             Object.defineProperty(obj, '_graph', {
                 configurable: true,
@@ -56,8 +61,8 @@ var Graph = (function () {
         }
     }
 
-    function createProperty(obj, property, observable) {
-        attachGraph(obj);
+    static createProperty(obj, property, observable) {
+        Graph.attachGraph(obj);
         if (obj._graph.observables[property]) {
             // TODO: move or delete subscriptions?
             observable.subscribers = obj._graph.observables[property].subscribers;
@@ -65,36 +70,30 @@ var Graph = (function () {
         obj._graph.observables[property] = observable;
     }
 
-    function createObservable(obj, property, value) {
+    static createObservable(obj, property, value) {
         var observable = new Observable(value);
-        createProperty(obj, property, observable);
+        Graph.createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
             enumerable: true,
             configurable: true,
-            get: function () {
+            get: function() {
                 return observable.getValue();
             },
-            set: function (value) {
+            set: function(value) {
                 observable.setValue(value);
             }
         });
     }
 
-    function createComputed(obj, property, definition) {
+    static createComputed(obj, property, definition) {
         var computed = new Computed(definition);
-        createProperty(obj, property, computed);
+        Graph.createProperty(obj, property, computed);
         Object.defineProperty(obj, property, {
             enumerable: true,
             configurable: true,
-            get: function () {
+            get: function() {
                 return computed.getValue();
             }
         });
     }
-
-    Graph.disposeAll = disposeAll;
-    Graph.createObservable = createObservable;
-    Graph.createComputed = createComputed;
-
-    return Graph;
-})();
+}

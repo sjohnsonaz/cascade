@@ -1,21 +1,14 @@
-var ObservableArray = (function () {
-    function ObservableArray(value) {
-        Define.super(Observable, this);
-        this.value = value;
+import Observable from './Observable';
+
+export default class ObservableArray extends Observable {
+    constructor(value) {
+        super(value);
     }
 
-    Define.extend(ObservableArray, Observable, {
-        setValue: function (value) {
-            if (this.value !== value) {
-                this.value = value;
-                this.publish();
-            }
+    setValue(value) {
+        if (this.value !== value) {
+            this.value = value;
+            this.publish();
         }
-    });
-
-    ObservableArray.prototype = {
-
-    };
-
-    return ObservableArray;
-})();
+    }
+}

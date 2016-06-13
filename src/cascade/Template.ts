@@ -1,16 +1,17 @@
-var Template = (function () {
-    function Template(text) {
-        this.fragment = parse(text);
+var nodeContexts: Array<any> = [];
+
+export default class Template {
+    fragment: DocumentFragment;
+    constructor(text: string) {
+        this.fragment = Template.parse(text);
     }
 
-    Template.prototype = {
-        build: function (data) {
-            var node = renderNode(this.fragment, data || {}); //this.fragment.cloneNode(true);
-            return node;
-        }
-    };
+    build(data) {
+        var node = Template.renderNode(this.fragment, data || {}); //this.fragment.cloneNode(true);
+        return node;
+    }
 
-    function renderNode(node, data) {
+    static renderNode(node, data) {
         var copy = node.cloneNode(false);
         if (node.binding) {
             var value = node.binding(data);
@@ -20,35 +21,35 @@ var Template = (function () {
                     copy = document.createDocumentFragment();
                     copy.appendChild(comment);
                     for (var index = 0, length = node.fragment.childNodes.length; index < length; index++) {
-                        copy.appendChild(renderNode(node.fragment.childNodes[index], data));
+                        copy.appendChild(Template.renderNode(node.fragment.childNodes[index], data));
                     }
                 } else {
                     if (value.html) {
                         copy.innerHTML = value.html;
                     } else {
                         for (var index = 0, length = node.childNodes.length; index < length; index++) {
-                            copy.appendChild(renderNode(node.childNodes[index], data));
+                            copy.appendChild(Template.renderNode(node.childNodes[index], data));
                         }
                     }
                 }
             }
         } else {
             for (var index = 0, length = node.childNodes.length; index < length; index++) {
-                copy.appendChild(renderNode(node.childNodes[index], data));
+                copy.appendChild(Template.renderNode(node.childNodes[index], data));
             }
         }
         return copy;
     }
 
-    function parse(text) {
-        text = replaceControlStatements(text);
-        var fragment = createTemplateFragment(text);
-        createBindings(fragment);
+    static parse(text) {
+        text = Template.replaceControlStatements(text);
+        var fragment = Template.createTemplateFragment(text);
+        Template.createBindings(fragment);
         return fragment;
     }
 
-    function replaceControlStatements(text) {
-        return text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function (match, $1, $2, $3, offset, string) {
+    static replaceControlStatements(text) {
+        return text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function(match, $1, $2, $3, offset, string) {
             if ($3) {
                 return '<!-- ' + $3.trim() + ' -->';
             } else {
@@ -60,8 +61,8 @@ var Template = (function () {
         });
     }
 
-    function createTemplateFragment(text) {
-        var template = document.createElement('template');
+    static createTemplateFragment(text) {
+        var template = document.createElement('template') as HTMLTemplateElement;
         template.innerHTML = text;
         var fragment = template.content;
         if (!fragment) {
@@ -73,8 +74,8 @@ var Template = (function () {
         return fragment;
     }
 
-    function createBindings(node) {
-        var context = getContext();
+    static createBindings(node) {
+        var context = Template.getContext();
         if (context) {
             context.children.push(node);
         }
@@ -83,11 +84,11 @@ var Template = (function () {
                 var commentText = node.textContent.trim();
                 var commentContext;
                 if (commentText.startsWith('bind ')) {
-                    commentContext = pushContext(node);
+                    commentContext = Template.pushContext(node);
                     node.context = commentContext;
-                    node.binding = createBindingEval(commentText.substring(5));
+                    node.binding = Template.createBindingEval(commentText.substring(5));
                 } else if (commentText.startsWith('/bind')) {
-                    commentContext = popContext();
+                    commentContext = Template.popContext();
                     if (!commentContext.virtual) {
                         throw 'Context mismatch';
                     }
@@ -102,11 +103,11 @@ var Template = (function () {
                 break;
             case Node.DOCUMENT_FRAGMENT_NODE:
                 if (node.childNodes.length) {
-                    pushContext(node);
-                    Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
-                        createBindings(currentValue);
+                    Template.pushContext(node);
+                    Array.prototype.slice.call(node.childNodes).forEach(function(currentValue, index, array) {
+                        Template.createBindings(currentValue);
                     });
-                    popContext();
+                    Template.popContext();
                 }
                 break;
             default:
@@ -115,21 +116,21 @@ var Template = (function () {
                     dataBind = node.attributes['data-bind'];
                     if (dataBind) {
                         node.removeAttribute('data-bind');
-                        node.binding = createBindingEval(dataBind.value);
+                        node.binding = Template.createBindingEval(dataBind.value);
                     }
                 }
                 if (node.childNodes.length) {
-                    pushContext(node);
-                    Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
-                        createBindings(currentValue);
+                    Template.pushContext(node);
+                    Array.prototype.slice.call(node.childNodes).forEach(function(currentValue, index, array) {
+                        Template.createBindings(currentValue);
                     });
-                    popContext();
+                    Template.popContext();
                 }
                 break;
         }
     }
 
-    function createBindingEval(code) {
+    static createBindingEval(code) {
         return new Function('$values', '\r\
             with ($values) {\r\
                 return ({' + code + '});\r\
@@ -137,13 +138,11 @@ var Template = (function () {
         ');
     };
 
-    var nodeContexts = [];
-
-    function getContext() {
+    static getContext() {
         return nodeContexts[0];
     }
 
-    function pushContext(node) {
+    static pushContext(node) {
         var context = {
             virtual: node.nodeType === Node.COMMENT_NODE,
             node: node,
@@ -153,16 +152,7 @@ var Template = (function () {
         return context;
     }
 
-    function popContext() {
+    static popContext() {
         return nodeContexts.shift();
     }
-
-    Template.getContext = getContext;
-    Template.pushContext = pushContext;
-    Template.popContext = popContext;
-
-    Template.parse = parse;
-    Template.createBindingEval = createBindingEval;
-
-    return Template;
-})();
+}

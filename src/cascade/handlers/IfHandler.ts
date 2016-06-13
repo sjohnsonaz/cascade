@@ -1,13 +1,5 @@
-var IfHandler = (function () {
-    function IfHandler() {
+export default class IfHandler {
+    constructor() {
 
     }
-
-    IfHandler.prototype = {
-
-    }
-
-    return IfHandler;
-})();
-
-Cascade.handlers['if'] = IfHandler;
+}
