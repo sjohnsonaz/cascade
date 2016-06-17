@@ -15,26 +15,32 @@ export default class VirtualNode<T extends Object> {
     }
 
     toNode() {
-        var element = document.createElement(this.type);
-        for (var name in this.properties) {
-            if (this.properties.hasOwnProperty(name)) {
-                element[name] = this.properties[name];
+        var root = this.render();
+        var element: Node;
+        if (typeof root === 'string') {
+            element = document.createTextNode(root);
+        } else {
+            element = document.createElement(root.type);
+            for (var name in root.properties) {
+                if (root.properties.hasOwnProperty(name)) {
+                    element[name] = root.properties[name];
+                }
             }
-        }
-        for (var index = 0, length = this.children.length; index < length; index++) {
-            var child = this.children[index];
-            if (typeof child === 'string') {
-                element.appendChild(document.createTextNode(child as string));
-            } else {
-                element.appendChild(child.toNode())
+            for (var index = 0, length = root.children.length; index < length; index++) {
+                var child = root.children[index];
+                if (typeof child === 'string') {
+                    element.appendChild(document.createTextNode(child as string));
+                } else {
+                    element.appendChild(child.toNode())
+                }
             }
         }
         return element;
     }
 
     toString() {
-        var template = document.createElement('template') as HTMLTemplateElement;
-        template.appendChild(this.toNode());
-        return template.innerHTML;
+        var container = document.createElement('div') as HTMLElement;
+        container.appendChild(this.toNode());
+        return container.innerHTML;
     }
 }

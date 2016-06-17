@@ -10,7 +10,7 @@ interface CustomComponentProperties {
 class CustomComponent extends VirtualNode<CustomComponentProperties> {
     render() {
         return (
-            <div></div>
+            <div>Custom Component</div>
         )
     }
 }
