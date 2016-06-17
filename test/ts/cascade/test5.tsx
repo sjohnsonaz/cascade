@@ -1,11 +1,14 @@
 import TestRunner from '../TestRunner';
 import VirtualNode from '../../../src/cascade/VirtualNode';
+import Cascade from '../../../src/cascade/Cascade';
 
 TestRunner.test({
-    name: 'VirtualNode trees can render children.',
+    name: 'JSX can be used to generate VirtualNode trees.',
     test: function(input, callback: any) {
-        var root = new VirtualNode('div', { id: 'parent' },
-            new VirtualNode('span', { id: 'child' })
+        var root = (
+            <div id="parent">
+                <span id="child">text</span>
+            </div>
         );
         callback(root.render());
     },

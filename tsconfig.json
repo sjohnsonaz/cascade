@@ -15,7 +15,8 @@
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "reactNamespace": "Cascade"
   },
   "exclude": [
     "dist",

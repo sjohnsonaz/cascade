@@ -5,6 +5,7 @@ import './cascade/test1';
 import './cascade/test2';
 import './cascade/test3';
 import './cascade/test4';
+import './cascade/test5';
 
 window.onload = function() {
     TestRunner.run(function(output) {
