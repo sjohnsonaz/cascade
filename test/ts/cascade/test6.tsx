@@ -10,17 +10,17 @@ interface CustomComponentProperties {
 class CustomComponent extends VirtualNode<CustomComponentProperties> {
     render() {
         return (
-            <div>Custom Component</div>
+            <div id={this.properties.id}>Custom Component - {this.properties.info}</div>
         )
     }
 }
 
 TestRunner.test({
-    name: 'JSX can be used to generate VirtualNode trees.',
+    name: 'VirtualNodes can be used to create Components.',
     test: function(input, callback: any) {
         var root = (
             <div id="parent">
-                <CustomComponent id="child" a="test">text</CustomComponent>
+                <CustomComponent id="child" info="test">text</CustomComponent>
             </div>
         );
         callback(root.toNode());
