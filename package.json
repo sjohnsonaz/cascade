@@ -11,7 +11,8 @@
     "build": "tsc",
     "prepublish": "tsc",
     "test": "jest",
-    "browser": "webpack --config webpack.config.js"
+    "browser": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack.config.js --watch"
   },
   "repository": {},
   "bugs": {},
