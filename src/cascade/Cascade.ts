@@ -1,5 +1,7 @@
 import VirtualNode from './VirtualNode';
 
+export {default as VirtualNode} from './VirtualNode';
+
 export default class Cascade {
     static createElement<T extends VirtualNode<U>, U>(type: string | (new (...args: any[]) => T), properties: U, ...children: Array<VirtualNode<any> | string>) {
         if (typeof type === 'string') {
