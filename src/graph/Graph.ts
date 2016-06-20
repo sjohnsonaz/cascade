@@ -85,8 +85,8 @@ export default class Graph {
         });
     }
 
-    static createComputed(obj, property, definition) {
-        var computed = new Computed(definition);
+    static createComputed(obj, property, definition, defer?: boolean) {
+        var computed = new Computed(definition, defer);
         Graph.createProperty(obj, property, computed);
         Object.defineProperty(obj, property, {
             enumerable: true,

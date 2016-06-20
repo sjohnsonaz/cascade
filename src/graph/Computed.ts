@@ -11,15 +11,19 @@ export default class Computed extends Observable {
     definition: Function;
     dirty: boolean;
 
-    constructor(definition: Function) {
+    constructor(definition: Function, defer: boolean = false) {
         super(undefined);
         this.id = id;
         id++;
 
         this.references = [];
         this.definition = definition;
-        this.runDefinition(definition);
-        this.dirty = false;
+        if (defer) {
+            this.dirty = true;
+        } else {
+            this.runDefinition(definition);
+            this.dirty = false;
+        }
     }
 
     getValue() {
