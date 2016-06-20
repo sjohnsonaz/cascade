@@ -9,7 +9,7 @@ TestRunner.test({
                 <span id="child">text</span>
             </div>
         );
-        callback(root.toNode());
+        callback(root.element);
     },
     assert: function(result, callback) {
         var child = result.querySelector('#child');

@@ -1,13 +1,18 @@
+import Graph from '../graph/Graph';
+
 export default class VirtualNode<T extends Object> {
     type: string;
     properties: T;
     children: Array<VirtualNode<any> | string>;
     element: Node;
     constructor(type: string, properties?: T, ...children: Array<VirtualNode<any> | string>) {
+        var self = this;
         this.type = type;
         this.properties = properties || ({} as any);
         this.children = children || [];
-        this.element = document.createElement(this.type);
+        Graph.createComputed(this, 'element', function() {
+            return self.toNode();
+        }, true);
     }
 
     render(): VirtualNode<any> | string {
@@ -31,7 +36,7 @@ export default class VirtualNode<T extends Object> {
                 if (typeof child === 'string') {
                     element.appendChild(document.createTextNode(child as string));
                 } else {
-                    element.appendChild(child.toNode())
+                    element.appendChild(child.element)
                 }
             }
         }
@@ -40,7 +45,7 @@ export default class VirtualNode<T extends Object> {
 
     toString() {
         var container = document.createElement('div') as HTMLElement;
-        container.appendChild(this.toNode());
+        container.appendChild(this.element);
         return container.innerHTML;
     }
 }
