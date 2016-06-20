@@ -14,20 +14,17 @@ class ViewModel {
 
 interface ParentComponentProperties {
     id: string;
-    info: string;
+    viewModel: ViewModel;
 }
 
 class ParentComponent extends VirtualNode<ParentComponentProperties> {
-    viewModel: ViewModel;
     constructor(type: string, properties?: ParentComponentProperties, ...children: (VirtualNode<any> | string)[]) {
         super(type, properties, ...children);
-        this.viewModel = new ViewModel();
-        window.viewModel = this.viewModel;
     }
     render() {
         return (
             <div id="parent">
-                <CustomComponent id="child" info={this.viewModel.info}>text</CustomComponent>
+                <CustomComponent id="child" info={this.properties.viewModel.info}>text</CustomComponent>
             </div>
         );
     }
@@ -49,8 +46,10 @@ class CustomComponent extends VirtualNode<CustomComponentProperties> {
 TestRunner.test({
     name: 'VirtualNodes can be used to create Components.',
     test: function(input, callback: any) {
+        var viewModel = new ViewModel();
+        window.viewModel = viewModel;
         var root = (
-            <ParentComponent />
+            <ParentComponent viewModel={viewModel} />
         );
         root._graph.observables.element.subscribe(function(value) {
             console.log(value);
