@@ -22,10 +22,12 @@ TestRunner.test({
                 <CustomComponent id="child" info="test">text</CustomComponent>
             </div>
         );
-        callback(root.element);
+        Cascade.render(document.createElement('div'), root, function(element) {
+            callback(element);
+        });
     },
     assert: function(result, callback) {
         var child = result.querySelector('#child');
-        callback(!!child);
+        callback(child.textContent === 'Custom Component - test');
     }
 });

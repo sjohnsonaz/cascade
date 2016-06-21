@@ -9,7 +9,9 @@ TestRunner.test({
                 <span id="child">text</span>
             </div>
         );
-        callback(root.element);
+        Cascade.render(document.createElement('div'), root, function(element) {
+            callback(element);
+        });
     },
     assert: function(result, callback) {
         var child = result.querySelector('#child');

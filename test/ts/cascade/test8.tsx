@@ -48,7 +48,9 @@ TestRunner.test({
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         window.viewModel = viewModel;
-        Cascade.render(document.body, <ParentComponent viewModel={viewModel} />, function(element) {
+        var container = document.createElement('div');
+        document.body.appendChild(container);
+        Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element) {
             callback(element);
         });
     },
