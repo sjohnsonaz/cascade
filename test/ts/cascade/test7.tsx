@@ -44,18 +44,25 @@ class CustomComponent extends VirtualNode<CustomComponentProperties> {
 }
 
 TestRunner.test({
-    name: 'VirtualNodes can be used to create Components.',
+    name: 'ViewModels update VirtualNode rendering.',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         window.viewModel = viewModel;
         var container = document.createElement('div');
         document.body.appendChild(container);
-        Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element) {
-            callback(element);
+        var runs = [];
+        var complete = false;
+        Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element: HTMLElement) {
+            element.querySelector('#child');
+            runs.push(element.textContent);
+            if (complete) {
+                callback(runs);
+            }
         });
+        complete = true;
+        viewModel.info = 'abcd';
     },
     assert: function(result, callback) {
-        var child = result.querySelector('#child');
-        callback(!!child);
+        callback(result[0] === 'Custom Component - test' && result[1] === 'Custom Component - abcd');
     }
 });
