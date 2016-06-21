@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Observables may be disposed recursively.',
@@ -11,23 +11,23 @@ TestRunner.test({
 
         function Parent() {
             var self = this;
-            Graph.createObservable(this, 'a', 1);
-            Graph.createObservable(this, 'b', 2);
-            Graph.createComputed(this, 'ab', function () {
+            Cascade.createObservable(this, 'a', 1);
+            Cascade.createObservable(this, 'b', 2);
+            Cascade.createComputed(this, 'ab', function () {
                 runsParent++;
                 return self.a + self.b;
             });
             childObservable = new Child(this);
             childStatic = new Child(this);
-            Graph.createObservable(this, 'childObservable', childObservable);
+            Cascade.createObservable(this, 'childObservable', childObservable);
             this.childStatic = childStatic;
         }
 
         function Child(parent) {
             var self = this;
-            Graph.createObservable(this, 'c', 1);
-            Graph.createObservable(this, 'd', 2);
-            Graph.createComputed(this, 'abcd', function () {
+            Cascade.createObservable(this, 'c', 1);
+            Cascade.createObservable(this, 'd', 2);
+            Cascade.createComputed(this, 'abcd', function () {
                 runsChild++;
                 return parent.a + parent.b + self.c + self.d;
             });
@@ -35,7 +35,7 @@ TestRunner.test({
 
         var model = new Parent();
 
-        Graph.disposeAll(model);
+        Cascade.disposeAll(model);
         callback({
             a: model._graph.observables.a.subscribers.length,
             b: model._graph.observables.b.subscribers.length,

@@ -1,8 +1,5 @@
 module.exports = {
     entry: {
-        'Cascade': './src/modules/Cascade.ts',
-        'Graph': './src/modules/Graph.ts',
-        'Template': './src/modules/Template.ts',
         'graphTest': './test/ts/graphTest.ts',
         'cascadeTest': './test/ts/cascadeTest.ts'
     },

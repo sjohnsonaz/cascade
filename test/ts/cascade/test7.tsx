@@ -1,12 +1,11 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
-import Cascade, {VirtualNode} from '../../../src/cascade/Cascade';
+import Cascade, {VirtualNode} from '../../../src/modules/Cascade';
 
 class ViewModel {
     runs: number = 0;
     info: string;
     constructor() {
-        Graph.createObservable(this, 'info', 'test');
+        Cascade.createObservable(this, 'info', 'test');
     }
 }
 

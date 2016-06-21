@@ -4,8 +4,8 @@
   "description": "",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
   "contributors": [],
-  "main": "dist/src/main.js",
-  "typings": "dist/src/main.d.ts",
+  "main": "dist/src/cascade/Cascade.js",
+  "typings": "dist/src/cascade/Cascade.d.ts",
   "scripts": {
     "install": "typings install",
     "build": "tsc",

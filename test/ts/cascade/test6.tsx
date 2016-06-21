@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Cascade, {VirtualNode} from '../../../src/cascade/Cascade';
+import Cascade, {VirtualNode} from '../../../src/modules/Cascade';
 
 interface CustomComponentProperties {
     id: string;

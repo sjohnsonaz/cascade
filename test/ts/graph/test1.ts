@@ -1,21 +1,21 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes result in minimal updates to mixed level Computed properties.',
     test: function(input, callback) {
         var viewModel: any = {};
         viewModel.runs = 0;
-        Graph.createObservable(viewModel, 'a', 1);
-        Graph.createObservable(viewModel, 'b', 2);
-        Graph.createObservable(viewModel, 'c', 3);
-        Graph.createComputed(viewModel, 'ab', function() {
+        Cascade.createObservable(viewModel, 'a', 1);
+        Cascade.createObservable(viewModel, 'b', 2);
+        Cascade.createObservable(viewModel, 'c', 3);
+        Cascade.createComputed(viewModel, 'ab', function() {
             return viewModel.a + viewModel.b;
         });
-        Graph.createComputed(viewModel, 'bc', function() {
+        Cascade.createComputed(viewModel, 'bc', function() {
             return viewModel.b + viewModel.c;
         });
-        Graph.createComputed(viewModel, 'aab', function() {
+        Cascade.createComputed(viewModel, 'aab', function() {
             return viewModel.a + viewModel.ab;
         });
         var complete = false;

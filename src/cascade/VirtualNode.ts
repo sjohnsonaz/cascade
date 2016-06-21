@@ -1,4 +1,4 @@
-import Graph from '../graph/Graph';
+import Cascade from './Cascade';
 
 export default class VirtualNode<T extends Object> {
     type: string;
@@ -12,12 +12,12 @@ export default class VirtualNode<T extends Object> {
         this.type = type;
         this.properties = properties || ({} as any);
         this.children = children || [];
-        Graph.createComputed(this, 'node', function() {
+        Cascade.createComputed(this, 'node', function() {
             return self.render();
         }, true);
         var element: Node = undefined;
         var oldNode: VirtualNode<any> | string;
-        Graph.createComputed(this, 'element', function() {
+        Cascade.createComputed(this, 'element', function() {
             var root = self.node;
             // First render
             if (!element) {

@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes can be pulled to multiple layers - lower first.',
@@ -8,16 +8,16 @@ TestRunner.test({
         var runsC = 0;
         var runsD = 0;
         var model: any = {};
-        Graph.createObservable(model, 'a', 1);
-        Graph.createComputed(model, 'b', function() {
+        Cascade.createObservable(model, 'a', 1);
+        Cascade.createComputed(model, 'b', function() {
             runsB++;
             return model.a;
         });
-        Graph.createComputed(model, 'c', function() {
+        Cascade.createComputed(model, 'c', function() {
             runsC++;
             return model.b;
         });
-        Graph.createComputed(model, 'd', function() {
+        Cascade.createComputed(model, 'd', function() {
             runsD++;
             return model.c;
         });

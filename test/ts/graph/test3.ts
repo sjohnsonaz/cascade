@@ -1,14 +1,14 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes can be pulled.',
     test: function(input, callback) {
         var runs = 0;
         var model: any = {};
-        Graph.createObservable(model, 'a', 1);
-        Graph.createObservable(model, 'b', 2);
-        Graph.createComputed(model, 'ab', function() {
+        Cascade.createObservable(model, 'a', 1);
+        Cascade.createObservable(model, 'b', 2);
+        Cascade.createComputed(model, 'ab', function() {
             runs++;
             return model.a + model.b;
         });

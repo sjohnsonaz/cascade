@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes push after pull.',
@@ -7,14 +7,14 @@ TestRunner.test({
         var runsAB = 0;
         var runsABC = 0;
         var model: any = {};
-        Graph.createObservable(model, 'a', 1);
-        Graph.createObservable(model, 'b', 2);
-        Graph.createObservable(model, 'c', 3);
-        Graph.createComputed(model, 'ab', function() {
+        Cascade.createObservable(model, 'a', 1);
+        Cascade.createObservable(model, 'b', 2);
+        Cascade.createObservable(model, 'c', 3);
+        Cascade.createComputed(model, 'ab', function() {
             runsAB++;
             return model.a + model.b;
         });
-        Graph.createComputed(model, 'abc', function() {
+        Cascade.createComputed(model, 'abc', function() {
             runsABC++;
             if (complete) {
                 callback({

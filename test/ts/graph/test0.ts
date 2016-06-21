@@ -1,34 +1,34 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes result in minimal updates.',
     test: function(input, callback) {
         var viewModel: any = {};
         viewModel.runs = 0;
-        Graph.createObservable(viewModel, 'a', 1);
-        Graph.createObservable(viewModel, 'b', 2);
-        Graph.createObservable(viewModel, 'c', 3);
-        Graph.createObservable(viewModel, 'd', 4);
-        Graph.createComputed(viewModel, 'ab', function() {
+        Cascade.createObservable(viewModel, 'a', 1);
+        Cascade.createObservable(viewModel, 'b', 2);
+        Cascade.createObservable(viewModel, 'c', 3);
+        Cascade.createObservable(viewModel, 'd', 4);
+        Cascade.createComputed(viewModel, 'ab', function() {
             return viewModel.a + viewModel.b;
         });
-        Graph.createComputed(viewModel, 'ac', function() {
+        Cascade.createComputed(viewModel, 'ac', function() {
             return viewModel.a + viewModel.c;
         });
-        Graph.createComputed(viewModel, 'ad', function() {
+        Cascade.createComputed(viewModel, 'ad', function() {
             return viewModel.a + viewModel.d;
         });
-        Graph.createComputed(viewModel, 'bc', function() {
+        Cascade.createComputed(viewModel, 'bc', function() {
             return viewModel.b + viewModel.c;
         });
-        Graph.createComputed(viewModel, 'bd', function() {
+        Cascade.createComputed(viewModel, 'bd', function() {
             return viewModel.b + viewModel.d;
         });
-        Graph.createComputed(viewModel, 'cd', function() {
+        Cascade.createComputed(viewModel, 'cd', function() {
             return viewModel.c + viewModel.d;
         });
-        Graph.createComputed(viewModel, 'abcd', function() {
+        Cascade.createComputed(viewModel, 'abcd', function() {
             return viewModel.ab + viewModel.ac + viewModel.ad + viewModel.bc + viewModel.bd + viewModel.cd;
         });
         var complete = false;

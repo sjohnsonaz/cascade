@@ -1,13 +1,13 @@
 import TestRunner from '../TestRunner';
-import Graph from '../../../src/graph/Graph';
+import Cascade from '../../../src/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes to Arrays are observed.',
     test: function(input, callback) {
         var viewModel: any = {};
         viewModel.runs = 0;
-        Graph.createObservable(viewModel, 'a', [1, 2, 3]);
-        Graph.createComputed(viewModel, 'loop', function() {
+        Cascade.createObservable(viewModel, 'a', [1, 2, 3]);
+        Cascade.createComputed(viewModel, 'loop', function() {
             var a = viewModel.a;
             var total = 0;
             for (var index = 0, length = a.length; index < length; index++) {
