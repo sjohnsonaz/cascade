@@ -48,15 +48,9 @@ TestRunner.test({
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         window.viewModel = viewModel;
-        var root = (
-            <ParentComponent viewModel={viewModel} />
-        );
-        root._graph.observables.element.subscribe(function(value) {
-            console.log(value);
+        Cascade.render(document.body, <ParentComponent viewModel={viewModel} />, function(element) {
+            callback(element);
         });
-        window.root = root;
-        document.body.appendChild(root.element);
-        callback(root.element);
     },
     assert: function(result, callback) {
         var child = result.querySelector('#child');

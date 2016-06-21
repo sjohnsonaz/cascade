@@ -10,4 +10,23 @@ export default class Cascade {
             return new type(undefined, properties, ...children);
         }
     }
+
+    static render(node: HTMLElement | string, virtualNode: VirtualNode<any>, callback: (n: Node) => any) {
+        var fixedNode: HTMLElement;
+        if (typeof node === 'string') {
+            fixedNode = document.getElementById(node);
+        } else {
+            fixedNode = node;
+        }
+        (virtualNode as any)._graph.observables.element.subscribe(function(value) {
+            if (value) {
+                while (fixedNode.firstChild) {
+                    fixedNode.removeChild(fixedNode.firstChild);
+                }
+                fixedNode.appendChild(value);
+                callback(value);
+            }
+        });
+        var element = virtualNode.element;
+    }
 }
