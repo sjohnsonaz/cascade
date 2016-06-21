@@ -1,5 +1,3 @@
-declare var window: any;
-
 import TestRunner from '../TestRunner';
 import Graph from '../../../src/graph/Graph';
 import Cascade, {VirtualNode} from '../../../src/cascade/Cascade';
