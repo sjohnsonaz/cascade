@@ -47,9 +47,7 @@ TestRunner.test({
     name: 'ViewModels update VirtualNode rendering.',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
-        window.viewModel = viewModel;
         var container = document.createElement('div');
-        document.body.appendChild(container);
         var runs = [];
         var complete = false;
         Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element: HTMLElement) {
