@@ -4,19 +4,54 @@ export default class VirtualNode<T extends Object> {
     type: string;
     properties: T;
     children: Array<VirtualNode<any> | string>;
+    oldNode: VirtualNode<any> | string;
+    node: VirtualNode<any> | string;
     element: Node;
     constructor(type: string, properties?: T, ...children: Array<VirtualNode<any> | string>) {
         var self = this;
         this.type = type;
         this.properties = properties || ({} as any);
         this.children = children || [];
+        Graph.createComputed(this, 'node', function() {
+            return self.render();
+        }, true);
+        var element: Node = undefined;
+        var oldNode: VirtualNode<any> | string;
         Graph.createComputed(this, 'element', function() {
-            return self.toNode();
+            var root = self.node;
+            // First render
+            if (!element) {
+                if (typeof root === 'string') {
+                    element = document.createTextNode(root);
+                } else {
+                    element = document.createElement(root.type);
+                    element = self.diff(element, root);
+                }
+            } else {
+                if (typeof root === 'string') {
+                    if (!(element instanceof (Text))) {
+                        element = document.createTextNode(root);
+                    } else {
+                        element.textContent = root;
+                    }
+                } else {
+                    if ((element as HTMLElement).tagName.toLowerCase() !== self.type) {
+                        element = document.createElement(self.type);
+                    }
+                    element = self.diff(element, root, oldNode);
+                }
+            }
+            oldNode = root;
+            return element;
         }, true);
     }
 
     render(): VirtualNode<any> | string {
         return this;
+    }
+
+    diff(parent: Node, node: VirtualNode<any>, oldNode?: VirtualNode<any> | string) {
+        return node.toNode();
     }
 
     toNode() {
