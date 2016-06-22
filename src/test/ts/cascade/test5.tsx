@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Cascade, {VirtualNode} from '../../../src/modules/Cascade';
+import Cascade, {VirtualNode} from '../../../scripts/modules/Cascade';
 
 TestRunner.test({
     name: 'JSX can be used to generate VirtualNode trees.',

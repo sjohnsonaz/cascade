@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import VirtualNode from '../../../src/cascade/VirtualNode';
+import VirtualNode from '../../../scripts/cascade/VirtualNode';
 
 TestRunner.test({
     name: 'VirtualNode trees can render children.',

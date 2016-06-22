@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Cascade from '../../../src/modules/Cascade';
+import Cascade from '../../../scripts/modules/Cascade';
 
 TestRunner.test({
     name: 'Observables may be disposed recursively.',

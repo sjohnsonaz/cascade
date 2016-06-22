@@ -1,7 +1,7 @@
 module.exports = {
     entry: {
-        'graphTest': './test/ts/graphTest.ts',
-        'cascadeTest': './test/ts/cascadeTest.ts'
+        'graphTest': './src/test/ts/graphTest.ts',
+        'cascadeTest': './src/test/ts/cascadeTest.ts'
     },
     output: {
         filename: './dist/bundle/[name].js',

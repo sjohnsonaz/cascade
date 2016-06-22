@@ -1,12 +1,11 @@
 node_modules/
-doc/
 typings/
-polyfill/
+doc/
 src/
-test/
-dist/__tests__/
 dist/bundle/
+dist/polyfill/
 dist/test/
+dist/__tests__/
 *.map
 *.log
 *.tgz

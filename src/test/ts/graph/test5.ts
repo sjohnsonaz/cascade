@@ -1,8 +1,8 @@
 import TestRunner from '../TestRunner';
-import Cascade from '../../../src/modules/Cascade';
+import Cascade from '../../../scripts/modules/Cascade';
 
 TestRunner.test({
-    name: 'Changes can be pulled.',
+    name: 'Observables may be disposed.',
     test: function(input, callback) {
         var runs = 0;
         var model: any = {};
@@ -12,13 +12,14 @@ TestRunner.test({
             runs++;
             return model.a + model.b;
         });
-        model.a = 11;
+        model._graph.dispose();
         callback({
-            ab: model.ab,
-            runs: runs
+            a: model._graph.observables.a.subscribers.length,
+            b: model._graph.observables.b.subscribers.length,
+            runs: runs,
         });
     },
     assert: function(result, callback) {
-        callback(result.ab == 13 && result.runs == 2);
+        callback(result.a == 0 && result.b == 0 && result.runs == 1);
     }
 });

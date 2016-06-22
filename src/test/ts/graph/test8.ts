@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Cascade from '../../../src/modules/Cascade';
+import Cascade from '../../../scripts/modules/Cascade';
 
 TestRunner.test({
     name: 'Changes can be pulled to multiple layers - lower first.',
