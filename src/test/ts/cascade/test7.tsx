@@ -46,16 +46,16 @@ TestRunner.test({
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs = [];
-        var complete = false;
+        document.body.appendChild(container);
         Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element: HTMLElement) {
-            element.querySelector('#child');
             runs.push(element.textContent);
-            if (complete) {
-                callback(runs);
-            }
         });
-        complete = true;
         viewModel.info = 'abcd';
+        setTimeout(function() {
+            var element = container.querySelector('#child');
+            runs.push(element.textContent);
+            callback(runs);
+        }, 20);
     },
     assert: function(result, callback) {
         callback(result[0] === 'Custom Component - test' && result[1] === 'Custom Component - abcd');

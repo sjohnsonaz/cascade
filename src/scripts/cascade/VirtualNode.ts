@@ -4,9 +4,9 @@ export default class VirtualNode<T extends Object> {
     type: string;
     properties: T;
     children: Array<VirtualNode<any> | string>;
-    oldNode: VirtualNode<any> | string;
     node: VirtualNode<any> | string;
     element: Node;
+    private hiddenElement: Node;
     constructor(type: string, properties?: T, ...children: Array<VirtualNode<any> | string>) {
         var self = this;
         this.type = type;
@@ -15,67 +15,45 @@ export default class VirtualNode<T extends Object> {
         Cascade.createComputed(this, 'node', function() {
             return self.render();
         }, true);
-        var element: Node = undefined;
-        var oldNode: VirtualNode<any> | string;
-        Cascade.createComputed(this, 'element', function() {
+        Cascade.createComputed(this, 'element', function(oldValue) {
             var root = self.node;
-            // First render
-            if (!element) {
-                if (typeof root === 'string') {
+            var element: Node;
+            if (typeof root === 'string') {
+                if (!oldValue || !(oldValue instanceof Text)) {
                     element = document.createTextNode(root);
                 } else {
-                    element = document.createElement(root.type);
-                    element = self.diff(element, root);
+                    element = oldValue;
+                    (element as HTMLElement).textContent = root;
                 }
             } else {
-                if (typeof root === 'string') {
-                    if (!(element instanceof (Text))) {
-                        element = document.createTextNode(root);
-                    } else {
-                        element.textContent = root;
-                    }
+                if (!oldValue || !(oldValue instanceof HTMLElement) || (oldValue as HTMLElement).tagName.toLowerCase() !== root.type) {
+                    element = document.createElement(root.type);
                 } else {
-                    if ((element as HTMLElement).tagName.toLowerCase() !== self.type) {
-                        element = document.createElement(self.type);
+                    element = oldValue;
+                    while (element.firstChild) {
+                        element.removeChild(element.firstChild);
                     }
-                    element = self.diff(element, root, oldNode);
+                }
+                for (var name in root.properties) {
+                    if (root.properties.hasOwnProperty(name)) {
+                        element[name] = root.properties[name];
+                    }
+                }
+                for (var index = 0, length = root.children.length; index < length; index++) {
+                    var child = root.children[index];
+                    if (typeof child === 'string') {
+                        element.appendChild(document.createTextNode(child as string));
+                    } else {
+                        element.appendChild((child as any)._graph.observables.element.peek());
+                    }
                 }
             }
-            oldNode = root;
             return element;
         }, true);
     }
 
     render(): VirtualNode<any> | string {
         return this;
-    }
-
-    diff(parent: Node, node: VirtualNode<any>, oldNode?: VirtualNode<any> | string) {
-        return node.toNode();
-    }
-
-    toNode() {
-        var root = this.render();
-        var element: Node;
-        if (typeof root === 'string') {
-            element = document.createTextNode(root);
-        } else {
-            element = document.createElement(root.type);
-            for (var name in root.properties) {
-                if (root.properties.hasOwnProperty(name)) {
-                    element[name] = root.properties[name];
-                }
-            }
-            for (var index = 0, length = root.children.length; index < length; index++) {
-                var child = root.children[index];
-                if (typeof child === 'string') {
-                    element.appendChild(document.createTextNode(child as string));
-                } else {
-                    element.appendChild(child.element)
-                }
-            }
-        }
-        return element;
     }
 
     toString() {

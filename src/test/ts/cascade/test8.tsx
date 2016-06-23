@@ -45,19 +45,19 @@ TestRunner.test({
         var container = document.createElement('div');
         var runs = [];
         var complete = false;
+        document.body.appendChild(container);
         Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
-            if (complete) {
+        });
+        //viewModel.a = 'a1';
+        setTimeout(function() {
+            complete = true;
+            viewModel.b = 'b1';
+            setTimeout(function() {
                 callback({
                     runsA: viewModel.runsA,
                     runsB: viewModel.runsB
                 });
-            }
-        });
-        document.body.appendChild(container);
-        viewModel.a = 'a1';
-        setTimeout(function() {
-            complete = true;
-            viewModel.b = 'b1';
+            }, 200);
         }, 100);
     },
     assert: function(result, callback) {

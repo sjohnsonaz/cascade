@@ -7,7 +7,7 @@ TestRunner.test({
         var root = new VirtualNode('div', { id: 'parent' },
             new VirtualNode('span', { id: 'child' })
         );
-        callback(root.toNode());
+        callback(root.element);
     },
     assert: function(result, callback) {
         var child = result.querySelector('#child');
