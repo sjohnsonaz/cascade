@@ -16,6 +16,9 @@ export default class Observable {
         }
         return this.value;
     }
+    peek() {
+        return this.value;
+    }
     setValue(value) {
         if (this.value !== value) {
             this.value = value;

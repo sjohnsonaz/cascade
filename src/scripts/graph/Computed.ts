@@ -11,6 +11,7 @@ export default class Computed extends Observable {
     definition: Function;
     dirty: boolean;
 
+    // TODO: Add alwaysNotify, alwaysUpdate
     constructor(definition: Function, defer: boolean = false) {
         super(undefined);
         this.id = id;
@@ -28,6 +29,12 @@ export default class Computed extends Observable {
 
     getValue() {
         super.getValue();
+        if (this.dirty) {
+            this.runUpdate();
+        }
+        return this.value;
+    }
+    peek() {
         if (this.dirty) {
             this.runUpdate();
         }
@@ -70,7 +77,7 @@ export default class Computed extends Observable {
         }
 
         Observable.pushContext();
-        this.value = definition();
+        this.value = definition(this.value);
         var context = Observable.popContext();
 
         //TODO: Prevent redundant subscription.
