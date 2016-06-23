@@ -8,6 +8,7 @@ import './cascade/test4';
 import './cascade/test5';
 import './cascade/test6';
 import './cascade/test7';
+import './cascade/test8';
 
 window.onload = function() {
     TestRunner.run(function(output) {
