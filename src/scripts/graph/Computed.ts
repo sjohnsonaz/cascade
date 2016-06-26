@@ -10,8 +10,9 @@ export default class Computed extends Observable {
     references: Array<any>;
     definition: Function;
     dirty: boolean;
+    error: Error;
 
-    // TODO: Add alwaysNotify, alwaysUpdate
+    // TODO: Add alwaysNotify, alwaysUpdate, validation.
     constructor(definition: Function, defer: boolean = false) {
         super(undefined);
         this.id = id;
@@ -77,15 +78,24 @@ export default class Computed extends Observable {
         }
 
         Observable.pushContext();
-        this.value = definition(this.value);
-        var context = Observable.popContext();
-
-        //TODO: Prevent redundant subscription.
-        for (var index = 0, length: number = context.length; index < length; index++) {
-            var reference = context[index];
-            reference.subscribeOnly(this);
+        this.error = undefined;
+        try {
+            var output = definition(this.value);
+        } catch (e) {
+            this.error = e;
+            console.error(e);
         }
-        this.references = context;
+        var context = Observable.popContext();
+        if (!this.error) {
+            this.value = output;
+
+            //TODO: Prevent redundant subscription.
+            for (var index = 0, length: number = context.length; index < length; index++) {
+                var reference = context[index];
+                reference.subscribeOnly(this);
+            }
+            this.references = context;
+        }
     }
     dispose() {
         for (var index = 0, length = this.references.length; index < length; index++) {

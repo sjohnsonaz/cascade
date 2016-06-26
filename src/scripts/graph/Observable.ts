@@ -5,6 +5,7 @@ export default class Observable {
     value: any;
     subscribers: Array<any>;
 
+    // TODO: Add wrap and unwrap.
     constructor(value) {
         this.value = value;
         this.subscribers = [];
