@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Template from '../../../scripts/cascade/Template';
+import Template from '../../../scripts/template/Template';
 
 TestRunner.test({
     name: 'Text can be parsed into a Template and fragment',

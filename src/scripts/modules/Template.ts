@@ -1,3 +1,3 @@
 declare var module: any;
-import Template from '../cascade/Template';
+import Template from '../template/Template';
 module.exports = Template;
