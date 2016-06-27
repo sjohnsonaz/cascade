@@ -62,6 +62,6 @@ TestRunner.test({
     },
     assert: function(result, callback) {
         console.log(result);
-        callback(result.runsA === 2, result.runsB === 3);
+        callback(result.runsA === 2 && result.runsB === 3);
     }
 });
