@@ -1,30 +1,36 @@
 import TestRunner from '../TestRunner';
-import Cascade from '../../../scripts/modules/Cascade';
+import {observable} from '../../../scripts/modules/Cascade';
+
+class ViewModel {
+    runsAB = 0;
+    runsABC = 0;
+    @observable a = 1;
+    @observable b = 2;
+    @observable c = 3;
+    @observable get ab() {
+        this.runsAB++;
+        return this.a + this.b;
+    }
+    @observable get abc() {
+        this.runsABC++;
+        return this.ab + this.c;
+    }
+}
 
 TestRunner.test({
     name: 'Changes push after pull.',
     test: function(input, callback) {
-        var runsAB = 0;
-        var runsABC = 0;
-        var model: any = {};
-        Cascade.createObservable(model, 'a', 1);
-        Cascade.createObservable(model, 'b', 2);
-        Cascade.createObservable(model, 'c', 3);
-        Cascade.createComputed(model, 'ab', function() {
-            runsAB++;
-            return model.a + model.b;
-        });
-        Cascade.createComputed(model, 'abc', function() {
-            runsABC++;
+        var model: any = new ViewModel();
+        model._graph.subscribe('abc', function(value) {
             if (complete) {
                 callback({
                     ab: ab,
-                    runsAB: runsAB,
-                    runsABC: runsABC
+                    runsAB: model.runsAB,
+                    runsABC: model.runsABC
                 });
             }
-            return model.ab + model.c;
         });
+        var complete = false
         model.a = 11;
         var ab = model.ab;
         var complete = true;
