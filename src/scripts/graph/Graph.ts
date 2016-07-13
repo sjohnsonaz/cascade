@@ -1,11 +1,16 @@
 import Observable from './Observable';
 import Computed from './Computed';
 
-export default class Graph {
-    observables: Object;
+export interface ObservableIndex {
+    [index: string]: Observable;
+}
 
-    constructor() {
-        this.observables = {};
+export default class Graph {
+    parent: any;
+    observables: ObservableIndex = {};
+
+    constructor(parent?: any) {
+        this.parent = parent;
     }
 
     peekValue(obj, property) {
@@ -29,6 +34,26 @@ export default class Graph {
                 }
                 observable.dispose();
             }
+        }
+    }
+
+    subscribe(property: string, subscriber) {
+        if (!this.observables[property]) {
+            var value = this.parent[property];
+        }
+        this.observables[property].subscribe(subscriber);
+    }
+
+    subscribeOnly(property: string, subscriber) {
+        if (!this.observables[property]) {
+            var value = this.parent[property];
+        }
+        this.observables[property].subscribeOnly(subscriber);
+    }
+
+    unsubscribe(property: string, subscriber) {
+        if (this.observables[property]) {
+            this.observables[property].subscribe(subscriber);
         }
     }
 }

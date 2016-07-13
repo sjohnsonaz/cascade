@@ -9,17 +9,19 @@ export default class Computed extends Observable {
     id: number;
     references: Array<any>;
     definition: Function;
+    thisArg: any;
     dirty: boolean;
     error: Error;
 
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
-    constructor(definition: Function, defer: boolean = false) {
+    constructor(definition: Function, defer: boolean = false, thisArg?: any) {
         super(undefined);
         this.id = id;
         id++;
 
         this.references = [];
         this.definition = definition;
+        this.thisArg = thisArg;
         if (defer) {
             this.dirty = true;
         } else {
@@ -80,7 +82,12 @@ export default class Computed extends Observable {
         Observable.pushContext();
         this.error = undefined;
         try {
-            var output = definition(this.value);
+            var output;
+            if (this.thisArg) {
+                output = definition.call(this.thisArg, this.value);
+            } else {
+                output = definition(this.value);
+            }
         } catch (e) {
             this.error = e;
             console.error(e);
