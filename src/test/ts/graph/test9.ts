@@ -1,42 +1,47 @@
 import TestRunner from '../TestRunner';
-import Cascade from '../../../scripts/modules/Cascade';
+import {observable} from '../../../scripts/modules/Cascade';
+
+class ViewModel {
+    runsB = 0;
+    runsC = 0;
+    runsD = 0;
+    @observable a = 1;
+    @observable get b() {
+        this.runsB++;
+        return this.a;
+    }
+    @observable get c() {
+        this.runsC++;
+        return this.b;
+    }
+    @observable get d() {
+        this.runsD++;
+        return this.c;
+    }
+}
 
 TestRunner.test({
     name: 'Changes can be pulled to multiple layers - higher first.',
     test: function(input, callback) {
-        var runsB = 0;
-        var runsC = 0;
-        var runsD = 0;
-        var model: any = {};
-        Cascade.createObservable(model, 'a', 1);
-        Cascade.createComputed(model, 'b', function() {
-            runsB++;
-            return model.a;
-        });
-        Cascade.createComputed(model, 'c', function() {
-            runsC++;
-            return model.b;
-        });
-        Cascade.createComputed(model, 'd', function() {
-            runsD++;
-            return model.c;
-        });
+        var model: any = new ViewModel();
         model.a = 11;
+        var c = model.c;
+        var b = model.b;
         callback({
-            c: model.c,
-            b: model.b,
-            runsB: runsB,
-            runsC: runsC,
-            runsD: runsD
+            b: b,
+            c: c,
+            runsB: model.runsB,
+            runsC: model.runsC,
+            runsD: model.runsD
         });
     },
     assert: function(result, callback) {
         callback(
             result.b == 11 &&
             result.c == 11 &&
-            result.runsB == 2 &&
-            result.runsC == 2 &&
-            result.runsD == 1
+            result.runsB == 1 &&
+            result.runsC == 1 &&
+            result.runsD == 0
         );
     }
 });

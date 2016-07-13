@@ -35,15 +35,19 @@ export default class Cascade {
         var graph = obj._graph;
         for (var index in obj) {
             if (obj.hasOwnProperty(index)) {
-                if (graph && graph.observables[index]) {
-                    var observable = graph.observables[index];
-                    var value = observable.value;
-                    observable.dispose();
-                } else {
-                    var value = obj[index];
+                // Only dispose non-observable properties here.
+                if (!graph || !graph.observables[index]) {
+                    Cascade.disposeAll(obj[index]);
                 }
-                if (value) {
+            }
+        }
+
+        if (graph) {
+            for (var index in graph.observables) {
+                if (graph.observables.hasOwnProperty(index)) {
+                    var value = graph.observables[index].value;
                     Cascade.disposeAll(value);
+                    graph.observables[index].dispose();
                 }
             }
         }

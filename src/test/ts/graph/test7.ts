@@ -1,35 +1,38 @@
 import TestRunner from '../TestRunner';
-import Cascade from '../../../scripts/modules/Cascade';
+import {observable} from '../../../scripts/modules/Cascade';
+
+class ViewModel {
+    runsB = 0;
+    runsC = 0;
+    runsD = 0;
+    runsE = 0;
+    @observable a = 1;
+    @observable get b() {
+        this.runsB++;
+        return this.a;
+    }
+    @observable get c() {
+        this.runsC++;
+        return this.b;
+    }
+    @observable get d() {
+        this.runsD++;
+        return this.c;
+    }
+    @observable get e() {
+        this.runsE++;
+        return this.d;
+    }
+}
 
 TestRunner.test({
     name: 'Changes can be pulled to deep layers.',
     test: function(input, callback) {
-        var runsB = 0;
-        var runsC = 0;
-        var runsD = 0;
-        var runsE = 0;
-        var model: any = {};
-        Cascade.createObservable(model, 'a', 1);
-        Cascade.createComputed(model, 'b', function() {
-            runsB++;
-            return model.a;
-        });
-        Cascade.createComputed(model, 'c', function() {
-            runsC++;
-            return model.b;
-        });
-        Cascade.createComputed(model, 'd', function() {
-            runsD++;
-            return model.c;
-        });
-        Cascade.createComputed(model, 'e', function() {
-            runsE++;
-            return model.d;
-        });
-        model._graph.observables.e.subscribe(function(value) {
+        var model: any = new ViewModel();
+        model._graph.subscribe('e', function(value) {
             if (result) {
                 result.finalE = value;
-                result.finalRunsE = runsE
+                result.finalRunsE = model.runsE
                 callback(result);
             }
         });
@@ -41,10 +44,10 @@ TestRunner.test({
             c: model._graph.observables.c.value,
             d: d,
             e: model._graph.observables.e.value,
-            runsB: runsB,
-            runsC: runsC,
-            runsD: runsD,
-            runsE: runsE
+            runsB: model.runsB,
+            runsC: model.runsC,
+            runsD: model.runsD,
+            runsE: model.runsE
         };
     },
     assert: function(result, callback) {
