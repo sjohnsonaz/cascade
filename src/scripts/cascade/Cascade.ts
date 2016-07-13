@@ -95,4 +95,67 @@ export default class Cascade {
             }
         });
     }
+
+    static observable(target: any, propertyKey: string) {
+        return {
+            enumerable: true,
+            configurable: true,
+            get: function() {
+                // Graph is not initialized
+                if (!this._graph) {
+                    Object.defineProperty(this, '_graph', {
+                        configurable: true,
+                        writable: true,
+                        enumerable: false,
+                        value: new Graph()
+                    });
+                }
+                // Property does not exist
+                if (!this._graph.observables[propertyKey]) {
+                    this._graph.observables[propertyKey] = new Observable(undefined);
+                }
+                return this._graph.observables[propertyKey].getValue();
+            },
+            set: function(value) {
+                // Graph is not initialized
+                if (!this._graph) {
+                    Object.defineProperty(this, '_graph', {
+                        configurable: true,
+                        writable: true,
+                        enumerable: false,
+                        value: new Graph()
+                    });
+                }
+                // Property does not exist
+                if (!this._graph.observables[propertyKey]) {
+                    this._graph.observables[propertyKey] = new Observable(value);
+                } else {
+                    this._graph.observables[propertyKey].setValue(value);
+                }
+            }
+        };
+    }
+
+    static computed(defer?: boolean) {
+        return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+            var definition = descriptor.get;
+            descriptor.enumerable = true;
+            descriptor.get = function() {
+                // Graph is not initialized
+                if (!this._graph) {
+                    Object.defineProperty(this, '_graph', {
+                        configurable: true,
+                        writable: true,
+                        enumerable: false,
+                        value: new Graph()
+                    });
+                }
+                // Property does not exist
+                if (!this._graph.observables[propertyKey]) {
+                    this._graph.observables[propertyKey] = new Computed(definition, defer);
+                }
+                return this._graph.observables[propertyKey].getValue();
+            }
+        }
+    }
 }
