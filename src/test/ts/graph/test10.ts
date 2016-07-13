@@ -8,25 +8,25 @@ class ViewModel {
     @observable b: number = 2
     @observable c: number = 3
     @observable d: number = 4
-    @computed() get ab() {
+    @computed get ab() {
         return this.a + this.b;
     }
-    @computed() get ac(): number {
+    @computed get ac(): number {
         return this.a + this.c;
     }
-    @computed() get ad(): number {
+    @computed get ad(): number {
         return this.a + this.d;
     }
-    @computed() get bc(): number {
+    @computed get bc(): number {
         return this.b + this.c;
     }
-    @computed() get bd(): number {
+    @computed get bd(): number {
         return this.b + this.d;
     }
-    @computed() get cd(): number {
+    @computed get cd(): number {
         return this.c + this.d;
     }
-    @computed() get abcd(): number {
+    @computed get abcd(): number {
         return this.ab + this.ac + this.ad + this.bc + this.bd + this.cd;
     }
 }

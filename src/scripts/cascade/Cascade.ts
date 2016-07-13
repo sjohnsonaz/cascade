@@ -137,25 +137,23 @@ export function observable(target: any, propertyKey: string): any {
     };
 }
 
-export function computed(defer?: boolean) {
-    return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        var definition = descriptor.get;
-        descriptor.enumerable = true;
-        descriptor.get = function() {
-            // Graph is not initialized
-            if (!this._graph) {
-                Object.defineProperty(this, '_graph', {
-                    configurable: true,
-                    writable: true,
-                    enumerable: false,
-                    value: new Graph(this)
-                });
-            }
-            // Property does not exist
-            if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new Computed(definition, defer, this);
-            }
-            return this._graph.observables[propertyKey].getValue();
+export function computed(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    var definition = descriptor.get;
+    descriptor.enumerable = true;
+    descriptor.get = function() {
+        // Graph is not initialized
+        if (!this._graph) {
+            Object.defineProperty(this, '_graph', {
+                configurable: true,
+                writable: true,
+                enumerable: false,
+                value: new Graph(this)
+            });
         }
+        // Property does not exist
+        if (!this._graph.observables[propertyKey]) {
+            this._graph.observables[propertyKey] = new Computed(definition, false, this);
+        }
+        return this._graph.observables[propertyKey].getValue();
     }
 }
