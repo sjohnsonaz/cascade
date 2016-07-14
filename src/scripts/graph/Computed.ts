@@ -4,17 +4,17 @@ import ComputedQueue from './ComputedQueue';
 var id: number = 0;
 var computedQueue: ComputedQueue = new ComputedQueue();
 
-export default class Computed extends Observable {
+export default class Computed<T> extends Observable<T> {
 
     id: number;
     references: Array<any>;
-    definition: Function;
+    definition: (n: T) => T;
     thisArg: any;
     dirty: boolean;
     error: Error;
 
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
-    constructor(definition: Function, defer: boolean = false, thisArg?: any) {
+    constructor(definition: (n: T) => T, defer: boolean = false, thisArg?: any) {
         super(undefined);
         this.id = id;
         id++;
@@ -43,7 +43,7 @@ export default class Computed extends Observable {
         }
         return this.value;
     }
-    setValue(value) { }
+    setValue(value: T) { }
     notify() {
         this.notifyDirty();
         if (computedQueue.completed) {
@@ -72,7 +72,7 @@ export default class Computed extends Observable {
             }
         }
     }
-    runDefinition(definition) {
+    runDefinition(definition: (n: T) => T) {
         //TODO: Reduce unsubscribe calls.
         for (var index = 0, length: number = this.references.length; index < length; index++) {
             var reference = this.references[index];
@@ -82,7 +82,7 @@ export default class Computed extends Observable {
         Observable.pushContext();
         this.error = undefined;
         try {
-            var output;
+            var output: T;
             if (this.thisArg) {
                 output = definition.call(this.thisArg, this.value);
             } else {

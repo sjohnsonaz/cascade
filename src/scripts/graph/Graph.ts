@@ -2,7 +2,7 @@ import Observable from './Observable';
 import Computed from './Computed';
 
 export interface ObservableIndex {
-    [index: string]: Observable;
+    [index: string]: Observable<any>;
 }
 
 export default class Graph {

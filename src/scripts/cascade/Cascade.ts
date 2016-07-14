@@ -64,7 +64,7 @@ export default class Cascade {
         }
     }
 
-    static createProperty(obj, property, observable) {
+    static createProperty(obj: any, property: string, observable: Observable<any>) {
         Cascade.attachGraph(obj);
         if (obj._graph.observables[property]) {
             // TODO: move or delete subscriptions?
@@ -73,7 +73,7 @@ export default class Cascade {
         obj._graph.observables[property] = observable;
     }
 
-    static createObservable(obj, property, value) {
+    static createObservable<T>(obj: any, property: string, value: T) {
         var observable = new Observable(value);
         Cascade.createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
@@ -82,13 +82,13 @@ export default class Cascade {
             get: function() {
                 return observable.getValue();
             },
-            set: function(value) {
+            set: function(value: T) {
                 observable.setValue(value);
             }
         });
     }
 
-    static createComputed(obj, property, definition, defer?: boolean) {
+    static createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean) {
         var computed = new Computed(definition, defer);
         Cascade.createProperty(obj, property, computed);
         Object.defineProperty(obj, property, {
@@ -101,7 +101,7 @@ export default class Cascade {
     }
 }
 
-export function observable(target: any, propertyKey: string, descriptor?: PropertyDescriptor): any {
+export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
     if (descriptor) {
         var definition = descriptor.get;
         descriptor.enumerable = true;
@@ -117,7 +117,7 @@ export function observable(target: any, propertyKey: string, descriptor?: Proper
             }
             // Property does not exist
             if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new Computed(definition, false, this);
+                this._graph.observables[propertyKey] = new Computed<T>(definition, false, this);
             }
             return this._graph.observables[propertyKey].getValue();
         }
@@ -137,11 +137,11 @@ export function observable(target: any, propertyKey: string, descriptor?: Proper
                 }
                 // Property does not exist
                 if (!this._graph.observables[propertyKey]) {
-                    this._graph.observables[propertyKey] = new Observable(undefined);
+                    this._graph.observables[propertyKey] = new Observable<T>(undefined);
                 }
                 return this._graph.observables[propertyKey].getValue();
             },
-            set: function(value) {
+            set: function(value: T) {
                 // Graph is not initialized
                 if (!this._graph) {
                     Object.defineProperty(this, '_graph', {
@@ -153,10 +153,34 @@ export function observable(target: any, propertyKey: string, descriptor?: Proper
                 }
                 // Property does not exist
                 if (!this._graph.observables[propertyKey]) {
-                    this._graph.observables[propertyKey] = new Observable(value);
+                    this._graph.observables[propertyKey] = new Observable<T>(value);
                 } else {
                     this._graph.observables[propertyKey].setValue(value);
                 }
+            }
+        };
+    }
+}
+
+export function computed<T>(definition: (n: T) => T) {
+    return function(target: any, propertyKey: string): any {
+        return {
+            enumerable: true,
+            get: function() {
+                // Graph is not initialized
+                if (!this._graph) {
+                    Object.defineProperty(this, '_graph', {
+                        configurable: true,
+                        writable: true,
+                        enumerable: false,
+                        value: new Graph(this)
+                    });
+                }
+                // Property does not exist
+                if (!this._graph.observables[propertyKey]) {
+                    this._graph.observables[propertyKey] = new Computed<T>(definition, false, this);
+                }
+                return this._graph.observables[propertyKey].getValue();
             }
         };
     }

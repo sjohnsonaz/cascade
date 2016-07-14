@@ -1,6 +1,6 @@
 import Observable from './Observable';
 
-export default class ObservableArray extends Observable {
+export default class ObservableArray<T> extends Observable<T> {
     constructor(value) {
         super(value);
     }

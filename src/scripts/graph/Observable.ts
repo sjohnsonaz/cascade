@@ -1,12 +1,12 @@
 var computedContexts: Array<any> = [];
 var context: any = undefined;
 
-export default class Observable {
-    value: any;
+export default class Observable<T> {
+    value: T;
     subscribers: Array<any>;
 
     // TODO: Add wrap and unwrap.
-    constructor(value) {
+    constructor(value: T) {
         this.value = value;
         this.subscribers = [];
     }
@@ -20,7 +20,7 @@ export default class Observable {
     peek() {
         return this.value;
     }
-    setValue(value) {
+    setValue(value: T) {
         if (this.value !== value) {
             this.value = value;
             this.publish();
