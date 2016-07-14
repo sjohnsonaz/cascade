@@ -1,4 +1,4 @@
-import Observable from './Observable';
+import Observable, {Subscriber, SubscriberFunction} from './Observable';
 import Computed from './Computed';
 
 export interface ObservableIndex {
@@ -13,7 +13,7 @@ export default class Graph {
         this.parent = parent;
     }
 
-    peekValue(obj, property) {
+    peekValue(obj: any, property: string) {
         return obj.observables[property].value;
     }
 
@@ -37,21 +37,23 @@ export default class Graph {
         }
     }
 
-    subscribe(property: string, subscriber) {
+    subscribe(property: string, subscriber: Subscriber | SubscriberFunction<any>) {
         if (!this.observables[property]) {
+            // Force value to update.
             var value = this.parent[property];
         }
         this.observables[property].subscribe(subscriber);
     }
 
-    subscribeOnly(property: string, subscriber) {
+    subscribeOnly(property: string, subscriber: Subscriber | SubscriberFunction<any>) {
         if (!this.observables[property]) {
+            // Force value to update.
             var value = this.parent[property];
         }
         this.observables[property].subscribeOnly(subscriber);
     }
 
-    unsubscribe(property: string, subscriber) {
+    unsubscribe(property: string, subscriber: Subscriber | SubscriberFunction<any>) {
         if (this.observables[property]) {
             this.observables[property].subscribe(subscriber);
         }

@@ -1,6 +1,12 @@
+import Computed from './Computed';
+
+export interface ComputedHash {
+    [index: string]: Computed<any>;
+}
+
 export default class ComputedQueue {
-    items: Array<any>
-    hash: Object;
+    items: Computed<any>[];
+    hash: ComputedHash;
     scheduled: boolean;
     completed: boolean;
 
@@ -11,7 +17,7 @@ export default class ComputedQueue {
         this.completed = false;
     }
 
-    add(computed) {
+    add(computed: Computed<any>) {
         if (!this.hash[computed.id]) {
             this.hash[computed.id] = computed;
             this.items.push(computed);
@@ -22,7 +28,7 @@ export default class ComputedQueue {
         }
     }
 
-    run(self) {
+    run(self: ComputedQueue) {
         self.completed = true;
         for (var index = 0, length = self.items.length; index < length; index++) {
             var computed = self.items[index];
