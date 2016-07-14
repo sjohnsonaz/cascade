@@ -1,13 +1,13 @@
-import Observable from './Observable';
+import Observable, {Subscriber} from './Observable';
 import ComputedQueue from './ComputedQueue';
 
 var id: number = 0;
 var computedQueue: ComputedQueue = new ComputedQueue();
 
-export default class Computed<T> extends Observable<T> {
+export default class Computed<T> extends Observable<T> implements Subscriber {
 
     id: number;
-    references: Array<any>;
+    references: Observable<any>[];
     definition: (n: T) => T;
     thisArg: any;
     dirty: boolean;

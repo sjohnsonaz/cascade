@@ -1,9 +1,17 @@
-var computedContexts: Array<any> = [];
-var context: any = undefined;
+var computedContexts: Observable<any>[][] = [];
+var context: Observable<any>[] = undefined;
+
+export interface Subscriber {
+    notify();
+}
+
+export interface SubscriberFunction<T> {
+    (n: T): void
+}
 
 export default class Observable<T> {
     value: T;
-    subscribers: Array<any>;
+    subscribers: (Subscriber | SubscriberFunction<T>)[];
 
     // TODO: Add wrap and unwrap.
     constructor(value: T) {
@@ -26,22 +34,23 @@ export default class Observable<T> {
             this.publish();
         }
     }
-    subscribeOnly(subscriber) {
+    subscribeOnly(subscriber: Subscriber | SubscriberFunction<T>) {
         if (subscriber) {
             this.subscribers.push(subscriber);
         }
     }
-    subscribe(subscriber) {
+    subscribe(subscriber: Subscriber | SubscriberFunction<T>) {
         if (subscriber) {
             this.subscribers.push(subscriber);
-            if (typeof subscriber.notify === 'function') {
-                subscriber.notify(this.value);
-            } else if (typeof subscriber === 'function') {
-                subscriber(this.value);
+            // TODO: Remove redundant type casting.
+            if (typeof subscriber === 'function') {
+                (subscriber as SubscriberFunction<T>)(this.value);
+            } else {
+                (subscriber as Subscriber).notify();
             }
         }
     }
-    unsubscribe(subscriber) {
+    unsubscribe(subscriber: Subscriber | SubscriberFunction<T>) {
         if (subscriber) {
             var index = this.subscribers.indexOf(subscriber);
             if (index >= 0) {
@@ -52,10 +61,11 @@ export default class Observable<T> {
     publish() {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
-            if (typeof subscriber.notify === 'function') {
-                subscriber.notify(this.value);
-            } else if (typeof subscriber === 'function') {
-                subscriber(this.value);
+            // TODO: Remove redundant type casting.
+            if (typeof subscriber === 'function') {
+                (subscriber as SubscriberFunction<T>)(this.value);
+            } else {
+                (subscriber as Subscriber).notify();
             }
         }
     }
