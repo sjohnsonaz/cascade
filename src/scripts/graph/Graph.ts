@@ -58,6 +58,7 @@ export default class Graph {
             this.observables[property].subscribe(subscriber);
         }
     }
+
     static disposeAll(obj) {
         var graph = obj._graph;
         for (var index in obj) {

@@ -7,7 +7,7 @@
     "jsx": "react",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "declaration": true,
+    "declaration": false,
     "noImplicitAny": false,
     "noImplicitUseStrict": false,
     "removeComments": true,
