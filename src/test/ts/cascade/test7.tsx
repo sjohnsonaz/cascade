@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Cascade, {VirtualNode} from '../../../scripts/modules/Cascade';
+import Cascade, {Component} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     runs: number = 0;
@@ -14,10 +14,7 @@ interface ParentComponentProperties {
     viewModel: ViewModel;
 }
 
-class ParentComponent extends VirtualNode<ParentComponentProperties> {
-    constructor(type: string, properties?: ParentComponentProperties, ...children: (VirtualNode<any> | string)[]) {
-        super(type, properties, ...children);
-    }
+class ParentComponent extends Component<ParentComponentProperties> {
     render() {
         return (
             <div id="parent">
@@ -32,7 +29,7 @@ interface CustomComponentProperties {
     info: string;
 }
 
-class CustomComponent extends VirtualNode<CustomComponentProperties> {
+class CustomComponent extends Component<CustomComponentProperties> {
     render() {
         return (
             <div id={this.properties.id}>Custom Component - {this.properties.info}</div>

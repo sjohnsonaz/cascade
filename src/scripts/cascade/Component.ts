@@ -44,7 +44,11 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
         if (typeof root === 'string') {
             element = document.createTextNode(root);
         } else {
-            element = root.toNode();
+            if (root instanceof Component) {
+                element = root.element;
+            } else {
+                element = root.toNode();
+            }
         }
         return element;
     }

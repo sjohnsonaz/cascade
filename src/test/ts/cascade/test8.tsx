@@ -1,5 +1,5 @@
 import TestRunner from '../TestRunner';
-import Cascade, {VirtualNode} from '../../../scripts/modules/Cascade';
+import Cascade, {Component} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     runsA: number = 0;
@@ -17,7 +17,7 @@ interface CustomComponentProperties {
     viewModel: ViewModel;
 }
 
-class CustomComponent extends VirtualNode<CustomComponentProperties> {
+class CustomComponent extends Component<CustomComponentProperties> {
     render() {
         return (
             <div>
