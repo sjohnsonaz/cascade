@@ -32,4 +32,6 @@ export default class Cascade {
     static createObservable = Graph.createObservable;
     static createComputed = Graph.createComputed;
     static disposeAll = Graph.disposeAll;
+    static peek = Graph.peek;
+    static subscribe = Graph.subscribe;
 }

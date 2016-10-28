@@ -13,8 +13,8 @@ export default class Graph {
         this.parent = parent;
     }
 
-    peekValue(obj: any, property: string) {
-        return obj.observables[property].value;
+    peek(property: string) {
+        return this.observables[property].value;
     }
 
     dispose() {
@@ -126,6 +126,20 @@ export default class Graph {
                 return computed.getValue();
             }
         });
+    }
+
+    static subscribe<T>(obj: any, property: string, subscriberFunction: SubscriberFunction<T>) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            graph.subscribe(property, subscriberFunction);
+        }
+    }
+
+    static peek(obj: any, property: string) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            return graph.peek(property);
+        }
     }
 }
 
