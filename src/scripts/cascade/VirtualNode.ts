@@ -1,64 +1,53 @@
 import Cascade from './Cascade';
+import Component from './Component';
+import {IVirtualNode} from './IVirtualNode';
 
-export default class VirtualNode<T extends Object> {
+export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
     type: string;
     properties: T;
-    children: Array<VirtualNode<any> | string>;
-    node: VirtualNode<any> | string;
-    element: Node;
-    private hiddenElement: Node;
-    constructor(type: string, properties?: T, ...children: Array<VirtualNode<any> | string>) {
-        var self = this;
+    children: Array<IVirtualNode<any> | string>;
+
+    constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string>) {
         this.type = type;
         this.properties = properties || ({} as any);
         this.children = children || [];
-        Cascade.createComputed(this, 'node', function() {
-            return self.render();
-        }, true);
-        Cascade.createComputed(this, 'element', function(oldValue) {
-            var root = self.node;
-            var element: Node;
-            if (typeof root === 'string') {
-                if (!oldValue || !(oldValue instanceof Text)) {
-                    element = document.createTextNode(root);
+    }
+
+    toNode(oldValue?: Node) {
+        var node: Node;
+        if (!oldValue || !(oldValue instanceof HTMLElement) || (oldValue as HTMLElement).tagName.toLowerCase() !== this.type) {
+            node = document.createElement(this.type);
+        } else {
+            node = oldValue;
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
+        }
+        for (var name in this.properties) {
+            if (this.properties.hasOwnProperty(name)) {
+                node[name] = this.properties[name];
+            }
+        }
+        for (var index = 0, length = this.children.length; index < length; index++) {
+            var child = this.children[index];
+            if (child) {
+                if (typeof child === 'string') {
+                    node.appendChild(document.createTextNode(child as string));
                 } else {
-                    element = oldValue;
-                    (element as HTMLElement).textContent = root;
-                }
-            } else {
-                if (!oldValue || !(oldValue instanceof HTMLElement) || (oldValue as HTMLElement).tagName.toLowerCase() !== root.type) {
-                    element = document.createElement(root.type);
-                } else {
-                    element = oldValue;
-                    while (element.firstChild) {
-                        element.removeChild(element.firstChild);
-                    }
-                }
-                for (var name in root.properties) {
-                    if (root.properties.hasOwnProperty(name)) {
-                        element[name] = root.properties[name];
-                    }
-                }
-                for (var index = 0, length = root.children.length; index < length; index++) {
-                    var child = root.children[index];
-                    if (typeof child === 'string') {
-                        element.appendChild(document.createTextNode(child as string));
+                    if (child instanceof Component) {
+                        node.appendChild(child.element);
                     } else {
-                        element.appendChild((child as any)._graph.observables.element.peek());
+                        node.appendChild(child.toNode());
                     }
                 }
             }
-            return element;
-        }, true);
-    }
-
-    render(): VirtualNode<any> | string {
-        return this;
+        }
+        return node;
     }
 
     toString() {
         var container = document.createElement('div') as HTMLElement;
-        container.appendChild(this.element);
+        container.appendChild(this.toNode());
         return container.innerHTML;
     }
 }

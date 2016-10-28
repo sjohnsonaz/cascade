@@ -1,12 +1,12 @@
 import TestRunner from '../TestRunner';
-import Cascade, {VirtualNode} from '../../../scripts/modules/Cascade';
+import Cascade, {Component} from '../../../scripts/modules/Cascade';
 
 interface CustomComponentProperties {
     id: string;
     info: string;
 }
 
-class CustomComponent extends VirtualNode<CustomComponentProperties> {
+class CustomComponent extends Component<CustomComponentProperties> {
     render() {
         return (
             <div id={this.properties.id}>Custom Component - {this.properties.info}</div>

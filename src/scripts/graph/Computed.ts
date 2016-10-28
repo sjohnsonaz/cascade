@@ -103,6 +103,12 @@ export default class Computed<T> extends Observable<T> implements Subscriber {
             }
             this.references = context;
         }
+        // TODO: Should we rethrow
+        /*
+        else {
+            throw this.error;
+        }
+        */
     }
     dispose() {
         for (var index = 0, length = this.references.length; index < length; index++) {
