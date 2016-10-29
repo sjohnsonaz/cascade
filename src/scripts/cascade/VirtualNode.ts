@@ -32,8 +32,8 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
             var child = this.children[index];
             if (child) {
                 if (child instanceof Array) {
-                    for (var childIndex = 0, childLength = child.length; childIndex < childLength; childIndex++) {
-                        var innerChild = child[childIndex];
+                    for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
+                        var innerChild = (child as any)[childIndex];
                         if (innerChild) {
                             if (typeof innerChild === 'string') {
                                 node.appendChild(document.createTextNode(innerChild as string));
