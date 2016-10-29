@@ -45,16 +45,18 @@ TestRunner.test({
         var runs = [];
         document.body.appendChild(container);
         Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element: HTMLElement) {
-            runs.push(element.textContent);
+            var child = container.querySelector('#child');
+            runs.push((child.childNodes[1] as Text).data);
         });
         viewModel.info = 'abcd';
         setTimeout(function() {
-            var element = container.querySelector('#child');
-            runs.push(element.textContent);
+            var child = container.querySelector('#child');
+            runs.push((child.childNodes[1] as Text).data);
             callback(runs);
         }, 20);
     },
     assert: function(result, callback) {
-        callback(result[0] === 'Custom Component - test' && result[1] === 'Custom Component - abcd');
+        console.log(result);
+        callback(result[0] === 'test' && result[1] === 'abcd');
     }
 });

@@ -12,41 +12,51 @@ class ViewModel {
     }
 }
 
-interface CustomComponentProperties {
-    id: string;
+interface IParentProperties {
     viewModel: ViewModel;
 }
 
-class CustomComponent extends Component<CustomComponentProperties> {
+class Parent extends Component<IParentProperties> {
     render() {
         return (
             <div>
                 {(() => {
                     this.properties.viewModel.runsA++;
-                    return <div>
-                        {this.properties.viewModel.a}
-                        {(() => {
-                            this.properties.viewModel.runsB++;
-                            return <div>
-                                {this.properties.viewModel.b}
-                            </div>
-                        })()}
-                    </div>
                 })()}
+                {this.properties.viewModel.a}
+                <Child id="child" viewModel={this.properties.viewModel} />
             </div>
-        )
+        );
+    }
+}
+
+interface IChildProperties {
+    id: string;
+    viewModel: ViewModel;
+}
+
+class Child extends Component<IChildProperties> {
+    render() {
+        return (
+            <div>
+                {(() => {
+                    this.properties.viewModel.runsB++;
+                })()}
+                {this.properties.viewModel.b}
+            </div>
+        );
     }
 }
 
 TestRunner.test({
-    name: 'ViewModels update VirtualNode rendering once per update',
+    name: 'ViewModels update nested Components',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs = [];
         var complete = false;
         document.body.appendChild(container);
-        Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
+        Cascade.render(container, <Parent viewModel={viewModel} />, function() {
         });
         viewModel.a = 'a1';
         viewModel.b = 'b1';
@@ -63,6 +73,6 @@ TestRunner.test({
     },
     assert: function(result, callback) {
         console.log(result);
-        callback(result.runsA === 3 && result.runsB === 3);
+        callback(result.runsA === 2 && result.runsB === 3);
     }
 });
