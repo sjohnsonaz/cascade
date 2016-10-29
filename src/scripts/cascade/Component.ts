@@ -9,12 +9,12 @@ var context: Component<any>[] = undefined;
 export default class Component<T extends Object> implements IVirtualNode<T> {
     uniqueId: number;
     properties: T;
-    children: Array<IVirtualNode<any> | string>;
-    root: IVirtualNode<any> | string;
+    children: Array<IVirtualNode<any> | string | number>;
+    root: IVirtualNode<any> | string | number;
     element: Node;
     context: Component<any>[];
 
-    constructor(properties?: T, ...children: Array<IVirtualNode<any> | string>) {
+    constructor(properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.uniqueId = Math.floor(Math.random() * 1000000);
         this.properties = properties || ({} as any);
         this.children = children || [];
@@ -48,6 +48,8 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             var element: Node;
             if (typeof root === 'string') {
                 element = document.createTextNode(root);
+            } else if(typeof root ==='number') {
+                element = document.createTextNode(root.toString());
             } else {
                 if (root instanceof Component) {
                     element = root.element;
@@ -74,7 +76,7 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
         */
     }
 
-    render(): IVirtualNode<any> | string {
+    render(): IVirtualNode<any> | string | number {
         return this;
     }
 
@@ -83,6 +85,8 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
         var element: Node;
         if (typeof root === 'string') {
             element = document.createTextNode(root);
+        } else if (typeof root === 'number') {
+            element = document.createTextNode(root.toString());
         } else {
             if (root instanceof Component) {
                 element = root.element;

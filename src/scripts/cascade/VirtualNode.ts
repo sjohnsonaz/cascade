@@ -5,9 +5,9 @@ import {IVirtualNode} from './IVirtualNode';
 export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
     type: string;
     properties: T;
-    children: Array<IVirtualNode<any> | string>;
+    children: Array<IVirtualNode<any> | string | number>;
 
-    constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string>) {
+    constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.type = type;
         this.properties = properties || ({} as any);
         this.children = children || [];
@@ -36,7 +36,9 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
                         var innerChild = (child as any)[childIndex];
                         if (innerChild) {
                             if (typeof innerChild === 'string') {
-                                node.appendChild(document.createTextNode(innerChild as string));
+                                node.appendChild(document.createTextNode(innerChild));
+                            } else if(typeof innerChild === 'number') {
+                                node.appendChild(document.createTextNode(innerChild.toString()));
                             } else {
                                 if (innerChild instanceof Component) {
                                     node.appendChild(innerChild.element);
@@ -48,7 +50,9 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
                     }
                 } else {
                     if (typeof child === 'string') {
-                        node.appendChild(document.createTextNode(child as string));
+                        node.appendChild(document.createTextNode(child));
+                    } else if (typeof child === 'number') {
+                        node.appendChild(document.createTextNode(child.toString()));
                     } else {
                         if (child instanceof Component) {
                             node.appendChild(child.element);
