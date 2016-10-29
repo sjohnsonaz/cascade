@@ -43,7 +43,7 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             this.context = Component.popContext();
             return root;
         });//, true);
-        Cascade.createComputed(this, 'element', () => {
+        Cascade.createComputed(this, 'element', (oldElement: Node) => {
             var root = this.root;
             var element: Node;
             if (typeof root === 'string') {
@@ -52,14 +52,13 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
                 element = document.createTextNode(root.toString());
             } else {
                 if (root instanceof Component) {
-                    element = root.element;
+                    element = Cascade.peek(root, 'element');
                 } else {
-                    element = root.toNode();
+                    element = root.toNode(oldElement);
                 }
             }
             return element;
-        }, true);
-        /*
+        }, false);
         Cascade.subscribe(this, 'element', (element: Node) => {
             var oldElement = this.element;
             if (oldElement) {
@@ -73,7 +72,6 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
                 }
             }
         });
-        */
     }
 
     render(): IVirtualNode<any> | string | number {
