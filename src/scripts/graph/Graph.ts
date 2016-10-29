@@ -17,6 +17,15 @@ export default class Graph {
         return this.observables[property].value;
     }
 
+    getReferences(property: string) {
+        var observable = this.observables[property];
+        if (observable instanceof Computed) {
+            return observable.references;
+        } else {
+            return [];
+        }
+    }
+
     dispose() {
         for (var index in this.observables) {
             if (this.observables.hasOwnProperty(index)) {
@@ -139,6 +148,13 @@ export default class Graph {
         var graph: Graph = obj._graph;
         if (graph) {
             return graph.peek(property);
+        }
+    }
+
+    static getReferences(obj: any, property: string) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            return graph.getReferences(property);
         }
     }
 }
