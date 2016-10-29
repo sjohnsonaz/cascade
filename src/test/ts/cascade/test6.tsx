@@ -1,15 +1,11 @@
 import TestRunner from '../TestRunner';
-import Cascade, {Component} from '../../../scripts/modules/Cascade';
+import Cascade, {Component, observable} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     runsA: number = 0;
     runsB: number = 0;
-    a: string;
-    b: string;
-    constructor() {
-        Cascade.createObservable(this, 'a', 'a');
-        Cascade.createObservable(this, 'b', 'b');
-    }
+    @observable a: string = 'a';
+    @observable b: string = 'b';
 }
 
 interface IParentProperties {

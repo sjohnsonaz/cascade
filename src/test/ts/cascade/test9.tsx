@@ -36,12 +36,10 @@ class Child extends Component<IChildProperties> {
 }
 
 TestRunner.test({
-    name: 'ViewModels update directly nested Components with children',
+    name: 'Events are attached to DOM elements',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        var runs = [];
-        var complete = false;
         document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />);
         var button = document.getElementById('test9-button');

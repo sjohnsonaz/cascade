@@ -1,35 +1,32 @@
 import TestRunner from '../TestRunner';
-import Cascade, {Component} from '../../../scripts/modules/Cascade';
+import Cascade, {Component, observable} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     runs: number = 0;
-    info: string;
-    constructor() {
-        Cascade.createObservable(this, 'info', 'test');
-    }
+    @observable info: string = 'test';
 }
 
-interface ParentComponentProperties {
+interface IParentProperties {
     id: string;
     viewModel: ViewModel;
 }
 
-class ParentComponent extends Component<ParentComponentProperties> {
+class Parent extends Component<IParentProperties> {
     render() {
         return (
             <div id="parent">
-                <CustomComponent id="child" info={this.properties.viewModel.info}>text</CustomComponent>
+                <Child id="child" info={this.properties.viewModel.info}>text</Child>
             </div>
         );
     }
 }
 
-interface CustomComponentProperties {
+interface IChildProperties {
     id: string;
     info: string;
 }
 
-class CustomComponent extends Component<CustomComponentProperties> {
+class Child extends Component<IChildProperties> {
     render() {
         return (
             <div id={this.properties.id}>Custom Component - {this.properties.info}</div>
@@ -44,7 +41,7 @@ TestRunner.test({
         var container = document.createElement('div');
         var runs = [];
         document.body.appendChild(container);
-        Cascade.render(container, <ParentComponent viewModel={viewModel} />, function(element: HTMLElement) {
+        Cascade.render(container, <Parent viewModel={viewModel} />, function(element: HTMLElement) {
             var child = container.querySelector('#child');
             runs.push((child.childNodes[1] as Text).data);
         });
