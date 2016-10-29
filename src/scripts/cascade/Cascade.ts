@@ -4,7 +4,7 @@ import Component from './Component';
 import Graph from '../graph/Graph';
 
 export default class Cascade {
-    static createElement<T extends IVirtualNode<U>, U>(type: string | (new (...args: any[]) => T), properties: U, ...children: Array<IVirtualNode<any> | string>) {
+    static createElement<T extends Object>(type: string | (new (properties: T, ...children: Array<IVirtualNode<any> | string>) => Component<T>), properties: T, ...children: Array<IVirtualNode<any> | string>): IVirtualNode<T> {
         if (typeof type === 'string') {
             return new VirtualNode(type, properties, ...children);
         } else {
@@ -12,7 +12,7 @@ export default class Cascade {
         }
     }
 
-    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback: (n: Node) => any) {
+    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => any) {
         var fixedNode: HTMLElement;
         if (typeof node === 'string') {
             fixedNode = document.getElementById(node);
@@ -26,12 +26,16 @@ export default class Cascade {
                         fixedNode.removeChild(fixedNode.firstChild);
                     }
                     fixedNode.appendChild(value);
-                    callback(value);
+                    if (callback) {
+                        callback(value);
+                    }
                 }
             });
             var element = virtualNode.element;
         } else {
-            callback(virtualNode.toNode());
+            if (callback) {
+                callback(virtualNode.toNode());
+            }
         }
     }
 

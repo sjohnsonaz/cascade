@@ -12,42 +12,54 @@ class ViewModel {
     }
 }
 
-interface CustomComponentProperties {
-    id: string;
+interface IParentProperties {
     viewModel: ViewModel;
 }
 
-class CustomComponent extends Component<CustomComponentProperties> {
+class Parent extends Component<IParentProperties> {
     render() {
+        this.properties.viewModel.runsA++;
+        return (
+            <Child id="child" viewModel={this.properties.viewModel}>
+                <div>
+                    {this.properties.viewModel.a}
+                </div>
+            </Child>
+        );
+    }
+}
+
+interface IChildProperties {
+    id: string;
+    viewModel: ViewModel;
+    children
+}
+
+class Child extends Component<IChildProperties> {
+    render() {
+        this.properties.viewModel.runsB++;
         return (
             <div>
-                {(() => {
-                    this.properties.viewModel.runsA++;
-                    return <div>
-                        {this.properties.viewModel.a}
-                        {(() => {
-                            this.properties.viewModel.runsB++;
-                            return <div>
-                                {this.properties.viewModel.b}
-                            </div>
-                        })()}
-                    </div>
-                })()}
+                <div>
+                    {this.properties.viewModel.b}
+                </div>
+                <div>
+                    {this.children}
+                </div>
             </div>
-        )
+        );
     }
 }
 
 TestRunner.test({
-    name: 'ViewModels update VirtualNode rendering once per update',
+    name: 'ViewModels update directly nested Components with children',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs = [];
         var complete = false;
         document.body.appendChild(container);
-        Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
-        });
+        Cascade.render(container, <Parent viewModel={viewModel} />);
         viewModel.a = 'a1';
         viewModel.b = 'b1';
         setTimeout(function() {
@@ -59,10 +71,10 @@ TestRunner.test({
                     runsB: viewModel.runsB
                 });
             }, 200);
-        }, 100);
+        }, 1);
     },
     assert: function(result, callback) {
         console.log(result);
-        callback(result.runsA === 3 && result.runsB === 3);
+        callback(result.runsA === 2 && result.runsB === 3);
     }
 });

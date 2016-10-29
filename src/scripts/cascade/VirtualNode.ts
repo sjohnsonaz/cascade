@@ -31,13 +31,30 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
         for (var index = 0, length = this.children.length; index < length; index++) {
             var child = this.children[index];
             if (child) {
-                if (typeof child === 'string') {
-                    node.appendChild(document.createTextNode(child as string));
+                if (child instanceof Array) {
+                    for (var childIndex = 0, childLength = child.length; childIndex < childLength; childIndex++) {
+                        var innerChild = child[childIndex];
+                        if (innerChild) {
+                            if (typeof innerChild === 'string') {
+                                node.appendChild(document.createTextNode(innerChild as string));
+                            } else {
+                                if (innerChild instanceof Component) {
+                                    node.appendChild(innerChild.element);
+                                } else {
+                                    node.appendChild(innerChild.toNode());
+                                }
+                            }
+                        }
+                    }
                 } else {
-                    if (child instanceof Component) {
-                        node.appendChild(child.element);
+                    if (typeof child === 'string') {
+                        node.appendChild(document.createTextNode(child as string));
                     } else {
-                        node.appendChild(child.toNode());
+                        if (child instanceof Component) {
+                            node.appendChild(child.element);
+                        } else {
+                            node.appendChild(child.toNode());
+                        }
                     }
                 }
             }

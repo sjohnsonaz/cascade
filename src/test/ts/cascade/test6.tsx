@@ -1,33 +1,73 @@
 import TestRunner from '../TestRunner';
 import Cascade, {Component} from '../../../scripts/modules/Cascade';
 
-interface CustomComponentProperties {
-    id: string;
-    info: string;
+class ViewModel {
+    runsA: number = 0;
+    runsB: number = 0;
+    a: string;
+    b: string;
+    constructor() {
+        Cascade.createObservable(this, 'a', 'a');
+        Cascade.createObservable(this, 'b', 'b');
+    }
 }
 
-class CustomComponent extends Component<CustomComponentProperties> {
+interface IParentProperties {
+    viewModel: ViewModel;
+}
+
+class Parent extends Component<IParentProperties> {
     render() {
+        this.properties.viewModel.runsA++;
         return (
-            <div id={this.properties.id}>Custom Component - {this.properties.info}</div>
-        )
+            <div>
+                {this.properties.viewModel.a}
+                <Child id="child" viewModel={this.properties.viewModel} />
+            </div>
+        );
+    }
+}
+
+interface IChildProperties {
+    id: string;
+    viewModel: ViewModel;
+}
+
+class Child extends Component<IChildProperties> {
+    render() {
+        this.properties.viewModel.runsB++;
+        return (
+            <div>
+                {this.properties.viewModel.b}
+            </div>
+        );
     }
 }
 
 TestRunner.test({
-    name: 'VirtualNodes can be used to create Components.',
+    name: 'ViewModels update nested Components',
     test: function(input, callback: any) {
-        var root = (
-            <div id="parent">
-                <CustomComponent id="child" info="test">text</CustomComponent>
-            </div>
-        );
-        Cascade.render(document.createElement('div'), root, function(element) {
-            callback(element);
-        });
+        var viewModel = new ViewModel();
+        var container = document.createElement('div');
+        var runs = [];
+        var complete = false;
+        document.body.appendChild(container);
+        Cascade.render(container, <Parent viewModel={viewModel} />);
+        viewModel.a = 'a1';
+        viewModel.b = 'b1';
+        setTimeout(function() {
+            complete = true;
+            viewModel.b = 'b2';
+            setTimeout(function() {
+                callback({
+                    runsA: viewModel.runsA,
+                    runsB: viewModel.runsB
+                });
+            }, 200);
+        }, 1);
     },
     assert: function(result, callback) {
-        var child = result.querySelector('#child');
-        callback(child.textContent === 'Custom Component - test');
+        console.log(result);
+        callback(result.runsA === 2 && result.runsB === 3);
     }
 });

@@ -1,20 +1,68 @@
 import TestRunner from '../TestRunner';
-import Cascade, {VirtualNode} from '../../../scripts/modules/Cascade';
+import Cascade, {Component} from '../../../scripts/modules/Cascade';
+
+class ViewModel {
+    runsA: number = 0;
+    runsB: number = 0;
+    a: string;
+    b: string;
+    constructor() {
+        Cascade.createObservable(this, 'a', 'a');
+        Cascade.createObservable(this, 'b', 'b');
+    }
+}
+
+interface CustomComponentProperties {
+    id: string;
+    viewModel: ViewModel;
+}
+
+class CustomComponent extends Component<CustomComponentProperties> {
+    render() {
+        return (
+            <div>
+                {(() => {
+                    this.properties.viewModel.runsA++;
+                    return <div>
+                        {this.properties.viewModel.a}
+                        {(() => {
+                            this.properties.viewModel.runsB++;
+                            return <div>
+                                {this.properties.viewModel.b}
+                            </div>
+                        })()}
+                    </div>
+                })()}
+            </div>
+        )
+    }
+}
 
 TestRunner.test({
-    name: 'JSX can be used to generate VirtualNode trees.',
+    name: 'ViewModels update VirtualNode rendering once per update',
     test: function(input, callback: any) {
-        var root = (
-            <div id="parent">
-                <span id="child">text</span>
-            </div>
-        );
-        Cascade.render(document.createElement('div'), root, function(element) {
-            callback(element);
+        var viewModel = new ViewModel();
+        var container = document.createElement('div');
+        var runs = [];
+        var complete = false;
+        document.body.appendChild(container);
+        Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
         });
+        viewModel.a = 'a1';
+        viewModel.b = 'b1';
+        setTimeout(function() {
+            complete = true;
+            viewModel.b = 'b2';
+            setTimeout(function() {
+                callback({
+                    runsA: viewModel.runsA,
+                    runsB: viewModel.runsB
+                });
+            }, 200);
+        }, 100);
     },
     assert: function(result, callback) {
-        var child = result.querySelector('#child');
-        callback(!!child);
+        console.log(result);
+        callback(result.runsA === 3 && result.runsB === 3);
     }
 });
