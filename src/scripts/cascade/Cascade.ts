@@ -31,7 +31,6 @@ export default class Cascade {
                     }
                 }
             });
-            var element = virtualNode.element;
         } else {
             if (callback) {
                 callback(virtualNode.toNode());

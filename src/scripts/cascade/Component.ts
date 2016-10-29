@@ -62,8 +62,7 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             return element;
         });
         // Only update parent node if the element has changed
-        Cascade.subscribe(this, 'element', (element: Node) => {
-            var oldElement = this.element;
+        Cascade.subscribe(this, 'element', (element: Node, oldElement: Node) => {
             if (oldElement) {
                 var parentNode = oldElement.parentNode;
                 if (parentNode) {
@@ -90,7 +89,7 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             element = document.createTextNode(root.toString());
         } else {
             if (root instanceof Component) {
-                element = root.element;
+                element = Cascade.peek(root, 'element');
             } else {
                 element = root.toNode();
             }

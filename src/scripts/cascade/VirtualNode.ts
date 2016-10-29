@@ -41,7 +41,7 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
                                 node.appendChild(document.createTextNode(innerChild.toString()));
                             } else {
                                 if (innerChild instanceof Component) {
-                                    node.appendChild(innerChild.element);
+                                    node.appendChild(Cascade.peek(innerChild, 'element'));
                                 } else {
                                     node.appendChild(innerChild.toNode());
                                 }
@@ -55,7 +55,7 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
                         node.appendChild(document.createTextNode(child.toString()));
                     } else {
                         if (child instanceof Component) {
-                            node.appendChild(child.element);
+                            node.appendChild(Cascade.peek(child, 'element'));
                         } else {
                             node.appendChild(child.toNode());
                         }

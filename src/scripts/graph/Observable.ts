@@ -6,7 +6,7 @@ export interface Subscriber {
 }
 
 export interface SubscriberFunction<T> {
-    (n: T): void
+    (n: T, o?: T): void
 }
 
 export default class Observable<T> {
@@ -30,8 +30,9 @@ export default class Observable<T> {
     }
     setValue(value: T) {
         if (this.value !== value) {
+            var oldValue = this.value;
             this.value = value;
-            this.publish();
+            this.publish(value, oldValue);
         }
     }
     subscribeOnly(subscriber: Subscriber | SubscriberFunction<T>) {
@@ -58,12 +59,12 @@ export default class Observable<T> {
             }
         }
     }
-    publish() {
+    publish(value: T, oldValue: T) {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
             // TODO: Remove redundant type casting.
             if (typeof subscriber === 'function') {
-                (subscriber as SubscriberFunction<T>)(this.value);
+                (subscriber as SubscriberFunction<T>)(this.value, oldValue);
             } else {
                 (subscriber as Subscriber).notify();
             }

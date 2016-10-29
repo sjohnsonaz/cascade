@@ -7,8 +7,9 @@ export default class ObservableArray<T> extends Observable<T> {
 
     setValue(value) {
         if (this.value !== value) {
+            var oldValue = this.value;
             this.value = value;
-            this.publish();
+            this.publish(value, oldValue);
         }
     }
 }

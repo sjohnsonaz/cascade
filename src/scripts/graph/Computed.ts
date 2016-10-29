@@ -71,7 +71,7 @@ export default class Computed<T> extends Observable<T> implements Subscriber {
             this.runDefinition(this.definition);
             this.dirty = false;
             if (this.value !== value) {
-                this.publish();
+                this.publish(this.value, value);
             }
         }
     }
