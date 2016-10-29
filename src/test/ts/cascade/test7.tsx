@@ -42,21 +42,18 @@ TestRunner.test({
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        var runs = [];
-        var complete = false;
         document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />);
         viewModel.a = 'a1';
         viewModel.b = 'b1';
         setTimeout(function() {
-            complete = true;
             viewModel.b = 'b2';
             setTimeout(function() {
                 callback({
                     runsA: viewModel.runsA,
                     runsB: viewModel.runsB
                 });
-            }, 200);
+            }, 1);
         }, 1);
     },
     assert: function(result, callback) {

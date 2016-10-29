@@ -39,23 +39,20 @@ TestRunner.test({
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        var runs = [];
-        var complete = false;
         document.body.appendChild(container);
         Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
         });
         viewModel.a = 'a1';
         viewModel.b = 'b1';
         setTimeout(function() {
-            complete = true;
             viewModel.b = 'b2';
             setTimeout(function() {
                 callback({
                     runsA: viewModel.runsA,
                     runsB: viewModel.runsB
                 });
-            }, 200);
-        }, 100);
+            }, 1);
+        }, 1);
     },
     assert: function(result, callback) {
         callback(result.runsA === 3 && result.runsB === 3);
