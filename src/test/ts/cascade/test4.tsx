@@ -53,7 +53,6 @@ TestRunner.test({
         }, 20);
     },
     assert: function(result, callback) {
-        console.log(result);
         callback(result[0] === 'test' && result[1] === 'abcd');
     }
 });

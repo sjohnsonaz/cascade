@@ -58,7 +58,6 @@ TestRunner.test({
         }, 100);
     },
     assert: function(result, callback) {
-        console.log(result);
         callback(result.runsA === 3 && result.runsB === 3);
     }
 });
