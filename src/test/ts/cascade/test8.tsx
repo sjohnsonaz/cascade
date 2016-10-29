@@ -32,7 +32,6 @@ class Parent extends Component<IParentProperties> {
 interface IChildProperties {
     id: string;
     viewModel: ViewModel;
-    children
 }
 
 class Child extends Component<IChildProperties> {
