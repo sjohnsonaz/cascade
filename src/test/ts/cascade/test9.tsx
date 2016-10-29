@@ -69,7 +69,7 @@ TestRunner.test({
                     runsB: viewModel.runsB
                 });
             }, 200);
-        }, 100);
+        }, 1);
     },
     assert: function(result, callback) {
         console.log(result);

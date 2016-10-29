@@ -71,7 +71,6 @@ export default class Observable<T> {
     }
     dispose() { }
 
-
     static getContext() {
         return context;
     }

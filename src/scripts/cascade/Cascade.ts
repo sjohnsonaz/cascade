@@ -40,5 +40,7 @@ export default class Cascade {
     static disposeAll = Graph.disposeAll;
     static peek = Graph.peek;
     static subscribe = Graph.subscribe;
+    static getObservable = Graph.getObservable;
+    static getSubscribers = Graph.getSubscribers;
     static getReferences = Graph.getReferences;
 }

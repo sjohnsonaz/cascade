@@ -11,6 +11,7 @@ export default class Computed<T> extends Observable<T> implements Subscriber {
     definition: (n: T) => T;
     thisArg: any;
     dirty: boolean;
+    disposed: boolean;
     error: Error;
 
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
@@ -45,11 +46,13 @@ export default class Computed<T> extends Observable<T> implements Subscriber {
     }
     setValue(value: T) { }
     notify() {
-        this.notifyDirty();
-        if (computedQueue.completed) {
-            computedQueue = new ComputedQueue();
+        if (!this.disposed) {
+            this.notifyDirty();
+            if (computedQueue.completed) {
+                computedQueue = new ComputedQueue();
+            }
+            computedQueue.add(this);
         }
-        computedQueue.add(this);
     }
     notifyDirty() {
         if (!this.dirty) {
@@ -63,7 +66,7 @@ export default class Computed<T> extends Observable<T> implements Subscriber {
         }
     }
     runUpdate() {
-        if (this.dirty) {
+        if (!this.disposed && this.dirty) {
             var value = this.value;
             this.runDefinition(this.definition);
             this.dirty = false;
@@ -111,6 +114,7 @@ export default class Computed<T> extends Observable<T> implements Subscriber {
         */
     }
     dispose() {
+        this.disposed = true;
         for (var index = 0, length = this.references.length; index < length; index++) {
             var reference = this.references[index];
             reference.unsubscribe(this);

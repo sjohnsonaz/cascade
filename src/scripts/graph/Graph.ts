@@ -26,6 +26,15 @@ export default class Graph {
         }
     }
 
+    getSubscribers(property: string) {
+        var observable = this.observables[property];
+        if (observable) {
+            return observable.subscribers;
+        } else {
+            return [];
+        }
+    }
+
     dispose() {
         for (var index in this.observables) {
             if (this.observables.hasOwnProperty(index)) {
@@ -148,6 +157,20 @@ export default class Graph {
         var graph: Graph = obj._graph;
         if (graph) {
             return graph.peek(property);
+        }
+    }
+
+    static getObservable(obj: any, property) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            return graph.observables[property];
+        }
+    }
+
+    static getSubscribers(obj: any, property) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            return graph.getSubscribers(property);
         }
     }
 
