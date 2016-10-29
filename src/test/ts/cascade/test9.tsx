@@ -40,10 +40,10 @@ TestRunner.test({
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        document.body.appendChild(container);
+        //document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />);
-        var button = document.getElementById('test9-button');
-        button.click();
+        var button = container.querySelector('#test9-button');
+        (button as HTMLButtonElement).click();
         callback(viewModel.clicked);
     },
     assert: function(result, callback) {

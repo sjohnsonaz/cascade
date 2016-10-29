@@ -40,7 +40,7 @@ TestRunner.test({
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs = [];
-        document.body.appendChild(container);
+        //document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />, function(element: HTMLElement) {
             var child = container.querySelector('#child');
             runs.push((child.childNodes[1] as Text).data);

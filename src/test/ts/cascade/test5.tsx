@@ -39,7 +39,7 @@ TestRunner.test({
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        document.body.appendChild(container);
+        //document.body.appendChild(container);
         Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
         });
         viewModel.a = 'a1';
