@@ -42,8 +42,9 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             // Store the new context
             this.context = Component.popContext();
             return root;
-        });//, true);
+        });
         Cascade.createComputed(this, 'element', (oldElement: Node) => {
+            // Subscribe to root
             var root = this.root;
             var element: Node;
             if (typeof root === 'string') {
@@ -52,13 +53,15 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
                 element = document.createTextNode(root.toString());
             } else {
                 if (root instanceof Component) {
+                    // Do not subscribe to root element
                     element = Cascade.peek(root, 'element');
                 } else {
                     element = root.toNode(oldElement);
                 }
             }
             return element;
-        }, false);
+        });
+        // Only update parent node if the element has changed
         Cascade.subscribe(this, 'element', (element: Node) => {
             var oldElement = this.element;
             if (oldElement) {
