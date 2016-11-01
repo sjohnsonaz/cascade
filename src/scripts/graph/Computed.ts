@@ -1,10 +1,11 @@
-import Observable, {Subscriber} from './Observable';
+import {IObservable, ISubscriber} from './IObservable';
+import Observable from './Observable';
 import ComputedQueue from './ComputedQueue';
 
 var id: number = 0;
 var computedQueue: ComputedQueue = new ComputedQueue();
 
-export default class Computed<T> extends Observable<T> implements Subscriber {
+export default class Computed<T> extends Observable<T> implements ISubscriber {
 
     id: number;
     references: Observable<any>[];

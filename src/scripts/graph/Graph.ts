@@ -1,4 +1,5 @@
-import Observable, {Subscriber, SubscriberFunction} from './Observable';
+import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
+import Observable from './Observable';
 import Computed from './Computed';
 
 export interface ObservableIndex {
@@ -55,7 +56,7 @@ export default class Graph {
         }
     }
 
-    subscribe(property: string, subscriber: Subscriber | SubscriberFunction<any>) {
+    subscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (!this.observables[property]) {
             // Force value to update.
             var value = this.parent[property];
@@ -63,7 +64,7 @@ export default class Graph {
         this.observables[property].subscribe(subscriber);
     }
 
-    subscribeOnly(property: string, subscriber: Subscriber | SubscriberFunction<any>) {
+    subscribeOnly(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (!this.observables[property]) {
             // Force value to update.
             var value = this.parent[property];
@@ -71,7 +72,7 @@ export default class Graph {
         this.observables[property].subscribeOnly(subscriber);
     }
 
-    unsubscribe(property: string, subscriber: Subscriber | SubscriberFunction<any>) {
+    unsubscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (this.observables[property]) {
             this.observables[property].subscribe(subscriber);
         }
@@ -146,7 +147,7 @@ export default class Graph {
         });
     }
 
-    static subscribe<T>(obj: any, property: string, subscriberFunction: SubscriberFunction<T>) {
+    static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
         var graph: Graph = obj._graph;
         if (graph) {
             graph.subscribe(property, subscriberFunction);
