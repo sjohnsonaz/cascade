@@ -1,6 +1,5 @@
 declare var window: any;
 import TestRunner from '../TestRunner';
-/*
 import './test0';
 import './test1';
 import './test2';
@@ -11,7 +10,6 @@ import './test6';
 import './test7';
 import './test8';
 import './test9';
-*/
 import './test10';
 
 window.onload = function() {
