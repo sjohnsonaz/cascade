@@ -8,7 +8,7 @@ var computedQueue: ComputedQueue = new ComputedQueue();
 export default class Computed<T> extends Observable<T> implements ISubscriber {
 
     id: number;
-    references: Observable<any>[];
+    references: IObservable<any>[];
     definition: (n: T) => T;
     thisArg: any;
     dirty: boolean;

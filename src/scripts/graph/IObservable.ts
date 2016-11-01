@@ -7,7 +7,6 @@ export interface ISubscriberFunction<T> {
 }
 
 export interface IObservable<T> {
-    value: T;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
     getValue(): T;
     peek(): T;

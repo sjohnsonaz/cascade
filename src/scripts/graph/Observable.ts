@@ -1,7 +1,7 @@
 import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
 
-var computedContexts: Observable<any>[][] = [];
-var context: Observable<any>[] = undefined;
+var computedContexts: IObservable<any>[][] = [];
+var context: IObservable<any>[] = undefined;
 
 export default class Observable<T> implements IObservable<T> {
     value: T;
