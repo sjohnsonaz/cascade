@@ -1,4 +1,3 @@
-declare var window: any;
 import TestRunner from '../TestRunner';
 import {observable, array} from '../../../scripts/modules/Cascade';
 
@@ -19,7 +18,6 @@ TestRunner.test({
     name: 'Changes to Arrays are observed.',
     test: function(input, callback) {
         var viewModel: any = new ViewModel();
-        window.viewModel = viewModel;
         var complete = false;
         viewModel._graph.subscribe('loop', function(value) {
             viewModel.runs++;
@@ -34,7 +32,6 @@ TestRunner.test({
         complete = true;
     },
     assert: function(result, callback) {
-        console.log(result);
         if (result.value == 10 && result.runs == 2) {
             callback(true);
         } else {
