@@ -1,6 +1,7 @@
 import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
 import Observable from './Observable';
 import Computed from './Computed';
+import ObservableArray from './ObservableArray';
 
 export interface ObservableIndex {
     [index: string]: Observable<any>;
@@ -181,6 +182,46 @@ export default class Graph {
             return graph.getReferences(property);
         }
     }
+}
+
+export function array<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
+    return {
+        enumerable: true,
+        configurable: true,
+        get: function() {
+            // Graph is not initialized
+            if (!this._graph) {
+                Object.defineProperty(this, '_graph', {
+                    configurable: true,
+                    writable: true,
+                    enumerable: false,
+                    value: new Graph(this)
+                });
+            }
+            // Property does not exist
+            if (!this._graph.observables[propertyKey]) {
+                this._graph.observables[propertyKey] = new ObservableArray<T>(undefined);
+            }
+            return this._graph.observables[propertyKey].getValue();
+        },
+        set: function(value: Array<T>) {
+            // Graph is not initialized
+            if (!this._graph) {
+                Object.defineProperty(this, '_graph', {
+                    configurable: true,
+                    writable: true,
+                    enumerable: false,
+                    value: new Graph(this)
+                });
+            }
+            // Property does not exist
+            if (!this._graph.observables[propertyKey]) {
+                this._graph.observables[propertyKey] = new ObservableArray<T>(value);
+            } else {
+                this._graph.observables[propertyKey].setValue(value);
+            }
+        }
+    };
 }
 
 export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
