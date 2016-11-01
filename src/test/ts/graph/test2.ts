@@ -1,9 +1,9 @@
 import TestRunner from '../TestRunner';
-import {observable} from '../../../scripts/modules/Cascade';
+import {observable, array} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     runs: number = 0;
-    @observable a = [1, 2, 3];
+    @array a = [1, 2, 3];
     @observable get loop() {
         var a = this.a;
         var total = 0;
@@ -29,10 +29,12 @@ TestRunner.test({
             }
         });
         viewModel.a = [1, 2, 3, 4];
+        viewModel.a.push(10);
+        viewModel.a.push(100);
         complete = true;
     },
     assert: function(result, callback) {
-        if (result.value == 10 && result.runs == 2) {
+        if (result.value == 120 && result.runs == 2) {
             callback(true);
         } else {
             callback(false);

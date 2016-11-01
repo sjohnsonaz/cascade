@@ -244,7 +244,9 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
 
     replaceAll(value: T[]) {
         this.length = 0;
-        this.concat(value);
+        for (var index = 0, length = value.length; index < length; index++) {
+            this[index] = value[index];
+        }
         this.runOperation('replaceAll', value);
     }
 }
