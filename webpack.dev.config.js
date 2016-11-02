@@ -1,14 +1,14 @@
-var webpack = require('webpack');
-
 module.exports = {
     entry: {
-        'cascade': ['./src/scripts/modules/Cascade.ts']
+        'graphTest': './src/test/ts/graph/graphTest.ts',
+        'cascadeTest': './src/test/ts/cascade/cascadeTest.ts'
     },
     output: {
         filename: './dist/bundle/[name].js',
         libraryTarget: 'var',
         library: '[name]'
     },
+    devtool: 'source-map',
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
     },
@@ -17,8 +17,5 @@ module.exports = {
             test: /\.tsx?$/,
             loader: 'ts-loader'
         }]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin()
-    ]
+    }
 };
