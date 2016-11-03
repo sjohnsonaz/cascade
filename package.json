@@ -19,9 +19,9 @@
   "dependencies": {},
   "devDependencies": {
     "jest-cli": "^12.1.1",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
-    "webpack": "^1.13.1"
+    "ts-loader": "^0.9.5",
+    "typescript": "^2.0.3",
+    "webpack": "^1.13.2"
   },
   "jest": {
     "verbose": true,
