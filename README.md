@@ -10,7 +10,7 @@ Cascade builds ViewModels with reactive properties to synchronize data. Properti
 
 Furthermore, any Functional DOM Component which references an observable or computed, will be updated automatically.
 
-```
+```TypeScript
 class User {
     @observable firstName: string = '';
     @observable lastName: string = '';
@@ -25,7 +25,7 @@ class User {
 
 Cascade uses either JSX or direct JavaScript calls to create a Virtual Dom. These Virtual Nodes can then be rendered into DOM Nodes for display.
 
-```
+```TypeScript
 Cascade.createElement<T extends Object>(
     type: string | Component,
     properties: T,
@@ -35,7 +35,7 @@ Cascade.createElement<T extends Object>(
 
 Components may be defined by simply extending the Component class.
 
-```
+```TypeScript
 interface IUserViewProperties {
     user: User;
 }
@@ -51,13 +51,13 @@ class UserView extends Component<IUserViewProperties> {
 
 Components can then be rendered by either calling
 
-```
+```TypeScript
 Cascade.createElement(UserView, { user: User });
 ```
 
 or with JSX by calling
 
-```
+```TypeScript
 <UserView user={User} />
 ```
 
@@ -65,7 +65,7 @@ or with JSX by calling
 
 Cascade will render directly to any DOM node specified. Simply call
 
-```
+```TypeScript
 Cascade.render(
     node: HTMLElement | string,
     virtualNode: IVirtualNode<any>,
@@ -75,7 +75,7 @@ Cascade.render(
 
 For example
 
-```
+```TypeScript
 Cascade.render(
     document.getElementById('root'),
     <UserView user={User} />
