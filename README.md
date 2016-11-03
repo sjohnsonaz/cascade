@@ -6,18 +6,20 @@ A JavaScript/TypeScript library for creating modern user interfaces. It combines
 
 ## Reactive ViewModels
 
-Cascade builds ViewModels with reactive properties to synchronize data. Properties may be marked as observable, so that changes may be watched, or computed, which then watch for changes in related observables. With this, a dynamic tree of data may be built, all which is updated automatically.
+Cascade builds ViewModels with reactive properties to synchronize data. Properties may be marked as observable, so that changes may be watched, or computed, which then watch for changes in related observables. With this, a dynamic tree of data may be built, all which is updated automatically. Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function.
+
+> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. Any arrays must be declared with their types. If you don't wish to install `reflect-metadata`, then you must use `@array` instead of `@observable`.
 
 Furthermore, any Functional DOM Component which references an observable or computed, will be updated automatically.
 
-```TypeScript
+```typescript
 class User {
     @observable firstName: string = '';
     @observable lastName: string = '';
     @observable get fullName() {
         return this.firstName + ' ' + this.lastName;
     }
-    @array list = [1, 2, 3, 4];
+    @observable list: number[] = [1, 2, 3, 4];
 }
 ```
 
@@ -25,7 +27,7 @@ class User {
 
 Cascade uses either JSX or direct JavaScript calls to create a Virtual Dom. These Virtual Nodes can then be rendered into DOM Nodes for display.
 
-```TypeScript
+```typescript
 Cascade.createElement<T extends Object>(
     type: string | Component,
     properties: T,
@@ -33,9 +35,9 @@ Cascade.createElement<T extends Object>(
 ): IVirtualNode<any>;
 ```
 
-Components may be defined by simply extending the Component class.
+Components may be defined by simply extending the Component class. Any property which references an observable will cause the Component to render any time the observable updates.
 
-```TypeScript
+```typescript
 interface IUserViewProperties {
     user: User;
 }
@@ -51,13 +53,13 @@ class UserView extends Component<IUserViewProperties> {
 
 Components can then be rendered by either calling
 
-```TypeScript
+```typescript
 Cascade.createElement(UserView, { user: User });
 ```
 
 or with JSX by calling
 
-```TypeScript
+```typescript
 <UserView user={User} />
 ```
 
@@ -65,7 +67,7 @@ or with JSX by calling
 
 Cascade will render directly to any DOM node specified. Simply call
 
-```TypeScript
+```typescript
 Cascade.render(
     node: HTMLElement | string,
     virtualNode: IVirtualNode<any>,
@@ -75,7 +77,7 @@ Cascade.render(
 
 For example
 
-```TypeScript
+```typescript
 Cascade.render(
     document.getElementById('root'),
     <UserView user={User} />
