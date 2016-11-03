@@ -12,7 +12,8 @@
     "prepublish": "tsc --declaration",
     "test": "jest",
     "browser": "webpack --config webpack.config.js",
-    "dev": "webpack --config webpack.dev.config.js --watch"
+    "dev": "webpack --config webpack.dev.config.js --watch",
+    "dev-local": "tsc --declaration --watch"
   },
   "repository": {},
   "bugs": {},
