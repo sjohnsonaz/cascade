@@ -23,7 +23,8 @@ export default class ComputedQueue {
             this.items.push(computed);
             if (!this.scheduled) {
                 this.scheduled = true;
-                window.setTimeout(this.run, 1, this);
+                // TODO: Remove bind.  This is for IE9.
+                window.setTimeout(this.run.bind(this, this), 1, this);
             }
         }
     }
