@@ -63,6 +63,7 @@ export default class Graph {
             var value = this.parent[property];
         }
         this.observables[property].subscribe(subscriber);
+        return value;
     }
 
     subscribeOnly(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
@@ -71,6 +72,7 @@ export default class Graph {
             var value = this.parent[property];
         }
         this.observables[property].subscribeOnly(subscriber);
+        return value;
     }
 
     unsubscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
