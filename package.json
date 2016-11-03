@@ -19,6 +19,7 @@
   "dependencies": {},
   "devDependencies": {
     "jest-cli": "^12.1.1",
+    "reflect-metadata": "^0.1.8",
     "ts-loader": "^0.9.5",
     "typescript": "^2.0.3",
     "webpack": "^1.13.2"

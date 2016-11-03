@@ -5,7 +5,7 @@ class ViewModel {
     runsA: number = 0;
     runsB: number = 0;
     @observable a: string = 'a';
-    @array list: number[] = [1, 2, 3, 4];
+    @observable list: number[] = [1, 2, 3, 4];
 }
 
 interface IParentProperties {

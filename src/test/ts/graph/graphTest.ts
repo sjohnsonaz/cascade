@@ -1,4 +1,7 @@
 declare var window: any;
+
+import 'reflect-metadata';
+
 import TestRunner from '../TestRunner';
 import './test0';
 import './test1';
