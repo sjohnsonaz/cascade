@@ -1,3 +1,5 @@
+declare var Reflect: any;
+
 import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
 import Observable from './Observable';
 import Computed from './Computed';
@@ -187,7 +189,7 @@ export default class Graph {
 }
 
 export function array<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
-    return {
+    Object.defineProperty(target, propertyKey, {
         enumerable: true,
         configurable: true,
         get: function() {
@@ -223,7 +225,7 @@ export function array<T>(target: any, propertyKey: string, descriptor?: TypedPro
                 this._graph.observables[propertyKey].setValue(value);
             }
         }
-    };
+    });
 }
 
 export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
@@ -247,48 +249,60 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
             return this._graph.observables[propertyKey].getValue();
         }
     } else {
-        return {
-            enumerable: true,
-            configurable: true,
-            get: function() {
-                // Graph is not initialized
-                if (!this._graph) {
-                    Object.defineProperty(this, '_graph', {
-                        configurable: true,
-                        writable: true,
-                        enumerable: false,
-                        value: new Graph(this)
-                    });
-                }
-                // Property does not exist
-                if (!this._graph.observables[propertyKey]) {
-                    this._graph.observables[propertyKey] = new Observable<T>(undefined);
-                }
-                return this._graph.observables[propertyKey].getValue();
-            },
-            set: function(value: T) {
-                // Graph is not initialized
-                if (!this._graph) {
-                    Object.defineProperty(this, '_graph', {
-                        configurable: true,
-                        writable: true,
-                        enumerable: false,
-                        value: new Graph(this)
-                    });
-                }
-                // Property does not exist
-                if (!this._graph.observables[propertyKey]) {
-                    this._graph.observables[propertyKey] = new Observable<T>(value);
-                } else {
-                    this._graph.observables[propertyKey].setValue(value);
-                }
+        // Only use Reflection if it exists.
+        var typeName;
+        if (typeof Reflect === 'object' && typeof Reflect.getMetadata === "function") {
+            var type = Reflect.getMetadata("design:type", target, propertyKey);
+            if (type) {
+                typeName = type.name;
             }
-        };
+        }
+        if (typeName === 'Array') {
+            array(target, propertyKey, descriptor);
+        } else {
+            Object.defineProperty(target, propertyKey, {
+                enumerable: true,
+                configurable: true,
+                get: function() {
+                    // Graph is not initialized
+                    if (!this._graph) {
+                        Object.defineProperty(this, '_graph', {
+                            configurable: true,
+                            writable: true,
+                            enumerable: false,
+                            value: new Graph(this)
+                        });
+                    }
+                    // Property does not exist
+                    if (!this._graph.observables[propertyKey]) {
+                        this._graph.observables[propertyKey] = new Observable<T>(undefined);
+                    }
+                    return this._graph.observables[propertyKey].getValue();
+                },
+                set: function(value: T) {
+                    // Graph is not initialized
+                    if (!this._graph) {
+                        Object.defineProperty(this, '_graph', {
+                            configurable: true,
+                            writable: true,
+                            enumerable: false,
+                            value: new Graph(this)
+                        });
+                    }
+                    // Property does not exist
+                    if (!this._graph.observables[propertyKey]) {
+                        this._graph.observables[propertyKey] = new Observable<T>(value);
+                    } else {
+                        this._graph.observables[propertyKey].setValue(value);
+                    }
+                }
+            });
+        }
     }
 }
 
 export function computed<T>(definition: (n: T) => T) {
-    return function(target: any, propertyKey: string): any {
+    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
         return {
             enumerable: true,
             get: function() {
