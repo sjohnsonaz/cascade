@@ -1,9 +1,8 @@
 node_modules/
 typings/
-doc/
+docs/
 src/
 dist/bundle/
-dist/polyfill/
 dist/test/
 dist/__tests__/
 *.map
