@@ -1,5 +1,5 @@
-# ArrayModule
-`ArrayModule` extends from `Array`.  However, as `Array` is not directly extensible, some things are not completely available.  Direct modification of values via the `array[index]` method will not produce publish events.  Thus, only Mutator methods will work, and have been modified.  We have also added a `set` method.  Accessor methods are unmodified, but a `get` method has been added to match the `set` method.
+# ObservableArray
+`ObservableArray` extends from `Array`.  However, as `Array` is not directly extensible, some things are not completely available.  Direct modification of values via the `array[index]` method will not produce publish events.  Thus, only Mutator methods will work, and have been modified.  We have also added a `set` method.  Accessor methods are unmodified, but a `get` method has been added to match the `set` method.
 
 ## Publish events
 
@@ -33,10 +33,10 @@ These methods change the array values.  They will all generate publish events.
 - `Array.prototype.fill()`  
 - Fills all the elements of an array from a start index to an end index with a static value.  
 - **insert**
-- `ArrayModule.prototype.pushUnique(value)`  
+- `ObservableArray.prototype.pushUnique(value)`  
 - Adds one or more elements if they do not exist in the array.  
 - **Insert**
-- `ArrayModule.prototype.set(index, value)`  
+- `ObservableArray.prototype.set(index, value)`  
 - Sets the element at the specified index.  
 - **Insert**
 
@@ -47,10 +47,10 @@ These methods change the array values.  They will all generate publish events.
 - `Array.prototype.shift()`  
 - Removes the first element from an array and returns that element.  
 - **Delete**
-- `ArrayModule.prototype.remove()`  
+- `ObservableArray.prototype.remove()`  
 - Removes the element from the array if it exists.  
 - **Delete**
-- `ArrayModule.prototype.removeAll()`  
+- `ObservableArray.prototype.removeAll()`  
 - Removes all elements from the array.  
 - **Delete**
 
@@ -68,5 +68,5 @@ These methods change the array values.  They will all generate publish events.
 - **Reorder**
 
 ### Accessor methods
-- `ArrayModule.prototype.get(index)`  
+- `ObservableArray.prototype.get(index)`  
 - Gets the element at the specified index.
