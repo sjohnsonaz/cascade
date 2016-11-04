@@ -8,6 +8,7 @@ import './test3';
 import './test4';
 
 window.onload = function() {
+    TestRunner.consoleRoot = document.getElementById('console');
     TestRunner.run(function(output) {
         window.tests = output;
     });

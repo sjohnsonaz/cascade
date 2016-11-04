@@ -15,6 +15,7 @@ import './test8';
 import './test9';
 
 window.onload = function() {
+    TestRunner.consoleRoot = document.getElementById('console');
     TestRunner.run(function(output) {
         window.tests = output;
     });

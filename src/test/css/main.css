@@ -1,4 +1,34 @@
-.blue {
-    background-color: blue;
-    color: white;
+.code {
+    counter-reset: listing;
+    padding: 10px;
+}
+
+.code>code {
+    color: #000;
+}
+
+.code.line-numbers>code {
+    counter-increment: listing;
+}
+
+.code.line-numbers>code:before {
+    content: counter(listing) ". ";
+    color: #000;
+}
+
+.scrollable {
+    border: 1px solid #000;
+    overflow-y: scroll;
+}
+
+.code>code.log {
+    color: #000;
+}
+
+.code>code.error {
+    color: #f00;
+}
+
+.code>code.info {
+    color: #00f;
 }

@@ -3,6 +3,7 @@ export default class TestRunner {
     }
 
     static tests: Array<any> = [];
+    static consoleRoot?: HTMLElement
 
     static test(test) {
         TestRunner.tests.push(test);
@@ -12,7 +13,7 @@ export default class TestRunner {
         tests = tests || TestRunner.tests;
         var results = [];
         if (tests.length) {
-            console.log('Running tests...');
+            TestRunner.consoleOutput('log', 'Running tests...');
             console.time('Test time');
             TestRunner.runTests(tests, results, function() {
                 console.timeEnd('Test time');
@@ -25,11 +26,27 @@ export default class TestRunner {
                         fail++;
                     }
                 }
-                console.log('Tests: ' + results.length + ', Pass: ' + pass + ', Fail: ' + fail);
+                TestRunner.consoleOutput('log', 'Tests: ' + results.length + ', Pass: ' + pass + ', Fail: ' + fail);
                 callback();
             });
         } else {
-            console.log('No tests to run.');
+            TestRunner.consoleOutput('log', 'No tests to run.');
+        }
+    }
+
+    static consoleOutput(type: string, ...output: any[]) {
+        console[type](...output);
+        if (TestRunner.consoleRoot) {
+            var fragment = document.createDocumentFragment();
+            for (var index = 0, length = output.length; index < length; index++) {
+                var code = document.createElement('code');
+                code.className = type;
+                var text = document.createTextNode(output[index].toString() + '\r\n');
+                code.appendChild(text);
+                fragment.appendChild(code);
+            }
+            TestRunner.consoleRoot.appendChild(fragment);
+            TestRunner.consoleRoot.scrollTop = TestRunner.consoleRoot.scrollHeight;
         }
     }
 
@@ -37,18 +54,18 @@ export default class TestRunner {
         var test = tests.shift();
         if (test) {
             results.push(test);
-            console.log('Running: ' + test.name || 'test');
+            TestRunner.consoleOutput('log', 'Running: ' + test.name || 'test');
             test.test(test.input, function(result) {
                 test.result = result;
                 if (test.assert) {
                     test.assert(result, function(pass) {
                         test.pass = pass;
-                        console.log('Pass: ' + pass);
+                        TestRunner.consoleOutput(pass ? 'log' : 'error', 'Pass: ' + pass);
                         TestRunner.runTests(tests, results, callback);
                     });
                 } else {
                     test.pass = true;
-                    console.log('Pass: ' + true);
+                    TestRunner.consoleOutput('log', 'Pass: ' + true);
                     TestRunner.runTests(tests, results, callback);
                 }
             });
