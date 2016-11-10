@@ -1,6 +1,10 @@
 import Cascade from './Cascade';
 
-export interface IVirtualNode<T extends Object> {
+export interface IVirtualNodeProperties {
+    ref?: (node: Node) => void;
+}
+
+export interface IVirtualNode<T extends IVirtualNodeProperties> {
     properties: T;
     children: Array<IVirtualNode<any> | string | number>;
 

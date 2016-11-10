@@ -1,12 +1,12 @@
 import Cascade from './Cascade';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
-import {IVirtualNode} from './IVirtualNode';
+import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
 
 var componentContexts: Component<any>[][] = [];
 var context: Component<any>[] = undefined;
 
-export default class Component<T extends Object> implements IVirtualNode<T> {
+export default class Component<T extends IVirtualNodeProperties> implements IVirtualNode<T> {
     uniqueId: number;
     properties: T;
     children: Array<IVirtualNode<any> | string | number>;
@@ -49,7 +49,7 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             var element: Node;
             if (typeof root === 'string') {
                 element = document.createTextNode(root);
-            } else if(typeof root ==='number') {
+            } else if (typeof root === 'number') {
                 element = document.createTextNode(root.toString());
             } else {
                 if (root instanceof Component) {
@@ -58,6 +58,9 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
                 } else {
                     element = root.toNode(oldElement);
                 }
+            }
+            if (this.properties && this.properties.ref) {
+                this.properties.ref(element);
             }
             return element;
         });
@@ -93,6 +96,9 @@ export default class Component<T extends Object> implements IVirtualNode<T> {
             } else {
                 element = root.toNode();
             }
+        }
+        if (this.properties && this.properties.ref) {
+            this.properties.ref(element);
         }
         return element;
     }

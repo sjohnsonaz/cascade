@@ -1,8 +1,8 @@
 import Cascade from './Cascade';
 import Component from './Component';
-import {IVirtualNode} from './IVirtualNode';
+import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
 
-export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
+export default class VirtualNode<T extends IVirtualNodeProperties> implements IVirtualNode<T> {
     type: string;
     properties: T;
     children: Array<IVirtualNode<any> | string | number>;
@@ -62,6 +62,9 @@ export default class VirtualNode<T extends Object> implements IVirtualNode<T> {
                     }
                 }
             }
+        }
+        if (this.properties && this.properties.ref) {
+            this.properties.ref(node);
         }
         return node;
     }
