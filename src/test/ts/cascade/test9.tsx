@@ -3,8 +3,11 @@ import Cascade, {Component, observable} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     clicked: number = 0;
+    clickedValue: string = '';
+    @observable value: string = '';
     onclick() {
         this.clicked++;
+        this.clickedValue = this.value;
     }
 }
 
@@ -16,21 +19,33 @@ class Parent extends Component<IParentProperties> {
     onclick() {
         this.properties.viewModel.onclick();
     }
+    onchange(event: Event) {
+        this.properties.viewModel.value = (event.target as HTMLInputElement).value;
+    }
     render() {
         return (
-            <Child onclick={this.onclick.bind(this)} />
+            <Child
+                viewModel={this.properties.viewModel}
+                onclick={this.onclick.bind(this)}
+                onchange={this.onchange.bind(this)}
+                />
         );
     }
 }
 
 interface IChildProperties {
     onclick: Function;
+    onchange: Function;
+    viewModel: ViewModel;
 }
 
 class Child extends Component<IChildProperties> {
     render() {
         return (
-            <button id="test9-button" onclick={this.properties.onclick}>Click</button>
+            <div>
+                <input id="test9-input" type="text" value={this.properties.viewModel.value} onchange={this.properties.onchange} />
+                <button id="test9-button" onclick={this.properties.onclick}>Click</button>
+            </div>
         );
     }
 }
@@ -42,11 +57,16 @@ TestRunner.test({
         var container = document.createElement('div');
         //document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />);
-        var button = container.querySelector('#test9-button');
-        (button as HTMLButtonElement).click();
-        callback(viewModel.clicked);
+        var inputElement = container.querySelector('#test9-input') as HTMLInputElement;
+        var buttonElement = container.querySelector('#test9-button') as HTMLButtonElement;
+        inputElement.value = '1234';
+        var event = document.createEvent('Event');
+        event.initEvent('change', true, true);
+        inputElement.dispatchEvent(event);
+        buttonElement.click();
+        callback(viewModel);
     },
     assert: function(result, callback) {
-        callback(1);
+        callback(result.clicked === 1 && result.clickedValue === '1234');
     }
 });
