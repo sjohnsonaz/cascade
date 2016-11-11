@@ -29,16 +29,23 @@ class Parent extends Component<IParentProperties> {
 }
 
 TestRunner.test({
-    name: 'VirtualNode and Component use ref callbacks',
+    name: 'Diff algorithm generates comparison information',
     test: function(input, callback: any) {
         //var viewModel = new ViewModel();
         //var container = document.createElement('div');
         //document.body.appendChild(container);
         //Cascade.render(container, <Parent viewModel={viewModel} ref={viewModel.parentRef.bind(viewModel)}/>);
-        var lcs = Diff.lcs('abcd', 'abd');
-        callback(lcs);
+        var diff = Diff.compare('abcde', 'abdfe');
+        var lcs = [];
+        for (var index = 0, length = diff.length; index < length; index++) {
+            var diffItem = diff[index];
+            if (diffItem.operation === 0) {
+                lcs.push(diffItem.item);
+            }
+        }
+        callback(lcs.join(''));
     },
     assert: function(result, callback) {
-        callback(result === 'abd');
+        callback(result === 'abde');
     }
 });
