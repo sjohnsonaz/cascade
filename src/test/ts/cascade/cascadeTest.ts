@@ -3,6 +3,7 @@ declare var window: any;
 import 'reflect-metadata';
 
 import TestRunner from '../TestRunner';
+/*
 import './test0';
 import './test1';
 import './test2';
@@ -16,6 +17,8 @@ import './test9';
 import './test10';
 import './test11';
 import './test12';
+*/
+import './test13';
 
 window.onload = function() {
     TestRunner.consoleRoot = document.getElementById('console');
