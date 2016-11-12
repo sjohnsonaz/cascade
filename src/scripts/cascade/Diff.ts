@@ -37,7 +37,7 @@ export default class Diff {
         // one by one store characters in diff[]
         i = m;
         j = n;
-        while (i > 0 && j > 0) {
+        while (i > 0 || j > 0) {
             // If current character in X[] and Y are same, then
             // current character is part of LCS
             if (comparison ? comparison(x[i - 1], y[j - 1]) : x[i - 1] == y[j - 1]) {
@@ -48,22 +48,39 @@ export default class Diff {
                 });
                 // reduce values of i and j
                 i--; j--;
-            }
-
-            // If not same, then find the larger of two and
-            // go in the direction of larger value
-            else if (table[i - 1][j] > table[i][j - 1]) {
-                diff.push({
-                    operation: DiffOperation.REMOVE,
-                    item: x[i - 1]
-                });
-                i--;
             } else {
-                diff.push({
-                    operation: DiffOperation.ADD,
-                    item: y[j - 1]
-                });
-                j--;
+                // If not same, then find the larger of two and
+                // go in the direction of larger value
+                if (table[i - 1][j] > table[i][j - 1]) {
+                    diff.push({
+                        operation: DiffOperation.REMOVE,
+                        item: x[i - 1]
+                    });
+                    i--;
+                } else {
+                    diff.push({
+                        operation: DiffOperation.ADD,
+                        item: y[j - 1]
+                    });
+                    j--;
+                }
+            }
+            if (i === 0) {
+                while (j > 0) {
+                    diff.push({
+                        operation: DiffOperation.ADD,
+                        item: y[j - 1]
+                    });
+                    j--;
+                }
+            } else if (j === 0) {
+                while (i > 0) {
+                    diff.push({
+                        operation: DiffOperation.REMOVE,
+                        item: x[i - 1]
+                    });
+                    i--;
+                }
             }
         }
         diff.reverse();

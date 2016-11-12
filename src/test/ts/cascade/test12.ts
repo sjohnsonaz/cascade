@@ -4,6 +4,9 @@ import Diff from '../../../scripts/cascade/Diff';
 TestRunner.test({
     name: 'Diff algorithm generates comparison information',
     test: function(input, callback: any) {
+        var diff = Diff.compare('ab', 'ac');
+        var diff = Diff.compare('ac', 'bc');
+        var diff = Diff.compare('acd', 'bd');
         var diff = Diff.compare('abcde', 'abdfe');
         var lcs = [];
         for (var index = 0, length = diff.length; index < length; index++) {
