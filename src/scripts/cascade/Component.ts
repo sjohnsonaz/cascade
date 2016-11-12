@@ -2,6 +2,7 @@ import Cascade from './Cascade';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
 import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
+import Diff, {DiffOperation} from './Diff';
 
 var componentContexts: Component<any>[][] = [];
 var context: Component<any>[] = undefined;
@@ -61,7 +62,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                         element = root.toNode();
                     } else {
                         // Diff this case
-                        element = this.diff(root, oldRoot, oldElement);
+                        element = this.diff(root as VirtualNode<any>, oldRoot, oldElement);
                     }
                 }
             }
@@ -112,8 +113,26 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         return element;
     }
 
-    diff(newRoot: IVirtualNode<any>, oldRoot: IVirtualNode<any>, oldElement: Node) {
-        return newRoot.toNode(oldElement);
+    diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: Node) {
+        if (!oldRoot || oldRoot.type !== newRoot.type) {
+            return newRoot.toNode();
+        } else {
+            // Old and New Roots match
+            var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
+            for (var index = 0, length = diff.length; index < length; index++) {
+                var diffItem = diff[index];
+                switch (diffItem.operation) {
+                    case DiffOperation.REMOVE:
+                        break;
+                    case DiffOperation.NONE:
+                        break;
+                    case DiffOperation.ADD:
+                        break;
+                }
+            }
+            return newRoot.toNode(oldElement);
+            //return oldElement;
+        }
     }
 
     static getContext() {
@@ -130,5 +149,21 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         var oldContext = componentContexts.shift();
         context = componentContexts[0];
         return oldContext;
+    }
+}
+
+function compareVirtualNodes(nodeA: VirtualNode<any> | string | number, nodeB: VirtualNode<any> | string | number) {
+    var typeA = typeof nodeA;
+    var typeB = typeof nodeB;
+    if (typeA === typeB) {
+        switch (typeA) {
+            case 'string':
+            case 'number':
+                return nodeA === nodeB;
+            case 'object':
+                return (nodeA as VirtualNode<any>).type === (nodeB as VirtualNode<any>).type;
+        }
+    } else {
+        return false;
     }
 }

@@ -6,6 +6,7 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
     type: string;
     properties: T;
     children: Array<IVirtualNode<any> | string | number>;
+    element: Node;
 
     constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.type = type;
@@ -37,7 +38,7 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
                         if (innerChild) {
                             if (typeof innerChild === 'string') {
                                 node.appendChild(document.createTextNode(innerChild));
-                            } else if(typeof innerChild === 'number') {
+                            } else if (typeof innerChild === 'number') {
                                 node.appendChild(document.createTextNode(innerChild.toString()));
                             } else {
                                 if (innerChild instanceof Component) {
@@ -66,6 +67,7 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
         if (this.properties && this.properties.ref) {
             this.properties.ref(node);
         }
+        this.element = node;
         return node;
     }
 
