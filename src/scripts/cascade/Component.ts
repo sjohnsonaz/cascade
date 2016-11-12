@@ -43,6 +43,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
             this.context = Component.popContext();
             return root;
         });
+        var oldRoot = undefined;
         Cascade.createComputed(this, 'element', (oldElement: Node) => {
             // Subscribe to root
             var root = this.root;
@@ -56,12 +57,20 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                     // Do not subscribe to root element
                     element = Cascade.peek(root, 'element');
                 } else {
-                    element = root.toNode(oldElement);
+                    if (!oldElement) {
+                        element = root.toNode();
+                    } else {
+                        // Diff this case
+                        element = this.diff(root, oldRoot, oldElement);
+                    }
                 }
             }
-            if (this.properties && this.properties.ref) {
-                this.properties.ref(element);
+            if (element !== oldElement) {
+                if (this.properties && this.properties.ref) {
+                    this.properties.ref(element);
+                }
             }
+            oldRoot = root;
             return element;
         });
         // Only update parent node if the element has changed
@@ -101,6 +110,10 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
             this.properties.ref(element);
         }
         return element;
+    }
+
+    diff(newRoot: IVirtualNode<any>, oldRoot: IVirtualNode<any>, oldElement: Node) {
+        return newRoot.toNode(oldElement);
     }
 
     static getContext() {
