@@ -9,6 +9,7 @@ TestRunner.test({
         var diff = Diff.compare('acd', 'bd');
         var diff = Diff.compare('abcde', 'abdfe');
         var lcs = [];
+        diff.reverse();
         for (var index = 0, length = diff.length; index < length; index++) {
             var diffItem = diff[index];
             if (diffItem.operation === 0) {
