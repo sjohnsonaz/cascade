@@ -11,7 +11,24 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
     constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.type = type;
         this.properties = properties || ({} as any);
-        this.children = children || [];
+        this.children = children ? this.fixChildrenArrays(children) : [];
+    }
+
+    fixChildrenArrays(children: Array<IVirtualNode<any> | string | number>) {
+        var fixedChildren = [];
+        for (var index = 0, length = children.length; index < length; index++) {
+            var child = children[index];
+            if (child) {
+                if (child instanceof Array) {
+                    for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
+                        fixedChildren.push(child[childIndex]);
+                    }
+                } else {
+                    fixedChildren.push(child);
+                }
+            }
+        }
+        return fixedChildren;
     }
 
     toNode(oldValue?: Node) {
@@ -32,34 +49,15 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
         for (var index = 0, length = this.children.length; index < length; index++) {
             var child = this.children[index];
             if (child) {
-                if (child instanceof Array) {
-                    for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
-                        var innerChild = (child as any)[childIndex];
-                        if (innerChild) {
-                            if (typeof innerChild === 'string') {
-                                node.appendChild(document.createTextNode(innerChild));
-                            } else if (typeof innerChild === 'number') {
-                                node.appendChild(document.createTextNode(innerChild.toString()));
-                            } else {
-                                if (innerChild instanceof Component) {
-                                    node.appendChild(Cascade.peek(innerChild, 'element'));
-                                } else {
-                                    node.appendChild(innerChild.toNode());
-                                }
-                            }
-                        }
-                    }
+                if (typeof child === 'string') {
+                    node.appendChild(document.createTextNode(child));
+                } else if (typeof child === 'number') {
+                    node.appendChild(document.createTextNode(child.toString()));
                 } else {
-                    if (typeof child === 'string') {
-                        node.appendChild(document.createTextNode(child));
-                    } else if (typeof child === 'number') {
-                        node.appendChild(document.createTextNode(child.toString()));
+                    if (child instanceof Component) {
+                        node.appendChild(Cascade.peek(child, 'element'));
                     } else {
-                        if (child instanceof Component) {
-                            node.appendChild(Cascade.peek(child, 'element'));
-                        } else {
-                            node.appendChild(child.toNode());
-                        }
+                        node.appendChild(child.toNode());
                     }
                 }
             }
