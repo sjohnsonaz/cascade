@@ -92,6 +92,41 @@ export default class Diff {
     static max(a: number, b: number) {
         return (a > b) ? a : b;
     }
+
+    // TODO: Optimize reads
+    static compareHash(x: Object, y: Object) {
+        var result = {};
+
+        for (var name in x) {
+            if (x.hasOwnProperty(name)) {
+                var xValue = x[name];
+                var yValue = y[name];
+                if (xValue !== yValue) {
+                    if (yValue == undefined) {
+                        result[name] = null;
+                    } else {
+                        result[name] = yValue;
+                    }
+                }
+            }
+        }
+
+        for (var name in y) {
+            if (y.hasOwnProperty(name)) {
+                var xValue = x[name];
+                var yValue = y[name];
+                if (xValue !== yValue) {
+                    if (yValue == undefined) {
+                        result[name] = null;
+                    } else {
+                        result[name] = yValue;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }
 
 export enum DiffOperation {

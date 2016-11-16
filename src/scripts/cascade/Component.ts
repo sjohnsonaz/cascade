@@ -162,6 +162,17 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
+            var propertyDiff = Diff.compareHash(oldRoot.properties, newRoot.properties);
+            for (var name in propertyDiff) {
+                if (propertyDiff.hasOwnProperty(name)) {
+                    var property = propertyDiff[name];
+                    if (property === null) {
+                        (oldElement as HTMLElement).removeAttribute(name);
+                    } else {
+                        (oldElement as HTMLElement).setAttribute(name, property);
+                    }
+                }
+            }
             var childIndex = oldRoot.children.length - 1;
             for (var index = 0, length = diff.length; index < length; index++) {
                 var diffItem = diff[index];
