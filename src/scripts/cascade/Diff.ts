@@ -44,7 +44,8 @@ export default class Diff {
                 // Put current character in result
                 diff.push({
                     operation: DiffOperation.NONE,
-                    item: x[i - 1]
+                    item: x[i - 1],
+                    itemB: y[j - 1]
                 });
                 // reduce values of i and j
                 i--; j--;
@@ -101,5 +102,6 @@ export enum DiffOperation {
 
 export interface IDiffItem<T> {
     item: T;
+    itemB?: T;
     operation: DiffOperation;
 }

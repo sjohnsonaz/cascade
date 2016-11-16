@@ -171,14 +171,15 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                         childIndex--;
                         break;
                     case DiffOperation.NONE:
-                        var newChild = diffItem.item;
+                        var newChild = diffItem.itemB;
+                        var oldChild = diffItem.item;
                         // Diff recursively
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement;
-                                this.diff(Cascade.peek(newChild, 'root') as any, Cascade.peek(oldRoot.children[childIndex], 'root') as any, oldElement.childNodes[childIndex]);
+                                this.diff(Cascade.peek(newChild, 'root') as any, Cascade.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex]);
                             } else {
-                                this.diff(newChild as any, oldRoot.children[childIndex] as any, oldElement.childNodes[childIndex]);
+                                this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex]);
                             }
                         }
                         childIndex--;
@@ -187,24 +188,24 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                         var newChild = diffItem.item;
                         switch (typeof newChild) {
                             case 'string':
-                                oldElement.appendChild(document.createTextNode(newChild as string));
+                                oldElement.insertBefore(document.createTextNode(newChild as string), oldElement.childNodes[childIndex + 1]);
                                 break;
                             case 'number':
-                                oldElement.appendChild(document.createTextNode(newChild.toString()));
+                                oldElement.insertBefore(document.createTextNode(newChild.toString()), oldElement.childNodes[childIndex + 1]);
                                 break;
                             case 'object':
                                 if (newChild instanceof Component) {
-                                    oldElement.appendChild((newChild as any).renderToNode());
+                                    oldElement.insertBefore((newChild as any).renderToNode(), oldElement.childNodes[childIndex + 1]);
                                 } else {
-                                    oldElement.appendChild((newChild as any).toNode());
+                                    oldElement.insertBefore((newChild as any).toNode(), oldElement.childNodes[childIndex + 1]);
                                 }
                                 break;
                         }
                         break;
                 }
             }
-            return newRoot.toNode(oldElement);
-            //return oldElement;
+            //return newRoot.toNode(oldElement);
+            return oldElement;
         }
     }
 
