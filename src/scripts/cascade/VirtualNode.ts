@@ -14,7 +14,7 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
         this.children = children ? this.fixChildrenArrays(children) : [];
     }
 
-    fixChildrenArrays(children: Array<IVirtualNode<any> | string | number>) {
+    private fixChildrenArrays(children: Array<IVirtualNode<any> | string | number>) {
         var fixedChildren = [];
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
@@ -55,7 +55,7 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
                     node.appendChild(document.createTextNode(child.toString()));
                 } else {
                     if (child instanceof Component) {
-                        node.appendChild(Cascade.peek(child, 'element'));
+                        node.appendChild(child.renderToNode());
                     } else {
                         node.appendChild(child.toNode());
                     }

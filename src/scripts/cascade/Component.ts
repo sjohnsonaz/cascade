@@ -44,45 +44,21 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
             this.context = Component.popContext();
             return root;
         });
-        var oldRoot = undefined;
-        Cascade.createComputed(this, 'element', (oldElement: Node) => {
-            // Subscribe to root
-            var root = this.root;
-            var element: Node;
-            if (typeof root === 'string') {
-                element = document.createTextNode(root);
-            } else if (typeof root === 'number') {
-                element = document.createTextNode(root.toString());
-            } else {
-                if (root instanceof Component) {
-                    // Do not subscribe to root element
-                    element = Cascade.peek(root, 'element');
-                } else {
-                    if (!oldElement) {
-                        element = root.toNode();
-                    } else {
-                        // Diff this case
-                        element = this.diff(root as VirtualNode<any>, oldRoot, oldElement);
-                    }
-                }
-            }
-            if (element !== oldElement) {
-                if (this.properties && this.properties.ref) {
-                    this.properties.ref(element);
-                }
-            }
-            oldRoot = root;
-            return element;
-        });
-        // Only update parent node if the element has changed
-        Cascade.subscribe(this, 'element', (element: Node, oldElement: Node) => {
-            if (oldElement) {
-                var parentNode = oldElement.parentNode;
-                if (parentNode) {
+        // Only update if we are re-rendering
+        Cascade.subscribe(this, 'root', (root: VirtualNode<any> | string | number, oldRoot: VirtualNode<any> | string | number) => {
+            if (oldRoot) {
+                var element = this.element;
+                this.renderToNode(root, oldRoot, this.element);
+                if (element !== this.element) {
                     if (element) {
-                        parentNode.replaceChild(element, oldElement);
-                    } else {
-                        parentNode.removeChild(element);
+                        var parentNode = element.parentNode;
+                        if (parentNode) {
+                            if (this.element) {
+                                parentNode.replaceChild(this.element, element);
+                            } else {
+                                parentNode.removeChild(element);
+                            }
+                        }
                     }
                 }
             }
@@ -91,6 +67,42 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
 
     render(): IVirtualNode<any> | string | number {
         return this;
+    }
+
+    renderToNode(root?: IVirtualNode<any> | string | number, oldRoot?: VirtualNode<any> | string | number, oldElement?: Node): Node {
+        if (!root) {
+            root = Cascade.peek(this, 'root');
+        }
+        if (!oldElement) {
+            oldElement = this.element;
+        }
+
+        var element: Node;
+        var rootType = typeof root;
+        switch (rootType) {
+            case 'string':
+                element = document.createTextNode(root as string);
+                break;
+            case 'number':
+                element = document.createTextNode(root.toString());
+                break;
+            default:
+                if (root instanceof Component) {
+                    element = root.renderToNode();
+                } else {
+                    element = (root as any).toNode();
+                }
+                break;
+        }
+
+        if (element !== oldElement) {
+            if (this.properties && this.properties.ref) {
+                this.properties.ref(element);
+            }
+        }
+
+        this.element = element;
+        return element;
     }
 
     toNode() {
@@ -120,7 +132,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
             var childIndex = oldRoot.children.length - 1;
-            for (var index = diff.length - 1; index >= 0; index--) {
+            for (var index = 0, length = diff.length; index < length; index++) {
                 var diffItem = diff[index];
                 switch (diffItem.operation) {
                     case DiffOperation.REMOVE:
@@ -130,7 +142,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                     case DiffOperation.NONE:
                         // Diff recursively
                         if (typeof diffItem.item === 'object') {
-                            this.diff(oldRoot.children[childIndex] as any, diffItem.item as any, oldElement.childNodes[childIndex]);
+                            this.diff(diffItem.item as any, oldRoot.children[childIndex] as any, oldElement.childNodes[childIndex]);
                         }
                         childIndex--;
                         break;

@@ -12,7 +12,7 @@ export default class Cascade {
         }
     }
 
-    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => any) {
+    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => void, reRender?: (n: IVirtualNode<any> | string | number) => void) {
         var fixedNode: HTMLElement;
         if (typeof node === 'string') {
             fixedNode = document.getElementById(node);
@@ -20,15 +20,17 @@ export default class Cascade {
             fixedNode = node;
         }
         if (virtualNode instanceof Component) {
-            Cascade.subscribe(virtualNode, 'element', function(value: Node) {
-                if (value) {
-                    while (fixedNode.firstChild) {
-                        fixedNode.removeChild(fixedNode.firstChild);
-                    }
-                    fixedNode.appendChild(value);
-                    if (callback) {
-                        callback(value);
-                    }
+            var renderedComponent = virtualNode.renderToNode();
+            while (fixedNode.firstChild) {
+                fixedNode.removeChild(fixedNode.firstChild);
+            }
+            fixedNode.appendChild(renderedComponent);
+            if (callback) {
+                callback(renderedComponent);
+            }
+            Cascade.subscribe(virtualNode, 'root', function(root: IVirtualNode<any> | string | number) {
+                if (reRender) {
+                    reRender(root);
                 }
             });
         } else {
