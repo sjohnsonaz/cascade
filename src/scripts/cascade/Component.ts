@@ -79,20 +79,52 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
 
         var element: Node;
         var rootType = typeof root;
-        switch (rootType) {
-            case 'string':
-                element = document.createTextNode(root as string);
-                break;
-            case 'number':
-                element = document.createTextNode(root.toString());
-                break;
-            default:
-                if (root instanceof Component) {
-                    element = root.renderToNode();
-                } else {
-                    element = (root as any).toNode();
-                }
-                break;
+
+        // Test if we must diff.
+        // If we have an old root, we have rendered before.
+        if (oldRoot && typeof oldRoot === rootType) {
+            switch (rootType) {
+                case 'string':
+                    if (root !== oldRoot) {
+                        element = document.createTextNode(root as string);
+                    } else {
+                        element = oldElement;
+                    }
+                    break;
+                case 'number':
+                    if (root !== oldRoot) {
+                        element = document.createTextNode(root.toString());
+                    } else {
+                        element = oldElement;
+                    }
+                    break;
+                default:
+                    // Diff this case
+                    //element = this.diff(root as VirtualNode<any>, oldRoot, oldElement);
+                    // TODO: Improve Component type checking
+                    if (root instanceof Component) {
+                        element = root.renderToNode(undefined, Cascade.peek(oldRoot, 'root'), oldElement);
+                    } else {
+                        element = (root as any).toNode();
+                    }
+                    break;
+            }
+        } else {
+            switch (rootType) {
+                case 'string':
+                    element = document.createTextNode(root as string);
+                    break;
+                case 'number':
+                    element = document.createTextNode(root.toString());
+                    break;
+                default:
+                    if (root instanceof Component) {
+                        element = root.renderToNode();
+                    } else {
+                        element = (root as any).toNode();
+                    }
+                    break;
+            }
         }
 
         if (element !== oldElement) {
