@@ -48,7 +48,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         Cascade.subscribe(this, 'root', (root: VirtualNode<any> | string | number, oldRoot: VirtualNode<any> | string | number) => {
             if (oldRoot) {
                 var element = this.element;
-                this.renderToNode(root, oldRoot, this.element);
+                this.renderToNode(oldRoot);
                 if (element !== this.element) {
                     if (element) {
                         var parentNode = element.parentNode;
@@ -69,13 +69,9 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         return this;
     }
 
-    renderToNode(root?: IVirtualNode<any> | string | number, oldRoot?: VirtualNode<any> | string | number, oldElement?: Node): Node {
-        if (!root) {
-            root = Cascade.peek(this, 'root');
-        }
-        if (!oldElement) {
-            oldElement = this.element;
-        }
+    renderToNode(oldRoot?: VirtualNode<any> | string | number): Node {
+        var root = Cascade.peek(this, 'root');
+        var oldElement = this.element;
 
         var element: Node;
         var rootType = typeof root;
@@ -100,12 +96,15 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                     break;
                 default:
                     // Diff this case
-                    //element = this.diff(root as VirtualNode<any>, oldRoot, oldElement);
                     // TODO: Improve Component type checking
                     if (root instanceof Component) {
-                        element = root.renderToNode(undefined, Cascade.peek(oldRoot, 'root'), oldElement);
+                        root.element = oldElement;
+                        element = this.diff(Cascade.peek(root, 'root'), Cascade.peek(oldRoot, 'root'), oldElement);
+                        //element = root.renderToNode(Cascade.peek(oldRoot, 'root'));
                     } else {
-                        element = (root as any).toNode();
+                        root.element = oldElement;
+                        element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement);
+                        //element = (root as any).toNode();
                     }
                     break;
             }
@@ -172,9 +171,15 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                         childIndex--;
                         break;
                     case DiffOperation.NONE:
+                        var newChild = diffItem.item;
                         // Diff recursively
-                        if (typeof diffItem.item === 'object') {
-                            this.diff(diffItem.item as any, oldRoot.children[childIndex] as any, oldElement.childNodes[childIndex]);
+                        if (typeof newChild === 'object') {
+                            if (newChild instanceof Component) {
+                                newChild.element = oldElement;
+                                this.diff(Cascade.peek(newChild, 'root') as any, Cascade.peek(oldRoot.children[childIndex], 'root') as any, oldElement.childNodes[childIndex]);
+                            } else {
+                                this.diff(newChild as any, oldRoot.children[childIndex] as any, oldElement.childNodes[childIndex]);
+                            }
                         }
                         childIndex--;
                         break;
@@ -188,7 +193,11 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                                 oldElement.appendChild(document.createTextNode(newChild.toString()));
                                 break;
                             case 'object':
-                                oldElement.appendChild((newChild as any).toNode());
+                                if (newChild instanceof Component) {
+                                    oldElement.appendChild((newChild as any).renderToNode());
+                                } else {
+                                    oldElement.appendChild((newChild as any).toNode());
+                                }
                                 break;
                         }
                         break;
