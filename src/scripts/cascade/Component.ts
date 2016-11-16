@@ -136,24 +136,9 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         return element;
     }
 
+    // TODO: Merge renderToNode and toNode
     toNode() {
-        var root = this.root;
-        var element: Node;
-        if (typeof root === 'string') {
-            element = document.createTextNode(root);
-        } else if (typeof root === 'number') {
-            element = document.createTextNode(root.toString());
-        } else {
-            if (root instanceof Component) {
-                element = Cascade.peek(root, 'element');
-            } else {
-                element = root.toNode();
-            }
-        }
-        if (this.properties && this.properties.ref) {
-            this.properties.ref(element);
-        }
-        return element;
+        return this.renderToNode();
     }
 
     diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: Node) {
@@ -197,21 +182,23 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                         break;
                     case DiffOperation.ADD:
                         var newChild = diffItem.item;
+                        var newElement;
                         switch (typeof newChild) {
                             case 'string':
-                                oldElement.insertBefore(document.createTextNode(newChild as string), oldElement.childNodes[childIndex + 1]);
+                                newElement = document.createTextNode(newChild as string);
                                 break;
                             case 'number':
-                                oldElement.insertBefore(document.createTextNode(newChild.toString()), oldElement.childNodes[childIndex + 1]);
+                                newElement = document.createTextNode(newChild.toString());
                                 break;
                             case 'object':
                                 if (newChild instanceof Component) {
-                                    oldElement.insertBefore((newChild as any).renderToNode(), oldElement.childNodes[childIndex + 1]);
+                                    newElement = (newChild as any).renderToNode();
                                 } else {
-                                    oldElement.insertBefore((newChild as any).toNode(), oldElement.childNodes[childIndex + 1]);
+                                    newElement = (newChild as any).toNode();
                                 }
                                 break;
                         }
+                        oldElement.insertBefore(newElement, oldElement.childNodes[childIndex + 1]);
                         break;
                 }
             }

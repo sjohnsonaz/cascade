@@ -31,16 +31,8 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
         return fixedChildren;
     }
 
-    toNode(oldValue?: Node) {
-        var node: Node;
-        if (!oldValue || !(oldValue instanceof HTMLElement) || (oldValue as HTMLElement).tagName.toLowerCase() !== this.type) {
-            node = document.createElement(this.type);
-        } else {
-            node = oldValue;
-            while (node.firstChild) {
-                node.removeChild(node.firstChild);
-            }
-        }
+    toNode() {
+        var node = document.createElement(this.type);
         for (var name in this.properties) {
             if (this.properties.hasOwnProperty(name)) {
                 node[name] = this.properties[name];
