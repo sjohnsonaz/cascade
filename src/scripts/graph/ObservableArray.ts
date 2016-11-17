@@ -69,7 +69,7 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
         }
     }
 
-    publish(value: Array<T>, oldValue: Array<T>) {
+    publish(value: Array<T>, oldValue?: Array<T>) {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
             // TODO: Remove redundant type casting.
@@ -81,10 +81,6 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
         }
     }
 
-    runOperation(action: string, insertActions?: Array<any>, deleteActions?: Array<any>) {
-        this.publish(this, undefined);
-    }
-
     dispose() { }
 
     /**
@@ -94,13 +90,8 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      * @returns
      */
     push(...items: T[]) {
-        var offset = this.length;
         var output = Array.prototype.push.apply(this, arguments);
-        var insertActions = [];
-        for (var index = 0, length = arguments.length; index < length; index++) {
-            insertActions[index + offset] = arguments[index];
-        }
-        this.runOperation('insert', insertActions);
+        this.publish(this);
         return output;
     }
 
@@ -111,12 +102,8 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      * @returns
      */
     pop() {
-        var length = this.length;
-        var item = this[length - 1];
         var output = Array.prototype.pop.apply(this, arguments);
-        var deleteActions = [];
-        deleteActions[length - 1] = item;
-        this.runOperation('delete', undefined, deleteActions);
+        this.publish(this);
         return output;
     }
 
@@ -128,11 +115,7 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      */
     unshift(...items: T[]) {
         var output = Array.prototype.unshift.apply(this, arguments);
-        var insertActions = [];
-        for (var index = 0, length = arguments.length; index < length; index++) {
-            insertActions[index] = arguments[index];
-        }
-        this.runOperation('insert', insertActions);
+        this.publish(this);
         return output;
     }
 
@@ -143,11 +126,8 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      * @returns
      */
     shift() {
-        var item = this[0];
         var output = Array.prototype.shift.apply(this, arguments);
-        var deleteActions = [];
-        deleteActions[0] = item;
-        this.runOperation('delete', undefined, deleteActions);
+        this.publish(this);
         return output;
     }
 
@@ -159,7 +139,7 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      */
     reverse() {
         var output = Array.prototype.reverse.apply(this, arguments);
-        this.runOperation('reorder');
+        this.publish(this);
         return output;
     }
 
@@ -171,7 +151,7 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      */
     sort() {
         var output = Array.prototype.sort.apply(this, arguments);
-        this.runOperation('reorder');
+        this.publish(this);
         return output;
     }
 
@@ -182,17 +162,8 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
      * @returns
      */
     splice(start: number, deleteCount?: number) {
-        var items: Array<any> = Array.prototype.splice.call(arguments, 2);
-        var deleteActions = [];
-        for (var index = 0, length = deleteCount; index < length; index++) {
-            deleteActions[start + index] = this[start + index];
-        }
-        var insertActions = [];
-        for (var index = 0, length = items.length; index < length; index++) {
-            insertActions[start + index] = items[index];
-        }
         var output = Array.prototype.splice.apply(this, arguments);
-        this.runOperation('deleteandinsert', insertActions, deleteActions);
+        this.publish(this);
         return output;
     }
 
@@ -201,14 +172,14 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
     /*
     fill(value: T, start?: number, end?: number) {
         var output = Array.prototype.fill.apply(this, arguments);
-        this.runOperation('fill');
+        this.publish(this);
         return output;
     }
     */
 
     removeAll() {
         this.length = 0;
-        this.runOperation('clear');
+        this.publish(this);
     }
 
     get(index: number) {
@@ -217,11 +188,7 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
 
     set(index: number, value: T[]) {
         this[index] = value as any;
-        var insertActions = [];
-        var deleteActions = [];
-        insertActions[index] = value;
-        deleteActions[index] = this[index];
-        this.runOperation('deleteandinsert', insertActions, deleteActions);
+        this.publish(this);
     }
 
     remove(value: T) {
@@ -247,6 +214,6 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
         for (var index = 0, length = value.length; index < length; index++) {
             this[index] = value[index];
         }
-        this.runOperation('replaceAll', value);
+        this.publish(this);
     }
 }
