@@ -160,10 +160,7 @@ export default class Graph {
     }
 
     static peek(obj: any, property: string) {
-        var graph: Graph = obj._graph;
-        if (graph) {
-            return graph.peek(property);
-        }
+        return obj._graph ? (obj._graph as Graph).peek(property) : undefined;
     }
 
     static getObservable(obj: any, property) {
@@ -185,99 +182,5 @@ export default class Graph {
         if (graph) {
             return graph.getReferences(property);
         }
-    }
-}
-
-export function array<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
-    Object.defineProperty(target, propertyKey, {
-        enumerable: true,
-        configurable: true,
-        get: function() {
-            // Graph is not initialized
-            Graph.attachGraph(this);
-            // Property does not exist
-            if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new ObservableArray<T>(undefined);
-            }
-            return this._graph.observables[propertyKey].getValue();
-        },
-        set: function(value: Array<T>) {
-            // Graph is not initialized
-            Graph.attachGraph(this);
-            // Property does not exist
-            if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new ObservableArray<T>(value);
-            } else {
-                this._graph.observables[propertyKey].setValue(value);
-            }
-        }
-    });
-}
-
-function attachComputed<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>, definition?: (n: T) => T) {
-    descriptor = descriptor || {};
-    definition = definition || descriptor.get;
-    descriptor.enumerable = true;
-    descriptor.get = function() {
-        // Graph is not initialized
-        Graph.attachGraph(this);
-        // Property does not exist
-        if (!this._graph.observables[propertyKey]) {
-            this._graph.observables[propertyKey] = new Computed<T>(definition, false, this);
-        }
-        return this._graph.observables[propertyKey].getValue();
-    }
-    return descriptor;
-}
-
-function attachObservable<T>(target: any, propertyKey: string) {
-    Object.defineProperty(target, propertyKey, {
-        enumerable: true,
-        configurable: true,
-        get: function() {
-            // Graph is not initialized
-            Graph.attachGraph(this);
-            // Property does not exist
-            if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new Observable<T>(undefined);
-            }
-            return this._graph.observables[propertyKey].getValue();
-        },
-        set: function(value: T) {
-            // Graph is not initialized
-            Graph.attachGraph(this);
-            // Property does not exist
-            if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new Observable<T>(value);
-            } else {
-                this._graph.observables[propertyKey].setValue(value);
-            }
-        }
-    });
-}
-
-export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
-    if (descriptor) {
-        attachComputed(target, propertyKey, descriptor);
-    } else {
-        // Only use Reflection if it exists.
-        var typeName;
-        if (typeof Reflect === 'object' && typeof Reflect.getMetadata === "function") {
-            var type = Reflect.getMetadata("design:type", target, propertyKey);
-            if (type) {
-                typeName = type.name;
-            }
-        }
-        if (typeName === 'Array') {
-            array(target, propertyKey, descriptor);
-        } else {
-            attachObservable(target, propertyKey);
-        }
-    }
-}
-
-export function computed<T>(definition: (n: T) => T) {
-    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
-        return attachComputed(target, propertyKey, descriptor, definition);
     }
 }
