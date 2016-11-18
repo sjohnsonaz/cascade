@@ -194,14 +194,7 @@ export function array<T>(target: any, propertyKey: string, descriptor?: TypedPro
         configurable: true,
         get: function() {
             // Graph is not initialized
-            if (!this._graph) {
-                Object.defineProperty(this, '_graph', {
-                    configurable: true,
-                    writable: true,
-                    enumerable: false,
-                    value: new Graph(this)
-                });
-            }
+            Graph.attachGraph(this);
             // Property does not exist
             if (!this._graph.observables[propertyKey]) {
                 this._graph.observables[propertyKey] = new ObservableArray<T>(undefined);
@@ -210,14 +203,7 @@ export function array<T>(target: any, propertyKey: string, descriptor?: TypedPro
         },
         set: function(value: Array<T>) {
             // Graph is not initialized
-            if (!this._graph) {
-                Object.defineProperty(this, '_graph', {
-                    configurable: true,
-                    writable: true,
-                    enumerable: false,
-                    value: new Graph(this)
-                });
-            }
+            Graph.attachGraph(this);
             // Property does not exist
             if (!this._graph.observables[propertyKey]) {
                 this._graph.observables[propertyKey] = new ObservableArray<T>(value);
@@ -228,26 +214,51 @@ export function array<T>(target: any, propertyKey: string, descriptor?: TypedPro
     });
 }
 
-export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
-    if (descriptor) {
-        var definition = descriptor.get;
-        descriptor.enumerable = true;
-        descriptor.get = function() {
+function attachComputed<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>, definition?: (n: T) => T) {
+    descriptor = descriptor || {};
+    definition = definition || descriptor.get;
+    descriptor.enumerable = true;
+    descriptor.get = function() {
+        // Graph is not initialized
+        Graph.attachGraph(this);
+        // Property does not exist
+        if (!this._graph.observables[propertyKey]) {
+            this._graph.observables[propertyKey] = new Computed<T>(definition, false, this);
+        }
+        return this._graph.observables[propertyKey].getValue();
+    }
+    return descriptor;
+}
+
+function attachObservable<T>(target: any, propertyKey: string) {
+    Object.defineProperty(target, propertyKey, {
+        enumerable: true,
+        configurable: true,
+        get: function() {
             // Graph is not initialized
-            if (!this._graph) {
-                Object.defineProperty(this, '_graph', {
-                    configurable: true,
-                    writable: true,
-                    enumerable: false,
-                    value: new Graph(this)
-                });
-            }
+            Graph.attachGraph(this);
             // Property does not exist
             if (!this._graph.observables[propertyKey]) {
-                this._graph.observables[propertyKey] = new Computed<T>(definition, false, this);
+                this._graph.observables[propertyKey] = new Observable<T>(undefined);
             }
             return this._graph.observables[propertyKey].getValue();
+        },
+        set: function(value: T) {
+            // Graph is not initialized
+            Graph.attachGraph(this);
+            // Property does not exist
+            if (!this._graph.observables[propertyKey]) {
+                this._graph.observables[propertyKey] = new Observable<T>(value);
+            } else {
+                this._graph.observables[propertyKey].setValue(value);
+            }
         }
+    });
+}
+
+export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
+    if (descriptor) {
+        attachComputed(target, propertyKey, descriptor);
     } else {
         // Only use Reflection if it exists.
         var typeName;
@@ -260,67 +271,13 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
         if (typeName === 'Array') {
             array(target, propertyKey, descriptor);
         } else {
-            Object.defineProperty(target, propertyKey, {
-                enumerable: true,
-                configurable: true,
-                get: function() {
-                    // Graph is not initialized
-                    if (!this._graph) {
-                        Object.defineProperty(this, '_graph', {
-                            configurable: true,
-                            writable: true,
-                            enumerable: false,
-                            value: new Graph(this)
-                        });
-                    }
-                    // Property does not exist
-                    if (!this._graph.observables[propertyKey]) {
-                        this._graph.observables[propertyKey] = new Observable<T>(undefined);
-                    }
-                    return this._graph.observables[propertyKey].getValue();
-                },
-                set: function(value: T) {
-                    // Graph is not initialized
-                    if (!this._graph) {
-                        Object.defineProperty(this, '_graph', {
-                            configurable: true,
-                            writable: true,
-                            enumerable: false,
-                            value: new Graph(this)
-                        });
-                    }
-                    // Property does not exist
-                    if (!this._graph.observables[propertyKey]) {
-                        this._graph.observables[propertyKey] = new Observable<T>(value);
-                    } else {
-                        this._graph.observables[propertyKey].setValue(value);
-                    }
-                }
-            });
+            attachObservable(target, propertyKey);
         }
     }
 }
 
 export function computed<T>(definition: (n: T) => T) {
     return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
-        return {
-            enumerable: true,
-            get: function() {
-                // Graph is not initialized
-                if (!this._graph) {
-                    Object.defineProperty(this, '_graph', {
-                        configurable: true,
-                        writable: true,
-                        enumerable: false,
-                        value: new Graph(this)
-                    });
-                }
-                // Property does not exist
-                if (!this._graph.observables[propertyKey]) {
-                    this._graph.observables[propertyKey] = new Computed<T>(definition, false, this);
-                }
-                return this._graph.observables[propertyKey].getValue();
-            }
-        };
+        return attachComputed(target, propertyKey, descriptor, definition);
     }
 }
