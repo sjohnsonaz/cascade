@@ -11,6 +11,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
     uniqueId: number;
     properties: T;
     children: Array<IVirtualNode<any> | string | number>;
+    key: string;
     root: IVirtualNode<any> | string | number;
     element: Node;
     context: Component<any>[];
@@ -18,6 +19,11 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
     constructor(properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.uniqueId = Math.floor(Math.random() * 1000000);
         this.properties = properties || ({} as any);
+        this.key = this.properties.key;
+        // TODO: Remove key and ref?
+        // if (this.properties.key) {
+        // delete this.properties.key;
+        // }
         this.children = children || [];
         // This should subscribe to all observables used by render.
         Graph.createComputed(this, 'root', () => {
@@ -233,7 +239,15 @@ function compareVirtualNodes(nodeA: VirtualNode<any> | string | number, nodeB: V
             case 'number':
                 return nodeA === nodeB;
             case 'object':
-                return (nodeA as VirtualNode<any>).type === (nodeB as VirtualNode<any>).type;
+                if ((nodeA as IVirtualNode<any>).key === (nodeB as IVirtualNode<any>).key) {
+                    if (nodeA instanceof Component) {
+                        return nodeA.constructor === nodeB.constructor;
+                    } else {
+                        return (nodeA as VirtualNode<any>).type === (nodeB as VirtualNode<any>).type;
+                    }
+                } else {
+                    return false;
+                }
         }
     } else {
         return false;

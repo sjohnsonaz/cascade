@@ -5,11 +5,17 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
     type: string;
     properties: T;
     children: Array<IVirtualNode<any> | string | number>;
+    key: string;
     element: Node;
 
     constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.type = type;
         this.properties = properties || ({} as any);
+        this.key = this.properties.key;
+        // TODO: Remove key and ref?
+        // if (this.properties.key) {
+        // delete this.properties.key;
+        // }
         this.children = children ? this.fixChildrenArrays(children) : [];
     }
 
