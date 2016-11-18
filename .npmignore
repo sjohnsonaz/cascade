@@ -8,6 +8,7 @@ dist/__tests__/
 *.map
 *.log
 *.tgz
+build-cascade*
 .gitignore
 .npmignore
 tsconfig.json
