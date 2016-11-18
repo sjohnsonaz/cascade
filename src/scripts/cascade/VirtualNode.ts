@@ -1,4 +1,3 @@
-import Cascade from './Cascade';
 import Component from './Component';
 import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
 

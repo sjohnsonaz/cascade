@@ -1,4 +1,4 @@
-import Cascade from './Cascade';
+import Graph from '../graph/Graph';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
 import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
@@ -20,11 +20,11 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         this.properties = properties || ({} as any);
         this.children = children || [];
         // This should subscribe to all observables used by render.
-        Cascade.createComputed(this, 'root', () => {
+        Graph.createComputed(this, 'root', () => {
             // Dispose of old context
             if (this.context) {
                 for (var index = 0, length = this.context.length; index < length; index++) {
-                    var computed = Cascade.getObservable(this.context[index], 'root') as Computed<any>;
+                    var computed = Graph.getObservable(this.context[index], 'root') as Computed<any>;
                     computed.dispose();
                 }
             }
@@ -45,7 +45,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
             return root;
         });
         // Only update if we are re-rendering
-        Cascade.subscribe(this, 'root', (root: VirtualNode<any> | string | number, oldRoot: VirtualNode<any> | string | number) => {
+        Graph.subscribe(this, 'root', (root: VirtualNode<any> | string | number, oldRoot: VirtualNode<any> | string | number) => {
             if (oldRoot) {
                 var element = this.element;
                 this.renderToNode(oldRoot);
@@ -70,7 +70,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
     }
 
     renderToNode(oldRoot?: VirtualNode<any> | string | number): Node {
-        var root = Cascade.peek(this, 'root');
+        var root = Graph.peek(this, 'root');
         var oldElement = this.element;
 
         var element: Node;
@@ -99,8 +99,8 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                     // TODO: Improve Component type checking
                     if (root instanceof Component) {
                         root.element = oldElement;
-                        element = this.diff(Cascade.peek(root, 'root'), Cascade.peek(oldRoot, 'root'), oldElement);
-                        //element = root.renderToNode(Cascade.peek(oldRoot, 'root'));
+                        element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement);
+                        //element = root.renderToNode(Graph.peek(oldRoot, 'root'));
                     } else {
                         root.element = oldElement;
                         element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement);
@@ -173,7 +173,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement;
-                                this.diff(Cascade.peek(newChild, 'root') as any, Cascade.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex]);
+                                this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex]);
                             } else {
                                 this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex]);
                             }

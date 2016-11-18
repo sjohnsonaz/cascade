@@ -3,7 +3,7 @@ import VirtualNode from './VirtualNode';
 import Component from './Component';
 import Graph from '../graph/Graph';
 
-export default class Cascade {
+export default class VirtualDom {
     static createElement<T extends Object>(type: string | (new (properties: T, ...children: Array<IVirtualNode<any> | string>) => Component<T>), properties: T, ...children: Array<IVirtualNode<any> | string>): IVirtualNode<T> {
         if (typeof type === 'string') {
             return new VirtualNode(type, properties, ...children);
@@ -26,19 +26,10 @@ export default class Cascade {
         if (callback) {
             callback(renderedComponent);
         }
-        Cascade.subscribe(virtualNode, 'root', function(root: IVirtualNode<any> | string | number) {
+        Graph.subscribe(virtualNode, 'root', function(root: IVirtualNode<any> | string | number) {
             if (reRender) {
                 reRender(root);
             }
         });
     }
-
-    static createObservable = Graph.createObservable;
-    static createComputed = Graph.createComputed;
-    static disposeAll = Graph.disposeAll;
-    static peek = Graph.peek;
-    static subscribe = Graph.subscribe;
-    static getObservable = Graph.getObservable;
-    static getSubscribers = Graph.getSubscribers;
-    static getReferences = Graph.getReferences;
 }

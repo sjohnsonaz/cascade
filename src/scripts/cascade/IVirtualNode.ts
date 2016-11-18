@@ -1,5 +1,3 @@
-import Cascade from './Cascade';
-
 export interface IVirtualNodeProperties {
     ref?: (node: Node) => void;
 }
