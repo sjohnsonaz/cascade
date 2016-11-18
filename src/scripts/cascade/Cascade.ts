@@ -13,31 +13,24 @@ export default class Cascade {
     }
 
     static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => void, reRender?: (n: IVirtualNode<any> | string | number) => void) {
-        var fixedNode: HTMLElement;
-        if (typeof node === 'string') {
-            fixedNode = document.getElementById(node);
-        } else {
-            fixedNode = node;
+        var fixedNode = typeof node === 'string' ?
+            document.getElementById(node) :
+            node;
+        var renderedComponent = virtualNode instanceof Component ?
+            virtualNode.renderToNode() :
+            virtualNode.toNode();
+        while (fixedNode.firstChild) {
+            fixedNode.removeChild(fixedNode.firstChild);
         }
-        if (virtualNode instanceof Component) {
-            var renderedComponent = virtualNode.renderToNode();
-            while (fixedNode.firstChild) {
-                fixedNode.removeChild(fixedNode.firstChild);
-            }
-            fixedNode.appendChild(renderedComponent);
-            if (callback) {
-                callback(renderedComponent);
-            }
-            Cascade.subscribe(virtualNode, 'root', function(root: IVirtualNode<any> | string | number) {
-                if (reRender) {
-                    reRender(root);
-                }
-            });
-        } else {
-            if (callback) {
-                callback(virtualNode.toNode());
-            }
+        fixedNode.appendChild(renderedComponent);
+        if (callback) {
+            callback(renderedComponent);
         }
+        Cascade.subscribe(virtualNode, 'root', function(root: IVirtualNode<any> | string | number) {
+            if (reRender) {
+                reRender(root);
+            }
+        });
     }
 
     static createObservable = Graph.createObservable;
