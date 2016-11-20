@@ -7,6 +7,7 @@ export default class Diff {
         return table;
     }
 
+    // TODO: Optimize for empty cases and identical beginnings and endings.
     static compare<T>(x: T[], y: T[], comparison?: (x: T, y: T) => boolean): IDiffItem<T>[];
     static compare(x: string, y: string, comparison?: (x: string, y: string) => boolean): IDiffItem<string>[];
     static compare<T>(x: T[] | string, y: T[] | string, comparison?: (x: T | string, y: T | string) => boolean): IDiffItem<T | string>[] {
@@ -38,34 +39,6 @@ export default class Diff {
         i = m;
         j = n;
         while (i > 0 || j > 0) {
-            // If current character in X[] and Y are same, then
-            // current character is part of LCS
-            if (comparison ? comparison(x[i - 1], y[j - 1]) : x[i - 1] == y[j - 1]) {
-                // Put current character in result
-                diff.push({
-                    operation: DiffOperation.NONE,
-                    item: x[i - 1],
-                    itemB: y[j - 1]
-                });
-                // reduce values of i and j
-                i--; j--;
-            } else {
-                // If not same, then find the larger of two and
-                // go in the direction of larger value
-                if (table[i - 1][j] > table[i][j - 1]) {
-                    diff.push({
-                        operation: DiffOperation.REMOVE,
-                        item: x[i - 1]
-                    });
-                    i--;
-                } else {
-                    diff.push({
-                        operation: DiffOperation.ADD,
-                        item: y[j - 1]
-                    });
-                    j--;
-                }
-            }
             if (i === 0) {
                 while (j > 0) {
                     diff.push({
@@ -81,6 +54,35 @@ export default class Diff {
                         item: x[i - 1]
                     });
                     i--;
+                }
+            } else {
+                // If current character in X[] and Y are same, then
+                // current character is part of LCS
+                if (comparison ? comparison(x[i - 1], y[j - 1]) : x[i - 1] == y[j - 1]) {
+                    // Put current character in result
+                    diff.push({
+                        operation: DiffOperation.NONE,
+                        item: x[i - 1],
+                        itemB: y[j - 1]
+                    });
+                    // reduce values of i and j
+                    i--; j--;
+                } else {
+                    // If not same, then find the larger of two and
+                    // go in the direction of larger value
+                    if (table[i - 1][j] > table[i][j - 1]) {
+                        diff.push({
+                            operation: DiffOperation.REMOVE,
+                            item: x[i - 1]
+                        });
+                        i--;
+                    } else {
+                        diff.push({
+                            operation: DiffOperation.ADD,
+                            item: y[j - 1]
+                        });
+                        j--;
+                    }
                 }
             }
         }
