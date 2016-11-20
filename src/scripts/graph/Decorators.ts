@@ -72,14 +72,10 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
         attachComputed(target, propertyKey, descriptor);
     } else {
         // Only use Reflection if it exists.
-        var typeName;
         if (typeof Reflect === 'object' && typeof Reflect.getMetadata === "function") {
             var type = Reflect.getMetadata("design:type", target, propertyKey);
-            if (type) {
-                typeName = type.name;
-            }
         }
-        if (typeName === 'Array') {
+        if (type === Array) {
             array(target, propertyKey, descriptor);
         } else {
             attachObservable(target, propertyKey);

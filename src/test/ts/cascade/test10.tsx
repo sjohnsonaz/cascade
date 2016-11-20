@@ -38,7 +38,7 @@ class Child extends Component<IChildProperties> {
 }
 
 TestRunner.test({
-    name: 'ViewModels update directly nested Components',
+    name: 'ViewModels update directly nested Components with arrays',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');

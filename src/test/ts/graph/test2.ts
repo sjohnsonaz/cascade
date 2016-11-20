@@ -3,7 +3,7 @@ import {observable, array} from '../../../scripts/modules/Cascade';
 
 class ViewModel {
     runs: number = 0;
-    @observable a: number[] = [1, 2, 3];
+    @observable a: number[] = [1, 2, 3, 4];
     @observable get loop() {
         var a = this.a;
         var total = 0;
@@ -28,7 +28,6 @@ TestRunner.test({
                 });
             }
         });
-        viewModel.a = [1, 2, 3, 4];
         viewModel.a.push(10);
         viewModel.a.push(100);
         complete = true;
