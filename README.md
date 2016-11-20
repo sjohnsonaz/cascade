@@ -8,7 +8,7 @@ A JavaScript/TypeScript library for creating modern user interfaces. It combines
 
 Cascade builds ViewModels with reactive properties to synchronize data. Properties may be marked as observable, so that changes may be watched, or computed, which then watch for changes in related observables. With this, a dynamic tree of data may be built, all which is updated automatically. Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function.
 
-> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. Any arrays must be declared with their types. If you don't wish to install `reflect-metadata`, then you must use `@array` instead of `@observable`.
+> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. For IE11 and below, you must also include `es6-shim` or similar polyfills. Any arrays must be declared with their types. If you don't wish to install `reflect-metadata`, then you must use `@array` instead of `@observable`.
 
 Furthermore, any Functional DOM Component which references an observable or computed, will be updated automatically.
 
@@ -51,6 +51,8 @@ class UserView extends Component<IUserViewProperties> {
 }
 ```
 
+### Using Components
+
 Components can then be rendered by either calling
 
 ```typescript
@@ -62,6 +64,18 @@ or with JSX by calling
 ```typescript
 <UserView user={User} />
 ```
+
+### Component and VirtualNode Properties
+
+Components and VirtualNodes have optional properties
+
+`key: string`
+
+Specifying a `key` for a Component or VirtualNode will improve rendering speeds in certain cases. This is a string, which should be unique to that node within its parent. It is most useful for a set of children which change often, such as arrays or conditional children.
+
+`ref: (n: Node) => void`
+
+A `ref` callback will receive the resulting `Node` whenever the Component or VirtualNode is rendered for the first time. This is useful for directly modifying the `Node` after rendering.
 
 ## Rendering
 
