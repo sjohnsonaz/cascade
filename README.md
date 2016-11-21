@@ -6,11 +6,15 @@ A JavaScript/TypeScript library for creating modern user interfaces. It combines
 
 ## Reactive ViewModels
 
-Cascade builds ViewModels with reactive properties to synchronize data. Properties may be marked as observable, so that changes may be watched, or computed, which then watch for changes in related observables. With this, a dynamic tree of data may be built, all which is updated automatically. Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function. Computed values must be declared as a getter, and arrays must be declared with their types.
-
-> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. For IE10 and below, you must also include `es6-shim` or similar polyfills. If you don't wish to install polyfills, then you must use `@array` instead of `@observable`.
+Cascade builds ViewModels with reactive properties to synchronize data. Properties may be marked as observable, so that changes may be watched, or computed, which then watch for changes in related observables. With this, a dynamic tree of data may be built, all which is updated automatically.
 
 Furthermore, any Functional DOM Component which references an observable or computed, will be updated automatically.
+
+### TypeScript decorators
+
+Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function. Computed values must be declared as a getter, and arrays must be declared with their types.
+
+> **Note:** Decorators depend on TypeScript. You must set `experimentalDecorators: true` in your `tsconfig.json` file.
 
 ```typescript
 class User {
@@ -21,6 +25,30 @@ class User {
     }
     @observable list: number[] = [1, 2, 3, 4];
 }
+```
+
+> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. You must also set `"emitDecoratorMetadata: true` in your `tsconfig.json` file. For IE10 and below, you must also include `es6-shim` or similar polyfills. If you don't wish to install polyfills, then you must use `@array` instead of `@observable`.
+
+### JavaScript usage
+
+You may also create observable properties directly.
+
+```typescript
+Cascade.createObservable<T>(obj: any, property: string, value: T);
+
+Cascade.createObservableArray<T>(obj: any, property: string, value: Array<T>);
+
+Cascade.createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean);
+```
+
+You may also create the observables as objects. Keep in mind, these are accessed as methods instead of direct usage.
+
+```typescript
+Observable<T>(value: T);
+
+ObservableArray<T>(value: Array<T>);
+
+Computed<T>(definition: (n: T) => T, defer: boolean = false, thisArg?: any);
 ```
 
 ## Functional DOM Components

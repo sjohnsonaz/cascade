@@ -13,6 +13,7 @@ export default class Cascade {
     static createElement = VirtualDom.createElement;
     static render = VirtualDom.render;
     static createObservable = Graph.createObservable;
+    static createObservableArray = Graph.createObservableArray;
     static createComputed = Graph.createComputed;
     static disposeAll = Graph.disposeAll;
     static peek = Graph.peek;

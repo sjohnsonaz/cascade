@@ -116,7 +116,7 @@ export default class Graph {
         }
     }
 
-    static createProperty(obj: any, property: string, observable: Observable<any>) {
+    static createProperty(obj: any, property: string, observable: Observable<any> | ObservableArray<any>) {
         Graph.attachGraph(obj);
         if (obj._graph.observables[property]) {
             // TODO: move or delete subscriptions?
@@ -148,6 +148,21 @@ export default class Graph {
             configurable: true,
             get: function() {
                 return computed.getValue();
+            }
+        });
+    }
+
+    static createObservableArray<T>(obj: any, property: string, value: Array<T>) {
+        var observable = new ObservableArray(value);
+        Graph.createProperty(obj, property, observable);
+        Object.defineProperty(obj, property, {
+            enumerable: true,
+            configurable: true,
+            get: function() {
+                return observable.getValue();
+            },
+            set: function(value: Array<T>) {
+                observable.setValue(value);
             }
         });
     }
