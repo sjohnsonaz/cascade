@@ -10,7 +10,7 @@
     "install": "typings install",
     "build": "tsc",
     "prepublish": "tsc --declaration",
-    "test": "jest",
+    "test": "node dist/mocha/NodeRunner.js",
     "browser": "webpack --config webpack.config.js",
     "dev": "webpack --config webpack.dev.config.js --watch",
     "dev-local": "tsc --declaration --watch"
@@ -19,14 +19,14 @@
   "bugs": {},
   "dependencies": {},
   "devDependencies": {
-    "jest-cli": "^12.1.1",
+    "@types/jsdom": "^2.0.29",
+    "chai": "^3.5.0",
+    "jsdom": "^9.8.3",
+    "mocha": "^3.1.2",
+    "mocha-jsdom": "^1.1.0",
     "reflect-metadata": "^0.1.8",
     "ts-loader": "^0.9.5",
     "typescript": "^2.0.3",
     "webpack": "^1.13.2"
-  },
-  "jest": {
-    "verbose": true,
-    "rootDir": "dist/"
   }
 }

@@ -2,7 +2,8 @@ module.exports = {
     entry: {
         'graphTest': './src/test/ts/graph/graphTest.ts',
         'cascadeTest': './src/test/ts/cascade/cascadeTest.ts',
-        'templateTest': './src/test/ts/template/templateTest.ts'
+        'templateTest': './src/test/ts/template/templateTest.ts',
+        'mochaRunner': './src/mocha/BrowserRunner.ts'
     },
     output: {
         filename: './dist/bundle/[name].js',
