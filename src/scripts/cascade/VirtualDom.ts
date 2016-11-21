@@ -16,9 +16,7 @@ export default class VirtualDom {
         var fixedNode = typeof node === 'string' ?
             document.getElementById(node) :
             node;
-        var renderedComponent = virtualNode instanceof Component ?
-            virtualNode.renderToNode() :
-            virtualNode.toNode();
+        var renderedComponent = virtualNode.toNode();
         while (fixedNode.firstChild) {
             fixedNode.removeChild(fixedNode.firstChild);
         }

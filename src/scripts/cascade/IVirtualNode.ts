@@ -8,6 +8,6 @@ export interface IVirtualNode<T extends IVirtualNodeProps> {
     children: Array<IVirtualNode<any> | string | number>;
     key: string;
 
-    toNode(oldValue?: Node): Node;
+    toNode(): Node;
     toString(): string;
 }

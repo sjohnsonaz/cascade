@@ -54,7 +54,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
         Graph.subscribe(this, 'root', (root: VirtualNode<any> | string | number, oldRoot: VirtualNode<any> | string | number) => {
             if (oldRoot) {
                 var element = this.element;
-                this.renderToNode(oldRoot);
+                this.toNode(oldRoot);
                 if (element !== this.element) {
                     if (element) {
                         var parentNode = element.parentNode;
@@ -75,7 +75,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
         return this;
     }
 
-    renderToNode(oldRoot?: VirtualNode<any> | string | number): Node {
+    toNode(oldRoot?: VirtualNode<any> | string | number): Node {
         var root = Graph.peek(this, 'root');
         var oldElement = this.element;
 
@@ -106,7 +106,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                     if (root instanceof Component) {
                         root.element = oldElement;
                         element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement);
-                        //element = root.renderToNode(Graph.peek(oldRoot, 'root'));
+                        //element = root.toNode(Graph.peek(oldRoot, 'root'));
                     } else {
                         root.element = oldElement;
                         element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement);
@@ -123,11 +123,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                     element = document.createTextNode(root.toString());
                     break;
                 default:
-                    if (root instanceof Component) {
-                        element = root.renderToNode();
-                    } else {
-                        element = (root as any).toNode();
-                    }
+                    element = root.toNode();
                     break;
             }
         }
@@ -140,11 +136,6 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
 
         this.element = element;
         return element;
-    }
-
-    // TODO: Merge renderToNode and toNode
-    toNode() {
-        return this.renderToNode();
     }
 
     diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: Node) {
@@ -197,11 +188,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                                 newElement = document.createTextNode(newChild.toString());
                                 break;
                             case 'object':
-                                if (newChild instanceof Component) {
-                                    newElement = (newChild as any).renderToNode();
-                                } else {
-                                    newElement = (newChild as any).toNode();
-                                }
+                                newElement = (newChild as any).toNode();
                                 break;
                         }
                         oldElement.insertBefore(newElement, oldElement.childNodes[childIndex + 1]);

@@ -51,11 +51,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                 } else if (typeof child === 'number') {
                     node.appendChild(document.createTextNode(child.toString()));
                 } else {
-                    if (child instanceof Component) {
-                        node.appendChild(child.renderToNode());
-                    } else {
-                        node.appendChild(child.toNode());
-                    }
+                    node.appendChild(child.toNode());
                 }
             }
         }
