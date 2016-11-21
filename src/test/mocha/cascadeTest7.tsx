@@ -47,13 +47,9 @@ describe('Component', function() {
         setTimeout(function() {
             viewModel.list.push(5);
             setTimeout(function() {
-                try {
-                    expect(container.querySelectorAll('li').length).to.equal(5);
-                    expect(viewModel.runsA).to.equal(1);
-                    expect(viewModel.runsB).to.equal(2);
-                } catch(e) {
-                    throw e;
-                }
+                expect(container.querySelectorAll('li').length).to.equal(5);
+                expect(viewModel.runsA).to.equal(1);
+                expect(viewModel.runsB).to.equal(2);
             }, 20);
         }, 1);
     });
