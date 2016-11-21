@@ -1,5 +1,5 @@
 {
-  "name": "build-cascade",
+  "name": "cascade",
   "version": "0.0.0",
   "description": "",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
@@ -15,7 +15,10 @@
     "dev": "webpack --config webpack.dev.config.js --watch",
     "dev-local": "tsc --declaration --watch"
   },
-  "repository": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjohnsonaz/cascade.git"
+  },
   "bugs": {},
   "dependencies": {},
   "devDependencies": {
