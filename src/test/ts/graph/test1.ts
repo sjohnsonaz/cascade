@@ -18,7 +18,7 @@ class ViewModel {
 }
 
 TestRunner.test({
-    name: 'Changes result in minimal updates to mixed level Computed properties.',
+    name: 'Changes result in minimal updates to mixed level Computed props.',
     test: function(input, callback) {
         var viewModel: any = new ViewModel();
         var complete = false;

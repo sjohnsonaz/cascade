@@ -5,22 +5,22 @@ class ViewModel {
     @observable id: string = 'oldId';
 }
 
-interface IParentProperties {
+interface IParentProps {
     viewModel: ViewModel;
 }
 
-class Parent extends Component<IParentProperties> {
+class Parent extends Component<IParentProps> {
     render() {
         return (
             <div id="parent">
-                <span id={this.properties.viewModel.id}>Text</span>
+                <span id={this.props.viewModel.id}>Text</span>
             </div>
         );
     }
 }
 
 TestRunner.test({
-    name: 'VirtualNode properties update.',
+    name: 'VirtualNode props update.',
     test: function(input, callback: any) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');

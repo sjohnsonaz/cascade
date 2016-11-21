@@ -7,30 +7,30 @@ class ViewModel {
     @observable info: string = 'test';
 }
 
-interface IParentProperties {
+interface IParentProps {
     id: string;
     viewModel: ViewModel;
 }
 
-class Parent extends Component<IParentProperties> {
+class Parent extends Component<IParentProps> {
     render() {
         return (
             <div id="parent">
-                <Child id="child" info={this.properties.viewModel.info}>text</Child>
+                <Child id="child" info={this.props.viewModel.info}>text</Child>
             </div>
         );
     }
 }
 
-interface IChildProperties {
+interface IChildProps {
     id: string;
     info: string;
 }
 
-class Child extends Component<IChildProperties> {
+class Child extends Component<IChildProps> {
     render() {
         return (
-            <div id={this.properties.id}>Custom Component - {this.properties.info}</div>
+            <div id={this.props.id}>Custom Component - {this.props.info}</div>
         )
     }
 }

@@ -19,7 +19,7 @@ class ViewModel {
 }
 
 describe('Graph', function() {
-    it('should have minimal updates to mixed level Computed properties', function() {
+    it('should have minimal updates to mixed level Computed props', function() {
         var viewModel: any = new ViewModel();
         var complete = false;
         viewModel._graph.subscribe('aab', function(value) {

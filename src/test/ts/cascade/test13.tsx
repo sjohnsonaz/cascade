@@ -2,11 +2,11 @@ import TestRunner from '../TestRunner';
 import Cascade, {Component, VirtualNode} from '../../../scripts/modules/Cascade';
 import Diff, {DiffOperation} from '../../../scripts/cascade/Diff';
 
-interface IComponentProperties {
+interface IComponentProps {
 
 }
 
-class OldComponent extends Component<IComponentProperties> {
+class OldComponent extends Component<IComponentProps> {
     render() {
         return (
             <div>
@@ -16,7 +16,7 @@ class OldComponent extends Component<IComponentProperties> {
     }
 }
 
-class NewComponent extends Component<IComponentProperties> {
+class NewComponent extends Component<IComponentProps> {
     render() {
         return (
             <div>

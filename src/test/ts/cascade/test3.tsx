@@ -9,7 +9,7 @@ interface CustomComponentProperties {
 class CustomComponent extends Component<CustomComponentProperties> {
     render() {
         return (
-            <div id={this.properties.id}>Custom Component - {this.properties.info}</div>
+            <div id={this.props.id}>Custom Component - {this.props.info}</div>
         )
     }
 }

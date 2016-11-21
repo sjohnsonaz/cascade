@@ -12,21 +12,21 @@ class ViewModel {
     }
 }
 
-interface IParentProperties {
+interface IParentProps {
     viewModel: ViewModel;
 }
 
-class Parent extends Component<IParentProperties> {
+class Parent extends Component<IParentProps> {
     onclick() {
-        this.properties.viewModel.onclick();
+        this.props.viewModel.onclick();
     }
     onchange(event: Event) {
-        this.properties.viewModel.value = (event.target as HTMLInputElement).value;
+        this.props.viewModel.value = (event.target as HTMLInputElement).value;
     }
     render() {
         return (
             <Child
-                viewModel={this.properties.viewModel}
+                viewModel={this.props.viewModel}
                 onclick={this.onclick.bind(this)}
                 onchange={this.onchange.bind(this)}
                 />
@@ -34,18 +34,18 @@ class Parent extends Component<IParentProperties> {
     }
 }
 
-interface IChildProperties {
+interface IChildProps {
     onclick: Function;
     onchange: Function;
     viewModel: ViewModel;
 }
 
-class Child extends Component<IChildProperties> {
+class Child extends Component<IChildProps> {
     render() {
         return (
             <div>
-                <input id="test9-input" type="text" value={this.properties.viewModel.value} onchange={this.properties.onchange} />
-                <button id="test9-button" onclick={this.properties.onclick}>Click</button>
+                <input id="test9-input" type="text" value={this.props.viewModel.value} onchange={this.props.onchange} />
+                <button id="test9-button" onclick={this.props.onclick}>Click</button>
             </div>
         );
     }

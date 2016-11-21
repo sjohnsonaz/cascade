@@ -8,30 +8,30 @@ class ViewModel {
     @observable list: number[] = [1, 2, 3, 4];
 }
 
-interface IParentProperties {
+interface IParentProps {
     viewModel: ViewModel;
 }
 
-class Parent extends Component<IParentProperties> {
+class Parent extends Component<IParentProps> {
     render() {
-        this.properties.viewModel.runsA++;
+        this.props.viewModel.runsA++;
         return (
-            <Child id="child" viewModel={this.properties.viewModel} />
+            <Child id="child" viewModel={this.props.viewModel} />
         );
     }
 }
 
-interface IChildProperties {
+interface IChildProps {
     id: string;
     viewModel: ViewModel;
 }
 
-class Child extends Component<IChildProperties> {
+class Child extends Component<IChildProps> {
     render() {
-        this.properties.viewModel.runsB++;
+        this.props.viewModel.runsB++;
         return (
             <ul>
-                {this.properties.viewModel.list.map(item => <li>{item}</li>)}
+                {this.props.viewModel.list.map(item => <li>{item}</li>)}
             </ul>
         );
     }

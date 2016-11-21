@@ -9,33 +9,33 @@ class ViewModel {
     @observable b: string = 'b';
 }
 
-interface IParentProperties {
+interface IParentProps {
     viewModel: ViewModel;
 }
 
-class Parent extends Component<IParentProperties> {
+class Parent extends Component<IParentProps> {
     render() {
-        this.properties.viewModel.runsA++;
+        this.props.viewModel.runsA++;
         return (
             <div>
-                {this.properties.viewModel.a}
-                <Child id="child" viewModel={this.properties.viewModel} />
+                {this.props.viewModel.a}
+                <Child id="child" viewModel={this.props.viewModel} />
             </div>
         );
     }
 }
 
-interface IChildProperties {
+interface IChildProps {
     id: string;
     viewModel: ViewModel;
 }
 
-class Child extends Component<IChildProperties> {
+class Child extends Component<IChildProps> {
     render() {
-        this.properties.viewModel.runsB++;
+        this.props.viewModel.runsB++;
         return (
             <div>
-                {this.properties.viewModel.b}
+                {this.props.viewModel.b}
             </div>
         );
     }

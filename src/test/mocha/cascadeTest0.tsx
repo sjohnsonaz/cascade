@@ -31,15 +31,15 @@ describe('VirtualNode.toNode', function() {
     });
 
     it('should render Components', function() {
-        interface ICustomComponentProperties {
+        interface ICustomComponentProps {
             id: string;
             info: string;
         }
 
-        class CustomComponent extends Component<ICustomComponentProperties> {
+        class CustomComponent extends Component<ICustomComponentProps> {
             render() {
                 return (
-                    <div id={this.properties.id}>Custom Component - {this.properties.info}</div>
+                    <div id={this.props.id}>Custom Component - {this.props.info}</div>
                 )
             }
         }

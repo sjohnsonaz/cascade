@@ -4,11 +4,11 @@ import Component from './Component';
 import Graph from '../graph/Graph';
 
 export default class VirtualDom {
-    static createElement<T extends Object>(type: string | (new (properties: T, ...children: Array<IVirtualNode<any> | string>) => Component<T>), properties: T, ...children: Array<IVirtualNode<any> | string>): IVirtualNode<T> {
+    static createElement<T extends Object>(type: string | (new (props: T, ...children: Array<IVirtualNode<any> | string>) => Component<T>), props: T, ...children: Array<IVirtualNode<any> | string>): IVirtualNode<T> {
         if (typeof type === 'string') {
-            return new VirtualNode(type, properties, ...children);
+            return new VirtualNode(type, props, ...children);
         } else {
-            return new type(properties, ...children);
+            return new type(props, ...children);
         }
     }
 

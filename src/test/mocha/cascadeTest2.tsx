@@ -9,23 +9,23 @@ class ViewModel {
     @observable b: string = 'b';
 }
 
-interface ICustomComponentProperties {
+interface ICustomComponentProps {
     id: string;
     viewModel: ViewModel;
 }
 
-class CustomComponent extends Component<ICustomComponentProperties> {
+class CustomComponent extends Component<ICustomComponentProps> {
     render() {
         return (
             <div>
                 {(() => {
-                    this.properties.viewModel.runsA++;
+                    this.props.viewModel.runsA++;
                     return <div>
-                        {this.properties.viewModel.a}
+                        {this.props.viewModel.a}
                         {(() => {
-                            this.properties.viewModel.runsB++;
+                            this.props.viewModel.runsB++;
                             return <div>
-                                {this.properties.viewModel.b}
+                                {this.props.viewModel.b}
                             </div>
                         })()}
                     </div>

@@ -1,10 +1,10 @@
-export interface IVirtualNodeProperties {
+export interface IVirtualNodeProps {
     key?: string;
     ref?: (node: Node) => void;
 }
 
-export interface IVirtualNode<T extends IVirtualNodeProperties> {
-    properties: T;
+export interface IVirtualNode<T extends IVirtualNodeProps> {
+    props: T;
     children: Array<IVirtualNode<any> | string | number>;
     key: string;
 

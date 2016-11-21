@@ -1,20 +1,20 @@
 import Component from './Component';
-import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
+import {IVirtualNode, IVirtualNodeProps} from './IVirtualNode';
 
-export default class VirtualNode<T extends IVirtualNodeProperties> implements IVirtualNode<T> {
+export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     type: string;
-    properties: T;
+    props: T;
     children: Array<IVirtualNode<any> | string | number>;
     key: string;
     element: Node;
 
-    constructor(type: string, properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
+    constructor(type: string, props?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.type = type;
-        this.properties = properties || ({} as any);
-        this.key = this.properties.key;
+        this.props = props || ({} as any);
+        this.key = this.props.key;
         // TODO: Remove key and ref?
-        // if (this.properties.key) {
-        // delete this.properties.key;
+        // if (this.props.key) {
+        // delete this.props.key;
         // }
         this.children = children ? this.fixChildrenArrays(children) : [];
     }
@@ -38,9 +38,9 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
 
     toNode() {
         var node = document.createElement(this.type);
-        for (var name in this.properties) {
-            if (this.properties.hasOwnProperty(name)) {
-                node[name] = this.properties[name];
+        for (var name in this.props) {
+            if (this.props.hasOwnProperty(name)) {
+                node[name] = this.props[name];
             }
         }
         for (var index = 0, length = this.children.length; index < length; index++) {
@@ -59,8 +59,8 @@ export default class VirtualNode<T extends IVirtualNodeProperties> implements IV
                 }
             }
         }
-        if (this.properties && this.properties.ref) {
-            this.properties.ref(node);
+        if (this.props && this.props.ref) {
+            this.props.ref(node);
         }
         this.element = node;
         return node;

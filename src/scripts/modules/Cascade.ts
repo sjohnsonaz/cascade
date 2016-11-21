@@ -4,7 +4,7 @@ export {default as Computed} from '../graph/Computed';
 export {default as ObservableArray} from '../graph/ObservableArray';
 import {default as Graph} from '../graph/Graph';
 export {observable, computed, array} from '../graph/Decorators';
-export {IVirtualNode, IVirtualNodeProperties} from '../cascade/IVirtualNode';
+export {IVirtualNode, IVirtualNodeProps} from '../cascade/IVirtualNode';
 export {default as VirtualNode} from '../cascade/VirtualNode';
 export {default as Component} from '../cascade/Component';
 import {default as VirtualDom} from '../cascade/VirtualDom';

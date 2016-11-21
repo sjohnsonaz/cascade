@@ -13,7 +13,7 @@ class ViewModel {
 }
 
 describe('Graph.dispose', function() {
-    it('should dispose subscriptions to properties', function() {
+    it('should dispose subscriptions to props', function() {
         var model: any = new ViewModel();
         var ab = model.ab;
         model._graph.dispose();

@@ -58,7 +58,7 @@ Cascade uses either JSX or direct JavaScript calls to create a Virtual Dom. Thes
 ```typescript
 Cascade.createElement<T extends Object>(
     type: string | Component,
-    properties: T,
+    props: T,
     ...children: Array<IVirtualNode<any> | string>
 ): IVirtualNode<any>;
 ```
@@ -66,14 +66,14 @@ Cascade.createElement<T extends Object>(
 Components may be defined by simply extending the Component class. Any property which references an observable will cause the Component to render any time the observable updates.
 
 ```typescript
-interface IUserViewProperties {
+interface IUserViewProps {
     user: User;
 }
 
-class UserView extends Component<IUserViewProperties> {
+class UserView extends Component<IUserViewProps> {
     render() {
         return (
-            <div>{this.properties.user.fullName}</div>
+            <div>{this.props.user.fullName}</div>
         );
     }
 }
@@ -95,7 +95,7 @@ or with JSX by calling
 
 ### Component and VirtualNode Properties
 
-Components and VirtualNodes have optional properties
+Components and VirtualNodes have optional props
 
 `key: string`
 

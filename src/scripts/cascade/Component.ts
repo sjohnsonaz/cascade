@@ -1,28 +1,28 @@
 import Graph from '../graph/Graph';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
-import {IVirtualNode, IVirtualNodeProperties} from './IVirtualNode';
+import {IVirtualNode, IVirtualNodeProps} from './IVirtualNode';
 import Diff, {DiffOperation} from './Diff';
 
 var componentContexts: Component<any>[][] = [];
 var context: Component<any>[] = undefined;
 
-export default class Component<T extends IVirtualNodeProperties> implements IVirtualNode<T> {
+export default class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     uniqueId: number;
-    properties: T;
+    props: T;
     children: Array<IVirtualNode<any> | string | number>;
     key: string;
     root: IVirtualNode<any> | string | number;
     element: Node;
     context: Component<any>[];
 
-    constructor(properties?: T, ...children: Array<IVirtualNode<any> | string | number>) {
+    constructor(props?: T, ...children: Array<IVirtualNode<any> | string | number>) {
         this.uniqueId = Math.floor(Math.random() * 1000000);
-        this.properties = properties || ({} as any);
-        this.key = this.properties.key;
+        this.props = props || ({} as any);
+        this.key = this.props.key;
         // TODO: Remove key and ref?
-        // if (this.properties.key) {
-        // delete this.properties.key;
+        // if (this.props.key) {
+        // delete this.props.key;
         // }
         this.children = children || [];
         // This should subscribe to all observables used by render.
@@ -133,8 +133,8 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         }
 
         if (element !== oldElement) {
-            if (this.properties && this.properties.ref) {
-                this.properties.ref(element);
+            if (this.props && this.props.ref) {
+                this.props.ref(element);
             }
         }
 
@@ -153,7 +153,7 @@ export default class Component<T extends IVirtualNodeProperties> implements IVir
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
-            var propertyDiff = Diff.compareHash(oldRoot.properties, newRoot.properties);
+            var propertyDiff = Diff.compareHash(oldRoot.props, newRoot.props);
             for (var name in propertyDiff) {
                 if (propertyDiff.hasOwnProperty(name)) {
                     var property = propertyDiff[name];

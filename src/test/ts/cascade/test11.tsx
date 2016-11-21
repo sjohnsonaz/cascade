@@ -13,15 +13,15 @@ class ViewModel {
     }
 }
 
-interface IParentProperties {
+interface IParentProps {
     viewModel: ViewModel;
 }
 
-class Parent extends Component<IParentProperties> {
+class Parent extends Component<IParentProps> {
     render() {
         return (
             <div>
-                <span ref={this.properties.viewModel.childRef.bind(this.properties.viewModel)}>Text</span>
+                <span ref={this.props.viewModel.childRef.bind(this.props.viewModel)}>Text</span>
             </div>
         );
     }
