@@ -4,7 +4,7 @@ docs/
 src/
 dist/bundle/
 dist/test/
-dist/__tests__/
+dist/mocha/
 *.map
 *.log
 *.tgz
