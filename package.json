@@ -25,6 +25,7 @@
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.33",
     "chai": "^3.5.0",
+    "es6-shim": "^0.35.1",
     "jsdom": "^9.8.3",
     "mocha": "^3.1.2",
     "reflect-metadata": "^0.1.8",
