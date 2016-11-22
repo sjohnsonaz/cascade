@@ -7,9 +7,9 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
     constructor(base: Array<T>) {
         super();
         var inner = (base instanceof Array && arguments.length == 1) ? base : Array.apply({}, arguments);
-        for (var index in this.constructor.prototype) {
-            if (this.constructor.prototype.hasOwnProperty(index)) {
-                inner[index] = this.constructor.prototype[index];
+        for (var index in ObservableArray.prototype) {
+            if (ObservableArray.prototype.hasOwnProperty(index)) {
+                inner[index] = ObservableArray.prototype[index];
             }
         }
         Object.defineProperty(inner, 'subscribers', {
