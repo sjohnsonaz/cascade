@@ -1,3 +1,8 @@
+---
+layout: post
+title: Cascade
+---
+
 # Cascade
 
 [![Build Status](https://travis-ci.org/sjohnsonaz/cascade.svg?branch=master)](https://travis-ci.org/sjohnsonaz/cascade)
