@@ -2,9 +2,6 @@ import {IObservable, ISubscriber} from './IObservable';
 import Observable from './Observable';
 import ComputedQueue from './ComputedQueue';
 
-var id: number = 0;
-var computedQueue: ComputedQueue = new ComputedQueue();
-
 export default class Computed<T> extends Observable<T> implements ISubscriber {
 
     id: number;
@@ -15,11 +12,14 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     disposed: boolean;
     error: Error;
 
+    static id: number = 0;
+    static computedQueue: ComputedQueue = new ComputedQueue();
+
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
     constructor(definition: (n: T) => T, defer: boolean = false, thisArg?: any) {
         super(undefined);
-        this.id = id;
-        id++;
+        this.id = Computed.id;
+        Computed.id++;
 
         this.references = [];
         this.definition = definition;
@@ -49,10 +49,10 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     notify() {
         if (!this.disposed) {
             this.notifyDirty();
-            if (computedQueue.completed) {
-                computedQueue = new ComputedQueue();
+            if (Computed.computedQueue.completed) {
+                Computed.computedQueue = new ComputedQueue();
             }
-            computedQueue.add(this);
+            Computed.computedQueue.add(this);
         }
     }
     notifyDirty() {

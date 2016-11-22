@@ -1,17 +1,19 @@
-declare var global: any;
+var jsdom = require('jsdom');
 
-import {jsdom} from 'jsdom';
+module.exports = (function () {
+    function DomIntegration() {
 
-export default class DomIntegration {
-    static init() {
+    }
+
+    DomIntegration.init = function () {
         if (typeof window === 'undefined') {
             DomIntegration.initDom();
         }
-    }
+    };
 
-    static initDom() {
+    DomIntegration.initDom = function () {
         // setup the simplest document possible
-        var doc = jsdom('<!doctype html><html><body></body></html>')
+        var doc = jsdom.jsdom('<!doctype html><html><body></body></html>')
 
         // get the window object out of the document
         var win = doc.defaultView
@@ -34,5 +36,7 @@ export default class DomIntegration {
                 global[key] = window[key]
             }
         }
-    }
-}
+    };
+
+    return DomIntegration;
+})();
