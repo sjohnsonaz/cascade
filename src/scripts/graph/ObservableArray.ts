@@ -4,7 +4,6 @@ import Observable from './Observable';
 export default class ObservableArray<T> extends Array<T> implements IObservable<Array<T>>{
     subscribers: (ISubscriber | ISubscriberFunction<Array<T>>)[];
 
-    // TODO: Add wrap and unwrap.
     constructor(base: Array<T>) {
         super();
         var inner = (base instanceof Array && arguments.length == 1) ? base : Array.apply({}, arguments);
@@ -37,7 +36,6 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
 
     setValue(value: Array<T>) {
         if (this !== value) {
-            //var oldValue = this.splice(0);
             this.replaceAll(value);
         }
     }
@@ -51,11 +49,10 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
     subscribe(subscriber: ISubscriber | ISubscriberFunction<Array<T>>) {
         if (subscriber) {
             this.subscribers.push(subscriber);
-            // TODO: Remove redundant type casting.
             if (typeof subscriber === 'function') {
-                (subscriber as ISubscriberFunction<Array<T>>)(this);
+                subscriber(this);
             } else {
-                (subscriber as ISubscriber).notify();
+                subscriber.notify();
             }
         }
     }
@@ -72,11 +69,10 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
     publish(value: Array<T>, oldValue?: Array<T>) {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
-            // TODO: Remove redundant type casting.
             if (typeof subscriber === 'function') {
-                (subscriber as ISubscriberFunction<Array<T>>)(this, oldValue);
+                subscriber(this, oldValue);
             } else {
-                (subscriber as ISubscriber).notify();
+                subscriber.notify();
             }
         }
     }

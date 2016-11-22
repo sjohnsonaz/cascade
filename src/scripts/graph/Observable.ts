@@ -7,7 +7,6 @@ export default class Observable<T> implements IObservable<T> {
     value: T;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
 
-    // TODO: Add wrap and unwrap.
     constructor(value: T) {
         this.value = value;
         this.subscribers = [];
@@ -37,11 +36,10 @@ export default class Observable<T> implements IObservable<T> {
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>) {
         if (subscriber) {
             this.subscribers.push(subscriber);
-            // TODO: Remove redundant type casting.
             if (typeof subscriber === 'function') {
-                (subscriber as ISubscriberFunction<T>)(this.value);
+                subscriber(this.value);
             } else {
-                (subscriber as ISubscriber).notify();
+                subscriber.notify();
             }
         }
     }
@@ -56,11 +54,10 @@ export default class Observable<T> implements IObservable<T> {
     publish(value: T, oldValue: T) {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
-            // TODO: Remove redundant type casting.
             if (typeof subscriber === 'function') {
-                (subscriber as ISubscriberFunction<T>)(this.value, oldValue);
+                subscriber(this.value, oldValue);
             } else {
-                (subscriber as ISubscriber).notify();
+                subscriber.notify();
             }
         }
     }
