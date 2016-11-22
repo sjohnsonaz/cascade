@@ -14,7 +14,7 @@ Furthermore, any Functional DOM Component which references an observable or comp
 
 Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function. Computed values must be declared as a getter, and arrays must be declared with their types.
 
-> **Note:** Decorators depend on TypeScript. You must set `experimentalDecorators: true` in your `tsconfig.json` file.
+> **Note:** Decorators depend on TypeScript. You must set `"experimentalDecorators": true` in your `tsconfig.json` file.
 
 ```typescript
 class User {
@@ -27,7 +27,7 @@ class User {
 }
 ```
 
-> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. You must also set `"emitDecoratorMetadata: true` in your `tsconfig.json` file. For IE10 and below, you must also include `es6-shim` or similar polyfills. If you don't wish to install polyfills, then you must use `@array` instead of `@observable`.
+> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. You must also set `"emitDecoratorMetadata": true` in your `tsconfig.json` file. For IE10 and below, you must also include `es6-shim` or similar polyfills. If you don't wish to install polyfills, then you must use `@array` instead of `@observable`.
 
 ### JavaScript usage
 
@@ -92,6 +92,8 @@ or with JSX by calling
 ```typescript
 <UserView user={User} />
 ```
+
+> **Note** Using JSX requires the options `"jsx": "react"` and `"reactNamespace": "Cascade"` in your `tsconfig.json` file. `Cascade` must also be imported into any `.jsx` or `.tsx` file.
 
 ### Component and VirtualNode Properties
 
