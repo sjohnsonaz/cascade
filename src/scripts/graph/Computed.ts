@@ -75,6 +75,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
                 this.publish(this.value, value);
             }
         }
+        return this.value;
     }
     runDefinition(definition: (n: T) => T) {
         //TODO: Reduce unsubscribe calls.

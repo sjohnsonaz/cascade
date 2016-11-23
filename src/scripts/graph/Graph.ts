@@ -185,6 +185,20 @@ export default class Graph {
         return obj._graph ? (obj._graph as Graph).peek(property) : undefined;
     }
 
+    static run(obj: any, property: string) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            var observable = graph.observables[property];
+            if (observable) {
+                if ((observable as any).runUpdate) {
+                    return (observable as any).runUpdate();
+                } else {
+                    return observable.peek();
+                }
+            }
+        }
+    }
+
     static getObservable(obj: any, property) {
         var graph: Graph = obj._graph;
         if (graph) {
