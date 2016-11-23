@@ -8,7 +8,9 @@ export default class VirtualDom {
         if (typeof type === 'string') {
             return new VirtualNode(type, props, ...children);
         } else {
-            return new type(props, ...children);
+            var component = new type(props, ...children);
+            component.init();
+            return component;
         }
     }
 

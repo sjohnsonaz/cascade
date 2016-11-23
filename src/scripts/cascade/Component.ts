@@ -25,6 +25,9 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
         // delete this.props.key;
         // }
         this.children = children || [];
+    }
+
+    init() {
         // This should subscribe to all observables used by render.
         Graph.createComputed(this, 'root', () => {
             // Dispose of old context
