@@ -169,7 +169,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                         // Diff recursively
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
-                                newChild.element = oldElement;
+                                newChild.element = oldElement.childNodes[childIndex];
                                 this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex]);
                             } else {
                                 this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex]);
