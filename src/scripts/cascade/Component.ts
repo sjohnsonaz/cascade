@@ -149,9 +149,9 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                 if (propertyDiff.hasOwnProperty(name)) {
                     var property = propertyDiff[name];
                     if (property === null) {
-                        (oldElement as HTMLElement).removeAttribute(name);
+                        oldElement[name] = undefined;
                     } else {
-                        (oldElement as HTMLElement).setAttribute(name, property);
+                        oldElement[name] = property;
                     }
                 }
             }
