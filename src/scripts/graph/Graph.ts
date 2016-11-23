@@ -190,8 +190,8 @@ export default class Graph {
         if (graph) {
             var observable = graph.observables[property];
             if (observable) {
-                if ((observable as any).runUpdate) {
-                    return (observable as any).runUpdate();
+                if ((observable as any).runOnly) {
+                    return (observable as any).runOnly();
                 } else {
                     return observable.peek();
                 }

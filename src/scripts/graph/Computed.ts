@@ -27,7 +27,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         if (defer) {
             this.dirty = true;
         } else {
-            this.runDefinition(definition);
+            this.value = this.runDefinition(definition);
             this.dirty = false;
         }
     }
@@ -69,12 +69,17 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     runUpdate() {
         if (!this.disposed && this.dirty) {
             var value = this.value;
-            this.runDefinition(this.definition);
+            this.value = this.runDefinition(this.definition);
             this.dirty = false;
             if (this.value !== value) {
                 this.publish(this.value, value);
             }
         }
+        return this.value;
+    }
+    runOnly() {
+        this.value = this.runDefinition(this.definition);
+        this.dirty = false;
         return this.value;
     }
     runDefinition(definition: (n: T) => T) {
@@ -99,8 +104,6 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         }
         var context = Observable.popContext();
         if (!this.error) {
-            this.value = output;
-
             //TODO: Prevent redundant subscription.
             for (var index = 0, length: number = context.length; index < length; index++) {
                 var reference = context[index];
@@ -114,6 +117,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             throw this.error;
         }
         */
+        return output;
     }
     dispose() {
         this.disposed = true;
