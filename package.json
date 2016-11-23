@@ -4,6 +4,7 @@
   "description": "",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
   "contributors": [],
+  "license": "MIT",
   "main": "dist/scripts/modules/Cascade.js",
   "typings": "dist/scripts/modules/Cascade.d.ts",
   "scripts": {
