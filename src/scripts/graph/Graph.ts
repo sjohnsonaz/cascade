@@ -174,6 +174,13 @@ export default class Graph {
         }
     }
 
+    static subscribeOnly<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            graph.subscribeOnly(property, subscriberFunction);
+        }
+    }
+
     static peek(obj: any, property: string) {
         return obj._graph ? (obj._graph as Graph).peek(property) : undefined;
     }
