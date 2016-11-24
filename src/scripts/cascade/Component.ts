@@ -108,11 +108,11 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                     // TODO: Improve Component type checking
                     if (root instanceof Component) {
                         root.element = oldElement;
-                        element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement);
+                        element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
                         //element = root.toNode(Graph.peek(oldRoot, 'root'));
                     } else {
                         root.element = oldElement;
-                        element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement);
+                        element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
                         //element = (root as any).toNode();
                     }
                     break;
@@ -141,7 +141,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
         return element;
     }
 
-    diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: Node) {
+    diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: HTMLElement) {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             return newRoot.toNode();
         } else {
@@ -152,9 +152,9 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                 if (propertyDiff.hasOwnProperty(name)) {
                     var property = propertyDiff[name];
                     if (property === null) {
-                        oldElement[name] = undefined;
+                        VirtualNode.removeAttribute(oldElement, name);
                     } else {
-                        oldElement[name] = property;
+                        VirtualNode.setAttribute(oldElement, name, property);
                     }
                 }
             }
@@ -170,12 +170,13 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                         var newChild = diffItem.itemB;
                         var oldChild = diffItem.item;
                         // Diff recursively
+                        // TODO: Remove extra casts
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement.childNodes[childIndex];
-                                this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex]);
+                                this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex] as HTMLElement);
                             } else {
-                                this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex]);
+                                this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
                             }
                         }
                         childIndex--;

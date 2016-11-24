@@ -1,7 +1,7 @@
 {
   "name": "cascade",
   "version": "0.0.0",
-  "description": "",
+  "description": "A JavaScript/TypeScript library for creating modern user interfaces",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
   "contributors": [],
   "license": "MIT",

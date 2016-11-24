@@ -40,7 +40,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         var node = document.createElement(this.type);
         for (var name in this.props) {
             if (this.props.hasOwnProperty(name)) {
-                node[name] = this.props[name];
+                VirtualNode.setAttribute(node, name, this.props[name]);
             }
         }
         for (var index = 0, length = this.children.length; index < length; index++) {
@@ -66,5 +66,21 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         var container = document.createElement('div') as HTMLElement;
         container.appendChild(this.toNode());
         return container.innerHTML;
+    }
+
+    static setAttribute(element: HTMLElement, property: string, value: any) {
+        try {
+            element[property] = value;
+        } catch (e) {
+            element.setAttribute(property, value);
+        }
+    }
+
+    static removeAttribute(element: HTMLElement, property: string) {
+        try {
+            element[property] = undefined;
+        } catch (e) {
+            element.removeAttribute(property);
+        }
     }
 }
