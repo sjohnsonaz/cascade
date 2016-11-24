@@ -1,6 +1,6 @@
 # Cascade
 
-[![Build Status](https://travis-ci.org/sjohnsonaz/cascade.svg?branch=master)](https://travis-ci.org/sjohnsonaz/cascade)
+[![Build Status](https://travis-ci.org/sjohnsonaz/cascade.svg?branch=master)](https://travis-ci.org/sjohnsonaz/cascade) [![npm version](https://badge.fury.io/js/cascade.svg)](https://badge.fury.io/js/cascade)
 
 A JavaScript/TypeScript library for creating modern user interfaces. It combines Reactive ViewModels with Functional DOM Components to create seamless flow of data.
 
