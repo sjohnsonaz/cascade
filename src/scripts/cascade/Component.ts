@@ -105,15 +105,20 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                     break;
                 default:
                     // Diff this case
-                    // TODO: Improve Component type checking
                     if (root instanceof Component) {
-                        root.element = oldElement;
-                        element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
-                        //element = root.toNode(Graph.peek(oldRoot, 'root'));
+                        if (root.constructor === oldRoot.constructor) {
+                            root.element = oldElement;
+                            element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
+                        } else {
+                            element = root.toNode();
+                        }
                     } else {
-                        root.element = oldElement;
-                        element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
-                        //element = (root as any).toNode();
+                        if (root.type = (oldRoot as VirtualNode<any>).type) {
+                            root.element = oldElement;
+                            element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
+                        } else {
+                            element = root.toNode();
+                        }
                     }
                     break;
             }
