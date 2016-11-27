@@ -69,18 +69,26 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
     }
 
     static setAttribute(element: HTMLElement, property: string, value: any) {
-        try {
-            element[property] = value;
-        } catch (e) {
+        if (property.indexOf('-') >= 0) {
             element.setAttribute(property, value);
+        } else {
+            try {
+                element[property] = value;
+            } catch (e) {
+                element.setAttribute(property, value);
+            }
         }
     }
 
     static removeAttribute(element: HTMLElement, property: string) {
-        try {
-            element[property] = undefined;
-        } catch (e) {
+        if (property.indexOf('-') >= 0) {
             element.removeAttribute(property);
+        } else {
+            try {
+                element[property] = undefined;
+            } catch (e) {
+                element.removeAttribute(property);
+            }
         }
     }
 }
