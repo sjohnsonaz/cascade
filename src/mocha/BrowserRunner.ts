@@ -1,5 +1,7 @@
 import 'es6-shim';
 import 'reflect-metadata';
+import 'mocha';
+import 'chai';
 
 import '../test/mocha/cascadeTest0';
 import '../test/mocha/cascadeTest1';
