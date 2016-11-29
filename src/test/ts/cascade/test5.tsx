@@ -9,7 +9,6 @@ class ViewModel {
 }
 
 interface ICustomComponentProps {
-    id: string;
     viewModel: ViewModel;
 }
 

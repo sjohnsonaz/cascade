@@ -8,7 +8,6 @@ class ViewModel {
 }
 
 interface IParentProps {
-    id: string;
     viewModel: ViewModel;
 }
 

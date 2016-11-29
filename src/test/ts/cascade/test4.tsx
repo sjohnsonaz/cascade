@@ -7,7 +7,7 @@ class ViewModel {
 }
 
 interface IParentProps {
-    id: string;
+    id?: string;
     viewModel: ViewModel;
 }
 

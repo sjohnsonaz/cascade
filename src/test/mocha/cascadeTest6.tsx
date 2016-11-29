@@ -35,8 +35,8 @@ class Parent extends Component<IParentProps> {
 }
 
 interface IChildProps {
-    onclick: Function;
-    onchange: Function;
+    onclick: () => void;
+    onchange: () => void;
     viewModel: ViewModel;
 }
 
