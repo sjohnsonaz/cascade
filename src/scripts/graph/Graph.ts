@@ -125,8 +125,7 @@ export default class Graph {
         obj._graph.observables[property] = observable;
     }
 
-    static createObservable<T>(obj: any, property: string, value: T) {
-        var observable = new Observable(value);
+    static attachObservable<T>(obj: any, property: string, observable: Observable<T> | ObservableArray<T>, readOnly: boolean = false) {
         Graph.createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
             enumerable: true,
@@ -134,37 +133,22 @@ export default class Graph {
             get: function() {
                 return observable.getValue();
             },
-            set: function(value: T) {
-                observable.setValue(value);
+            set: readOnly ? undefined : function(value: T | Array<T>) {
+                (observable as any).setValue(value);
             }
         });
+    }
+
+    static createObservable<T>(obj: any, property: string, value: T) {
+        Graph.attachObservable(obj, property, new Observable(value));
     }
 
     static createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean) {
-        var computed = new Computed(definition, defer);
-        Graph.createProperty(obj, property, computed);
-        Object.defineProperty(obj, property, {
-            enumerable: true,
-            configurable: true,
-            get: function() {
-                return computed.getValue();
-            }
-        });
+        Graph.attachObservable(obj, property, new Computed(definition, defer), true);
     }
 
     static createObservableArray<T>(obj: any, property: string, value: Array<T>) {
-        var observable = new ObservableArray(value);
-        Graph.createProperty(obj, property, observable);
-        Object.defineProperty(obj, property, {
-            enumerable: true,
-            configurable: true,
-            get: function() {
-                return observable.getValue();
-            },
-            set: function(value: Array<T>) {
-                observable.setValue(value);
-            }
-        });
+        Graph.attachObservable<T>(obj, property, new ObservableArray(value));
     }
 
     static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {

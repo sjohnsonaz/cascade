@@ -14,6 +14,7 @@ import {default as VirtualDom} from '../cascade/VirtualDom';
 export default class Cascade {
     static createElement = VirtualDom.createElement;
     static render = VirtualDom.render;
+    static attachObservable = Graph.attachObservable;
     static createObservable = Graph.createObservable;
     static createObservableArray = Graph.createObservableArray;
     static createComputed = Graph.createComputed;
