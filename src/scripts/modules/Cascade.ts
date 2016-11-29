@@ -1,3 +1,4 @@
+import '../jsx/JSX';
 export {IObservable, ISubscriber, ISubscriberFunction} from '../graph/IObservable';
 export {default as Observable} from '../graph/Observable';
 export {default as Computed} from '../graph/Computed';
