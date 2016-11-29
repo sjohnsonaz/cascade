@@ -123,6 +123,7 @@ export namespace Elements {
         outerHTML?: string;
         outerText?: string;
         spellcheck?: boolean;
+        style?: string;
         tabIndex?: number;
         title?: string;
     }
