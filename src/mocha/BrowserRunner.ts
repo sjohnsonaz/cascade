@@ -25,3 +25,4 @@ import '../test/mocha/graphTest5';
 import '../test/mocha/graphTest6';
 import '../test/mocha/graphTest7';
 import '../test/mocha/graphTest8';
+import '../test/mocha/templateTest0';
