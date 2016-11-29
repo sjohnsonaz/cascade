@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import Cascade, {Component, observable} from '../../scripts/modules/Cascade';
+import Cascade, {Component, observable} from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsA: number = 0;
@@ -17,11 +17,10 @@ class Parent extends Component<IParentProps> {
     render() {
         this.props.viewModel.runsA++;
         return (
-            <Child id="child" viewModel={this.props.viewModel}>
-                <div>
-                    {this.props.viewModel.a}
-                </div>
-            </Child>
+            <div>
+                {this.props.viewModel.a}
+                <Child id="child" viewModel={this.props.viewModel} />
+            </div>
         );
     }
 }
@@ -36,19 +35,14 @@ class Child extends Component<IChildProps> {
         this.props.viewModel.runsB++;
         return (
             <div>
-                <div>
-                    {this.props.viewModel.b}
-                </div>
-                <div>
-                    {this.children}
-                </div>
+                {this.props.viewModel.b}
             </div>
         );
     }
 }
 
 describe('Component', function() {
-    it('should updated directly nested Components with children', function() {
+    it('should updated nested Components', function() {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
@@ -60,7 +54,7 @@ describe('Component', function() {
             setTimeout(function() {
                     expect(viewModel.runsA).to.equal(2);
                     expect(viewModel.runsB).to.equal(3);
-            }, 1);
+            }, 20);
         }, 1);
     });
 });

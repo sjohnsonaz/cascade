@@ -1,5 +1,6 @@
 import {expect} from 'chai';
-import {observable} from '../../scripts/modules/Cascade';
+
+import {observable} from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsAB = 0;

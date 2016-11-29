@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import Cascade, {Component, observable} from '../../scripts/modules/Cascade';
+import Cascade, {Component, observable} from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsA: number = 0;

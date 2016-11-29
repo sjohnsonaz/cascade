@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import Cascade, {VirtualNode, Component} from '../../scripts/modules/Cascade';
+import Cascade, {VirtualNode, Component} from '../scripts/modules/Cascade';
 
 describe('VirtualNode.toNode', function() {
     it('should render a Node', function() {

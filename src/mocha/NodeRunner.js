@@ -10,7 +10,7 @@ var DomIntegration = require('./DomIntegration');
 // Instantiate a Mocha instance.
 var mocha = new Mocha();
 
-var testDir = path.join(__dirname, '../../dist/test/mocha');
+var testDir = path.join(__dirname, '../../dist/tests');
 
 // Add each .js file to the mocha instance
 fs.readdirSync(testDir).filter(function (file) {

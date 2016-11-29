@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import Cascade, {observable} from '../../scripts/modules/Cascade';
+import Cascade, {observable} from '../scripts/modules/Cascade';
 
 var runsParent = 0;
 var runsChild = 0;
