@@ -2,7 +2,7 @@ node_modules/
 docs/
 src/
 dist/bundle/
-dist/test/
+dist/tests/
 dist/mocha/
 *.map
 *.log

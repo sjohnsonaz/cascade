@@ -19,6 +19,7 @@
     "reactNamespace": "Cascade"
   },
   "exclude": [
+    "cascade-*",
     "dist",
     "node_modules"
   ],
