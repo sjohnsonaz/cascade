@@ -181,7 +181,7 @@ export namespace ElementTypes {
         contentDocument?: Document;
         data?: string;
         declare?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         height?: string;
         hspace?: number;
         name?: string;
@@ -265,7 +265,7 @@ export namespace ElementTypes {
     export interface CascadeButtonElement extends CascadeHTMLElement {
         autofocus?: boolean;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         formAction?: string;
         formEnctype?: string;
         formMethod?: string;
@@ -337,7 +337,7 @@ export namespace ElementTypes {
     export interface CascadeFieldSetElement extends CascadeHTMLElement {
         align?: string;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         validationMessage?: string;
         validity?: ValidityState;
         willValidate?: boolean;
@@ -491,7 +491,7 @@ export namespace ElementTypes {
         defaultValue?: string;
         disabled?: boolean;
         files?: FileList;
-        form?: HTMLFormElement;
+        form?: string;
         formAction?: string;
         formEnctype?: string;
         formMethod?: string;
@@ -530,7 +530,7 @@ export namespace ElementTypes {
 
     export interface CascadeIsIndexElement extends CascadeHTMLElement {
         action?: string;
-        form?: HTMLFormElement;
+        form?: string;
         prompt?: string;
     }
 
@@ -538,7 +538,7 @@ export namespace ElementTypes {
         autofocus?: boolean;
         challenge?: string;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         keytype?: string;
         name?: string;
         type?: string;
@@ -551,13 +551,13 @@ export namespace ElementTypes {
     }
 
     export interface CascadeLabelElement extends CascadeHTMLElement {
-        form?: HTMLFormElement;
+        form?: string;
         htmlFor?: string;
     }
 
     export interface CascadeLegendElement extends CascadeHTMLElement {
         align?: string;
-        form?: HTMLFormElement;
+        form?: string;
     }
 
     export interface CascadeLinkElement extends CascadeHTMLElement {
@@ -692,7 +692,7 @@ export namespace ElementTypes {
         contentDocument?: Document;
         data?: string;
         declare?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         height?: string;
         hspace?: number;
         msPlayToDisabled?: boolean;
@@ -715,7 +715,7 @@ export namespace ElementTypes {
     export interface CascadeOptGroupElement extends CascadeHTMLElement {
         defaultSelected?: boolean;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         index?: number;
         label?: string;
         selected?: boolean;
@@ -726,7 +726,7 @@ export namespace ElementTypes {
     export interface CascadeOptionElement extends CascadeHTMLElement {
         defaultSelected?: boolean;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         index?: number;
         label?: string;
         selected?: boolean;
@@ -736,7 +736,7 @@ export namespace ElementTypes {
 
     export interface CascadeOutputElement extends CascadeHTMLElement {
         defaultValue?: string;
-        form?: HTMLFormElement;
+        form?: string;
         labels?: string;
         name?: string;
         type?: string;
@@ -770,7 +770,7 @@ export namespace ElementTypes {
     }
 
     export interface CascadeProgressElement extends CascadeHTMLElement {
-        form?: HTMLFormElement;
+        form?: string;
         max?: number;
         position?: number;
         value?: number;
@@ -795,7 +795,7 @@ export namespace ElementTypes {
     export interface CascadeSelectElement extends CascadeHTMLElement {
         autofocus?: boolean;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         length?: number;
         multiple?: boolean;
         name?: string;
@@ -904,7 +904,7 @@ export namespace ElementTypes {
         cols?: number;
         defaultValue?: string;
         disabled?: boolean;
-        form?: HTMLFormElement;
+        form?: string;
         maxLength?: number;
         name?: string;
         placeholder?: string;
