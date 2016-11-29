@@ -1,13 +1,13 @@
 import {IVirtualNodeProps} from '../cascade/IVirtualNode';
 
-export namespace ElementTypes {
-    export interface CascadeNode {
+export namespace Elements {
+    export interface BaseNode {
         nodeValue?: string;
         textContent?: string;
         [name: string]: any;
     }
 
-    export interface CascadeElement extends CascadeNode, IVirtualNodeProps {
+    export interface BaseElement extends BaseNode, IVirtualNodeProps {
         className?: string;
         id?: string;
         msContentZoomFactor?: number;
@@ -43,7 +43,7 @@ export namespace ElementTypes {
         innerHTML?: string;
     }
 
-    export interface CascadeHTMLElement extends CascadeElement {
+    export interface JSXElement extends BaseElement {
         accessKey?: string;
         contentEditable?: string;
         dir?: string;
@@ -127,7 +127,7 @@ export namespace ElementTypes {
         title?: string;
     }
 
-    export interface CascadeSVGElement extends CascadeElement {
+    export interface JSXSVGElement extends BaseElement {
         onclick?: (ev?: MouseEvent) => any;
         ondblclick?: (ev?: MouseEvent) => any;
         onfocusin?: (ev?: FocusEvent) => any;
@@ -142,7 +142,7 @@ export namespace ElementTypes {
         className?: any;
     }
 
-    export interface CascadeAnchorElement extends CascadeHTMLElement {
+    export interface JSXAnchorElement extends JSXElement {
         Methods?: string;
         charset?: string;
         coords?: string;
@@ -168,7 +168,7 @@ export namespace ElementTypes {
         urn?: string;
     }
 
-    export interface CascadeAppletElement extends CascadeHTMLElement {
+    export interface JSXAppletElement extends JSXElement {
         BaseHref?: string;
         align?: string;
         alt?: string;
@@ -193,7 +193,7 @@ export namespace ElementTypes {
         width?: number;
     }
 
-    export interface CascadeAreaElement extends CascadeHTMLElement {
+    export interface JSXAreaElement extends JSXElement {
         alt?: string;
         coords?: string;
         hash?: string;
@@ -210,30 +210,30 @@ export namespace ElementTypes {
         target?: string;
     }
 
-    export interface CascadeAudioElement extends CascadeMediaElement {
+    export interface JSXAudioElement extends JSXMediaElement {
     }
 
-    export interface CascadeBRElement extends CascadeHTMLElement {
+    export interface JSXBRElement extends JSXElement {
         clear?: string;
     }
 
-    export interface CascadeBaseElement extends CascadeHTMLElement {
+    export interface JSXBaseElement extends JSXElement {
         href?: string;
         target?: string;
     }
 
-    export interface CascadeBaseFontElement extends CascadeHTMLElement {
+    export interface JSXBaseFontElement extends JSXElement {
         face?: string;
         size?: number;
     }
 
-    export interface CascadeBlockElement extends CascadeHTMLElement {
+    export interface JSXBlockElement extends JSXElement {
         cite?: string;
         clear?: string;
         width?: number;
     }
 
-    export interface CascadeBodyElement extends CascadeHTMLElement {
+    export interface JSXBodyElement extends JSXElement {
         aLink?: any;
         background?: string;
         bgColor?: any;
@@ -262,7 +262,7 @@ export namespace ElementTypes {
         vLink?: any;
     }
 
-    export interface CascadeButtonElement extends CascadeHTMLElement {
+    export interface JSXButtonElement extends JSXElement {
         autofocus?: boolean;
         disabled?: boolean;
         form?: string;
@@ -280,45 +280,45 @@ export namespace ElementTypes {
         willValidate?: boolean;
     }
 
-    export interface CascadeCanvasElement extends CascadeHTMLElement {
+    export interface JSXCanvasElement extends JSXElement {
         height?: number;
         width?: number;
     }
 
-    export interface CascadeDataElement extends CascadeHTMLElement {
+    export interface JSXDataElement extends JSXElement {
         value?: string;
     }
 
-    export interface CascadeDDElement extends CascadeHTMLElement {
+    export interface JSXDDElement extends JSXElement {
         noWrap?: boolean;
     }
 
-    export interface CascadeDetailsElement extends CascadeHTMLElement {
+    export interface JSXDetailsElement extends JSXElement {
         open?: boolean;
     }
 
-    export interface CascadeDListElement extends CascadeHTMLElement {
+    export interface JSXDListElement extends JSXElement {
         compact?: boolean;
     }
 
-    export interface CascadeDTElement extends CascadeHTMLElement {
+    export interface JSXDTElement extends JSXElement {
         noWrap?: boolean;
     }
 
-    export interface CascadeDataListElement extends CascadeHTMLElement {
+    export interface JSXDataListElement extends JSXElement {
         options?: HTMLCollection;
     }
 
-    export interface CascadeDirectoryElement extends CascadeHTMLElement {
+    export interface JSXDirectoryElement extends JSXElement {
         compact?: boolean;
     }
 
-    export interface CascadeDivElement extends CascadeHTMLElement {
+    export interface JSXDivElement extends JSXElement {
         align?: string;
         noWrap?: boolean;
     }
 
-    export interface CascadeEmbedElement extends CascadeHTMLElement {
+    export interface JSXEmbedElement extends JSXElement {
         height?: string;
         hidden?: any;
         msPlayToDisabled?: boolean;
@@ -334,7 +334,7 @@ export namespace ElementTypes {
         width?: string;
     }
 
-    export interface CascadeFieldSetElement extends CascadeHTMLElement {
+    export interface JSXFieldSetElement extends JSXElement {
         align?: string;
         disabled?: boolean;
         form?: string;
@@ -343,11 +343,11 @@ export namespace ElementTypes {
         willValidate?: boolean;
     }
 
-    export interface CascadeFontElement extends CascadeHTMLElement {
+    export interface JSXFontElement extends JSXElement {
         face?: string;
     }
 
-    export interface CascadeFormElement extends CascadeHTMLElement {
+    export interface JSXFormElement extends JSXElement {
         acceptCharset?: string;
         action?: string;
         autocomplete?: string;
@@ -361,7 +361,7 @@ export namespace ElementTypes {
         target?: string;
     }
 
-    export interface CascadeFrameElement extends CascadeHTMLElement {
+    export interface JSXFrameElement extends JSXElement {
         border?: string;
         borderColor?: any;
         contentDocument?: Document;
@@ -381,7 +381,7 @@ export namespace ElementTypes {
         width?: string | number;
     }
 
-    export interface CascadeFrameSetElement extends CascadeHTMLElement {
+    export interface JSXFrameSetElement extends JSXElement {
         border?: string;
         borderColor?: any;
         cols?: string;
@@ -408,26 +408,26 @@ export namespace ElementTypes {
         rows?: string;
     }
 
-    export interface CascadeHRElement extends CascadeHTMLElement {
+    export interface JSXHRElement extends JSXElement {
         align?: string;
         noShade?: boolean;
         width?: number;
     }
 
-    export interface CascadeHeadElement extends CascadeHTMLElement {
+    export interface JSXHeadElement extends JSXElement {
         profile?: string;
     }
 
-    export interface CascadeHeadingElement extends CascadeHTMLElement {
+    export interface JSXHeadingElement extends JSXElement {
         align?: string;
         clear?: string;
     }
 
-    export interface CascadeHTMLHtmlElement extends CascadeHTMLElement {
+    export interface JSXHtmlElement extends JSXElement {
         version?: string;
     }
 
-    export interface CascadeIFrameElement extends CascadeHTMLElement {
+    export interface JSXIFrameElement extends JSXElement {
         align?: string;
         allowFullscreen?: boolean;
         border?: string;
@@ -451,7 +451,7 @@ export namespace ElementTypes {
         width?: string;
     }
 
-    export interface CascadeImageElement extends CascadeHTMLElement {
+    export interface JSXImageElement extends JSXElement {
         align?: string;
         alt?: string;
         border?: string;
@@ -478,7 +478,7 @@ export namespace ElementTypes {
         y?: number;
     }
 
-    export interface CascadeInputElement extends CascadeHTMLElement {
+    export interface JSXInputElement extends JSXElement {
         accept?: string;
         align?: string;
         alt?: string;
@@ -528,13 +528,13 @@ export namespace ElementTypes {
         willValidate?: boolean;
     }
 
-    export interface CascadeIsIndexElement extends CascadeHTMLElement {
+    export interface JSXIsIndexElement extends JSXElement {
         action?: string;
         form?: string;
         prompt?: string;
     }
 
-    export interface CascadeKeygenElement extends CascadeHTMLElement {
+    export interface JSXKeygenElement extends JSXElement {
         autofocus?: boolean;
         challenge?: string;
         disabled?: boolean;
@@ -545,22 +545,22 @@ export namespace ElementTypes {
         willValidate?: boolean;
     }
 
-    export interface CascadeLIElement extends CascadeHTMLElement {
+    export interface JSXLIElement extends JSXElement {
         type?: string;
         value?: number;
     }
 
-    export interface CascadeLabelElement extends CascadeHTMLElement {
+    export interface JSXLabelElement extends JSXElement {
         form?: string;
         htmlFor?: string;
     }
 
-    export interface CascadeLegendElement extends CascadeHTMLElement {
+    export interface JSXLegendElement extends JSXElement {
         align?: string;
         form?: string;
     }
 
-    export interface CascadeLinkElement extends CascadeHTMLElement {
+    export interface JSXLinkElement extends JSXElement {
         charset?: string;
         disabled?: boolean;
         href?: string;
@@ -572,12 +572,12 @@ export namespace ElementTypes {
         type?: string;
     }
 
-    export interface CascadeMapElement extends CascadeHTMLElement {
+    export interface JSXMapElement extends JSXElement {
         areas?: HTMLAreasCollection;
         name?: string;
     }
 
-    export interface CascadeMarqueeElement extends CascadeHTMLElement {
+    export interface JSXMarqueeElement extends JSXElement {
         behavior?: string;
         bgColor?: any;
         direction?: string;
@@ -594,7 +594,7 @@ export namespace ElementTypes {
         width?: string;
     }
 
-    export interface CascadeMediaElement extends CascadeHTMLElement {
+    export interface JSXMediaElement extends JSXElement {
         audioTracks?: AudioTrackList;
         autoplay?: boolean;
         buffered?: TimeRanges;
@@ -641,12 +641,12 @@ export namespace ElementTypes {
         NETWORK_NO_SOURCE: number;
     }
 
-    export interface CascadeMenuElement extends CascadeHTMLElement {
+    export interface JSXMenuElement extends JSXElement {
         compact?: boolean;
         type?: string;
     }
 
-    export interface CascadeMetaElement extends CascadeHTMLElement {
+    export interface JSXMetaElement extends JSXElement {
         charset?: string;
         content?: string;
         httpEquiv?: string;
@@ -655,7 +655,7 @@ export namespace ElementTypes {
         url?: string;
     }
 
-    export interface CascadeMeterElement extends CascadeHTMLElement {
+    export interface JSXMeterElement extends JSXElement {
         high?: number;
         low?: number;
         max?: number;
@@ -664,22 +664,22 @@ export namespace ElementTypes {
         labels?: string;
     }
 
-    export interface CascadeModElement extends CascadeHTMLElement {
+    export interface JSXModElement extends JSXElement {
         cite?: string;
         dateTime?: string;
     }
 
-    export interface CascadeNextIdElement extends CascadeHTMLElement {
+    export interface JSXNextIdElement extends JSXElement {
         n?: string;
     }
 
-    export interface CascadeOListElement extends CascadeHTMLElement {
+    export interface JSXOListElement extends JSXElement {
         compact?: boolean;
         start?: number;
         type?: string;
     }
 
-    export interface CascadeObjectElement extends CascadeHTMLElement {
+    export interface JSXObjectElement extends JSXElement {
         BaseHref?: string;
         align?: string;
         alt?: string;
@@ -712,7 +712,7 @@ export namespace ElementTypes {
         willValidate?: boolean;
     }
 
-    export interface CascadeOptGroupElement extends CascadeHTMLElement {
+    export interface JSXOptGroupElement extends JSXElement {
         defaultSelected?: boolean;
         disabled?: boolean;
         form?: string;
@@ -723,7 +723,7 @@ export namespace ElementTypes {
         value?: string;
     }
 
-    export interface CascadeOptionElement extends CascadeHTMLElement {
+    export interface JSXOptionElement extends JSXElement {
         defaultSelected?: boolean;
         disabled?: boolean;
         form?: string;
@@ -734,7 +734,7 @@ export namespace ElementTypes {
         value?: string;
     }
 
-    export interface CascadeOutputElement extends CascadeHTMLElement {
+    export interface JSXOutputElement extends JSXElement {
         defaultValue?: string;
         form?: string;
         labels?: string;
@@ -746,42 +746,42 @@ export namespace ElementTypes {
         willValidate?: boolean;
     }
 
-    export interface CascadeParagraphElement extends CascadeHTMLElement {
+    export interface JSXParagraphElement extends JSXElement {
         align?: string;
         clear?: string;
     }
 
-    export interface CascadeParamElement extends CascadeHTMLElement {
+    export interface JSXParamElement extends JSXElement {
         name?: string;
         type?: string;
         value?: string;
         valueType?: string;
     }
 
-    export interface CascadePhraseElement extends CascadeHTMLElement {
+    export interface JSXPhraseElement extends JSXElement {
         cite?: string;
         dateTime?: string;
     }
 
-    export interface CascadePreElement extends CascadeHTMLElement {
+    export interface JSXPreElement extends JSXElement {
         cite?: string;
         clear?: string;
         width?: number;
     }
 
-    export interface CascadeProgressElement extends CascadeHTMLElement {
+    export interface JSXProgressElement extends JSXElement {
         form?: string;
         max?: number;
         position?: number;
         value?: number;
     }
 
-    export interface CascadeQuoteElement extends CascadeHTMLElement {
+    export interface JSXQuoteElement extends JSXElement {
         cite?: string;
         dateTime?: string;
     }
 
-    export interface CascadeScriptElement extends CascadeHTMLElement {
+    export interface JSXScriptElement extends JSXElement {
         async?: boolean;
         charset?: string;
         defer?: boolean;
@@ -792,7 +792,7 @@ export namespace ElementTypes {
         type?: string;
     }
 
-    export interface CascadeSelectElement extends CascadeHTMLElement {
+    export interface JSXSelectElement extends JSXElement {
         autofocus?: boolean;
         disabled?: boolean;
         form?: string;
@@ -811,33 +811,33 @@ export namespace ElementTypes {
         selectedOptions?: HTMLCollection;
     }
 
-    export interface CascadeSourceElement extends CascadeHTMLElement {
+    export interface JSXSourceElement extends JSXElement {
         media?: string;
         msKeySystem?: string;
         src?: string;
         type?: string;
     }
 
-    export interface CascadeSpanElement extends CascadeHTMLElement {
+    export interface JSXSpanElement extends JSXElement {
     }
 
-    export interface CascadeStyleElement extends CascadeHTMLElement {
+    export interface JSXStyleElement extends JSXElement {
         media?: string;
         type?: string;
     }
 
-    export interface CascadeTableCaptionElement extends CascadeHTMLElement {
+    export interface JSXTableCaptionElement extends JSXElement {
         align?: string;
         vAlign?: string;
     }
 
-    export interface CascadeTableAlignment {
+    export interface JSXTableAlignment {
         ch?: string;
         chOff?: string;
         vAlign?: string;
     }
 
-    export interface CascadeTableCellElement extends CascadeHTMLElement, CascadeTableAlignment {
+    export interface JSXTableCellElement extends JSXElement, JSXTableAlignment {
         abbr?: string;
         align?: string;
         axis?: string;
@@ -852,16 +852,16 @@ export namespace ElementTypes {
         width?: string;
     }
 
-    export interface CascadeTableColElement extends CascadeHTMLElement, CascadeTableAlignment {
+    export interface JSXTableColElement extends JSXElement, JSXTableAlignment {
         align?: string;
         span?: number;
         width?: any;
     }
 
-    export interface CascadeTableDataCellElement extends CascadeTableCellElement {
+    export interface JSXTableDataCellElement extends JSXTableCellElement {
     }
 
-    export interface CascadeTableElement extends CascadeHTMLElement {
+    export interface JSXTableElement extends JSXElement {
         align?: string;
         bgColor?: any;
         border?: string;
@@ -881,11 +881,11 @@ export namespace ElementTypes {
         width?: string;
     }
 
-    export interface CascadeTableHeaderCellElement extends CascadeTableCellElement {
+    export interface JSXTableHeaderCellElement extends JSXTableCellElement {
         scope?: string;
     }
 
-    export interface CascadeTableRowElement extends CascadeHTMLElement, CascadeTableAlignment {
+    export interface JSXTableRowElement extends JSXElement, JSXTableAlignment {
         align?: string;
         bgColor?: any;
         cells?: HTMLCollection;
@@ -894,12 +894,12 @@ export namespace ElementTypes {
         sectionRowIndex?: number;
     }
 
-    export interface CascadeTableSectionElement extends CascadeHTMLElement, CascadeTableAlignment {
+    export interface JSXTableSectionElement extends JSXElement, JSXTableAlignment {
         align?: string;
         rows?: HTMLCollection;
     }
 
-    export interface CascadeTextAreaElement extends CascadeHTMLElement {
+    export interface JSXTextAreaElement extends JSXElement {
         autofocus?: boolean;
         cols?: number;
         defaultValue?: string;
@@ -922,15 +922,15 @@ export namespace ElementTypes {
         wrap?: string;
     }
 
-    export interface CascadeTimeElement extends CascadeHTMLElement {
+    export interface JSXTimeElement extends JSXElement {
         dateTime?: string;
     }
 
-    export interface CascadeTitleElement extends CascadeHTMLElement {
+    export interface JSXTitleElement extends JSXElement {
         text?: string;
     }
 
-    export interface CascadeTrackElement extends CascadeHTMLElement {
+    export interface JSXTrackElement extends JSXElement {
         default?: boolean;
         kind?: string;
         label?: string;
@@ -944,15 +944,15 @@ export namespace ElementTypes {
         NONE?: number;
     }
 
-    export interface CascadeUListElement extends CascadeHTMLElement {
+    export interface JSXUListElement extends JSXElement {
         compact?: boolean;
         type?: string;
     }
 
-    export interface CascadeUnknownElement extends CascadeHTMLElement {
+    export interface JSXUnknownElement extends JSXElement {
     }
 
-    export interface CascadeVideoElement extends CascadeMediaElement {
+    export interface JSXVideoElement extends JSXMediaElement {
         height?: number;
         msHorizontalMirror?: boolean;
         msIsLayoutOptimalForPlayback?: boolean;
