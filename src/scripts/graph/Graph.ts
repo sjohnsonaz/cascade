@@ -203,4 +203,14 @@ export default class Graph {
             return graph.getReferences(property);
         }
     }
+
+    static wrapContext(callback: () => any, thisArg?: any) {
+        Observable.pushContext();
+        if (thisArg) {
+            callback.call(thisArg);
+        } else {
+            callback();
+        }
+        return Observable.popContext();
+    }
 }

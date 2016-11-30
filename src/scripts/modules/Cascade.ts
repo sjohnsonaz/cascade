@@ -24,4 +24,5 @@ export default class Cascade {
     static getObservable = Graph.getObservable;
     static getSubscribers = Graph.getSubscribers;
     static getReferences = Graph.getReferences;
+    static wrapContext = Graph.wrapContext;
 }
