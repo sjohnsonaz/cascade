@@ -1,5 +1,8 @@
+var webpack = require('webpack');
+
 module.exports = {
     entry: {
+        'cascade': ['./src/scripts/modules/Cascade.ts'],
         'mochaRunner': './src/mocha/BrowserRunner.ts'
     },
     output: {
@@ -16,5 +19,8 @@ module.exports = {
             test: /\.tsx?$/,
             loader: 'ts-loader'
         }]
-    }
+    },
+    plugins: [
+        new webpack.optimize.CommonsChunkPlugin('cascade', './dist/bundle/cascade.js')
+    ]
 };

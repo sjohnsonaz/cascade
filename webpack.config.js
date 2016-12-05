@@ -5,7 +5,7 @@ module.exports = {
         'cascade': ['./src/scripts/modules/Cascade.ts']
     },
     output: {
-        filename: './dist/bundle/[name].js',
+        filename: './dist/bundle/[name].min.js',
         libraryTarget: 'var',
         library: '[name]'
     },
