@@ -6,7 +6,7 @@ import Computed from './Computed';
 import ObservableArray from './ObservableArray';
 
 export interface ObservableIndex {
-    [index: string]: Observable<any>;
+    [index: string]: IObservable<any>;
 }
 
 export default class Graph {
@@ -18,7 +18,7 @@ export default class Graph {
     }
 
     peek(property: string) {
-        return this.observables[property].value;
+        return this.observables[property].peek();
     }
 
     getReferences(property: string) {
@@ -51,8 +51,9 @@ export default class Graph {
         for (var index in this.observables) {
             if (this.observables.hasOwnProperty(index)) {
                 var observable = this.observables[index];
-                if (observable.value && observable.value._graph) {
-                    observable.value._graph.disposeAll();
+                var value = observable.peek();
+                if (value && value._graph) {
+                    value._graph.disposeAll();
                 }
                 observable.dispose();
             }
@@ -114,18 +115,19 @@ export default class Graph {
                 value: new Graph(obj)
             });
         }
+        return obj._graph as Graph;
     }
 
-    static createProperty(obj: any, property: string, observable: Observable<any> | ObservableArray<any>) {
-        Graph.attachGraph(obj);
-        if (obj._graph.observables[property]) {
+    static createProperty(obj: any, property: string, observable: IObservable<any>) {
+        var graph = Graph.attachGraph(obj);
+        if (graph.observables[property]) {
             // TODO: move or delete subscriptions?
-            observable.subscribers = obj._graph.observables[property].subscribers;
+            observable.subscribers = graph.observables[property].subscribers;
         }
-        obj._graph.observables[property] = observable;
+        graph.observables[property] = observable;
     }
 
-    static attachObservable<T>(obj: any, property: string, observable: Observable<T> | ObservableArray<T>, readOnly: boolean = false) {
+    static attachObservable<T>(obj: any, property: string, observable: IObservable<T>, readOnly: boolean = false) {
         Graph.createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
             enumerable: true,
@@ -148,7 +150,7 @@ export default class Graph {
     }
 
     static createObservableArray<T>(obj: any, property: string, value: Array<T>) {
-        Graph.attachObservable<T>(obj, property, new ObservableArray(value));
+        Graph.attachObservable<Array<T>>(obj, property, new ObservableArray(value));
     }
 
     static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
