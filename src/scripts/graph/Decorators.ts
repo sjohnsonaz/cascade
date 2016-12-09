@@ -23,10 +23,10 @@ function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>,
     return obj._graph.observables[property];
 }
 
-function createComputedIfNotExists<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, thisArg?: any): Computed<T> {
+function createComputedIfNotExists<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, thisArg?: any, setter?: (n?: T) => any): Computed<T> {
     Graph.attachGraph(obj);
     if (!obj._graph.observables[property]) {
-        obj._graph.observables[property] = new Computed<T>(definition, defer, thisArg);
+        obj._graph.observables[property] = new Computed<T>(definition, defer, thisArg, setter);
     }
     return obj._graph.observables[property];
 }
@@ -57,12 +57,12 @@ export function array<T>(target: any, propertyKey: string, descriptor?: TypedPro
     });
 }
 
-function attachComputed<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>, definition?: (n: T) => T) {
+function attachComputed<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>, definition?: (n?: T) => T, setter?: (n: T) => any) {
     descriptor = descriptor || {};
     definition = definition || descriptor.get;
     descriptor.enumerable = true;
     descriptor.get = function() {
-        return createComputedIfNotExists(this, propertyKey, definition, false, this).getValue();
+        return createComputedIfNotExists(this, propertyKey, definition, false, this, setter).getValue();
     }
     return descriptor;
 }
@@ -83,8 +83,8 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
     }
 }
 
-export function computed<T>(definition: (n: T) => T) {
+export function computed<T>(definition: (n?: T) => T, setter?: (n: T) => any) {
     return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
-        return attachComputed(target, propertyKey, descriptor, definition);
+        return attachComputed(target, propertyKey, descriptor, definition, setter);
     }
 }

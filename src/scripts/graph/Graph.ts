@@ -145,8 +145,8 @@ export default class Graph {
         Graph.attachObservable(obj, property, new Observable(value));
     }
 
-    static createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean) {
-        Graph.attachObservable(obj, property, new Computed(definition, defer), true);
+    static createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, setter?: (n: T) => any) {
+        Graph.attachObservable(obj, property, new Computed(definition, defer, undefined, setter), true);
     }
 
     static createObservableArray<T>(obj: any, property: string, value: Array<T>) {
