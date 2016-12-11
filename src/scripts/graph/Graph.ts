@@ -141,7 +141,7 @@ export default class Graph {
         });
     }
 
-    static createObservable<T>(obj: any, property: string, value: T) {
+    static createObservable<T>(obj: any, property: string, value?: T) {
         Graph.attachObservable(obj, property, new Observable(value));
     }
 
@@ -149,7 +149,7 @@ export default class Graph {
         Graph.attachObservable(obj, property, new Computed(definition, defer, undefined, setter), true);
     }
 
-    static createObservableArray<T>(obj: any, property: string, value: Array<T>) {
+    static createObservableArray<T>(obj: any, property: string, value?: Array<T>) {
         Graph.attachObservable<Array<T>>(obj, property, new ObservableArray(value));
     }
 
