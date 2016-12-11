@@ -48,7 +48,7 @@ Observable<T>(value?: T);
 
 ObservableArray<T>(value?: Array<T>);
 
-Computed<T>(definition: (n: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any);
+Computed<T>(definition: (n?: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any);
 ```
 
 ## Functional DOM Components
