@@ -4,7 +4,7 @@ import Observable from './Observable';
 export default class ObservableArray<T> extends Array<T> implements IObservable<Array<T>>{
     subscribers: (ISubscriber | ISubscriberFunction<Array<T>>)[];
 
-    constructor(base: Array<T>) {
+    constructor(base?: Array<T>) {
         super();
         var inner = (base instanceof Array && arguments.length == 1) ? base : Array.apply(this, arguments);
         for (var index in ObservableArray.prototype) {

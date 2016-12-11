@@ -14,6 +14,6 @@ export interface IObservable<T> {
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     unsubscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
-    publish(value: T, oldValue: T): void;
+    publish(value: T, oldValue?: T): void;
     dispose(): void;
 }

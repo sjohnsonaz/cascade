@@ -7,7 +7,7 @@ export default class Observable<T> implements IObservable<T> {
     value: T;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
 
-    constructor(value: T) {
+    constructor(value?: T) {
         this.value = value;
         this.subscribers = [];
     }
@@ -51,7 +51,7 @@ export default class Observable<T> implements IObservable<T> {
             }
         }
     }
-    publish(value: T, oldValue: T) {
+    publish(value: T, oldValue?: T) {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
             if (typeof subscriber === 'function') {
