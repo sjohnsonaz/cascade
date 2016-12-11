@@ -6,7 +6,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
 
     id: number;
     references: IObservable<any>[];
-    definition: (n: T) => T;
+    definition: (n?: T) => T;
     setter: (n: T) => any;
     thisArg: any;
     dirty: boolean;
@@ -17,7 +17,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     static computedQueue: ComputedQueue = new ComputedQueue();
 
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
-    constructor(definition: (n: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any) {
+    constructor(definition: (n?: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any) {
         super(undefined);
         this.id = Computed.id;
         Computed.id++;
