@@ -34,21 +34,21 @@ class User {
 You may also create observable properties directly.
 
 ```typescript
-Cascade.createObservable<T>(obj: any, property: string, value: T);
+Cascade.createObservable<T>(obj: any, property: string, value?: T);
 
-Cascade.createObservableArray<T>(obj: any, property: string, value: Array<T>);
+Cascade.createObservableArray<T>(obj: any, property: string, value?: Array<T>);
 
-Cascade.createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean);
+Cascade.createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, setter?: (n: T) => any);
 ```
 
 You may also create the observables as objects. Keep in mind, these are accessed as methods instead of direct usage.
 
 ```typescript
-Observable<T>(value: T);
+Observable<T>(value?: T);
 
-ObservableArray<T>(value: Array<T>);
+ObservableArray<T>(value?: Array<T>);
 
-Computed<T>(definition: (n: T) => T, defer: boolean = false, thisArg?: any);
+Computed<T>(definition: (n: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any);
 ```
 
 ## Functional DOM Components
