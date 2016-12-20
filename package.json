@@ -13,7 +13,7 @@
     "prepublish": "tsc --declaration",
     "test": "node src/mocha/NodeRunner.js",
     "browser": "webpack --config webpack.config.js",
-    "dev": "webpack --config webpack.dev.config.js --watch",
+    "dev": "webpack --config webpack.dev.config.js --watch --progress",
     "dev-local": "tsc --declaration --watch"
   },
   "repository": {
