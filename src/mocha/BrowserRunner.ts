@@ -25,4 +25,6 @@ import '../tests/graphTest5';
 import '../tests/graphTest6';
 import '../tests/graphTest7';
 import '../tests/graphTest8';
+import '../tests/observableTest';
+import '../tests/observableArrayTest';
 import '../tests/templateTest0';

@@ -1,4 +1,4 @@
-import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
+import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
 import Observable from './Observable';
 
 export default class ObservableArray<T> extends Array<T> implements IObservable<Array<T>>{
@@ -6,7 +6,20 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
 
     constructor(base?: Array<T>) {
         super();
-        var inner = (base instanceof Array && arguments.length == 1) ? base : Array.apply(this, arguments);
+        var inner;
+        if (arguments.length === 1) {
+            if (base instanceof Array) {
+                inner = base;
+            } else {
+                if (typeof arguments[0] === 'undefined') {
+                    inner = [];
+                } else {
+                    inner = Array.call(this, arguments[0]);
+                }
+            }
+        } else {
+            inner = Array.apply(this, arguments);
+        }
         for (var index in ObservableArray.prototype) {
             if (ObservableArray.prototype.hasOwnProperty(index)) {
                 inner[index] = ObservableArray.prototype[index];
