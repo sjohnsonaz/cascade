@@ -1,5 +1,5 @@
 import Component from './Component';
-import {IVirtualNode, IVirtualNodeProps} from './IVirtualNode';
+import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 
 export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     type: string;
@@ -23,14 +23,12 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         var fixedChildren = [];
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
-            if (child) {
-                if (child instanceof Array) {
-                    for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
-                        fixedChildren.push(child[childIndex]);
-                    }
-                } else {
-                    fixedChildren.push(child);
+            if (child instanceof Array) {
+                for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
+                    fixedChildren.push(child[childIndex]);
                 }
+            } else {
+                fixedChildren.push(child);
             }
         }
         return fixedChildren;
@@ -45,14 +43,18 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         }
         for (var index = 0, length = this.children.length; index < length; index++) {
             var child = this.children[index];
-            if (child) {
-                if (typeof child === 'string') {
-                    node.appendChild(document.createTextNode(child));
-                } else if (typeof child === 'number') {
+            switch (typeof child) {
+                case 'undefined':
+                    break;
+                case 'string':
+                    node.appendChild(document.createTextNode(child as string));
+                    break;
+                case 'number':
                     node.appendChild(document.createTextNode(child.toString()));
-                } else {
-                    node.appendChild(child.toNode());
-                }
+                    break;
+                default:
+                    node.appendChild((child as IVirtualNode<any>).toNode());
+                    break;
             }
         }
         if (this.props && this.props.ref) {
