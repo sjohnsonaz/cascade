@@ -4,6 +4,7 @@ import 'es6-shim';
 import 'reflect-metadata';
 
 import '../tests/VirtualNode.toNode_Test';
+import '../tests/ComponentTest';
 import '../tests/cascadeTest1';
 import '../tests/cascadeTest2';
 import '../tests/cascadeTest3';
