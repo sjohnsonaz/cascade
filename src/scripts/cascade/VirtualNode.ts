@@ -24,15 +24,15 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
             // Remove undefined elements
-            //if (typeof child !== 'undefined') {
-            if (child instanceof Array) {
-                for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
-                    fixedChildren.push(child[childIndex]);
+            if (typeof child !== 'undefined') {
+                if (child instanceof Array) {
+                    for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
+                        fixedChildren.push(child[childIndex]);
+                    }
+                } else {
+                    fixedChildren.push(child);
                 }
-            } else {
-                fixedChildren.push(child);
             }
-            //}
         }
         return fixedChildren;
     }
