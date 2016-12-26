@@ -30,6 +30,24 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
+    it('should not render undefined values', () => {
+        var root = (
+            <div id="parent">{}</div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.childNodes.length).to.equal(0);
+        });
+    });
+
+    it('should not render null values', () => {
+        var root = (
+            <div id="parent">{null}</div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.childNodes.length).to.equal(0);
+        });
+    });
+
     it('should render falsy values', () => {
         var root = (
             <div id="parent">{0}</div>

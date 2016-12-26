@@ -23,6 +23,8 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         var fixedChildren = [];
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
+            // Remove undefined elements
+            //if (typeof child !== 'undefined') {
             if (child instanceof Array) {
                 for (var childIndex = 0, childLength = (child as any).length; childIndex < childLength; childIndex++) {
                     fixedChildren.push(child[childIndex]);
@@ -30,6 +32,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
             } else {
                 fixedChildren.push(child);
             }
+            //}
         }
         return fixedChildren;
     }
@@ -44,16 +47,21 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         for (var index = 0, length = this.children.length; index < length; index++) {
             var child = this.children[index];
             switch (typeof child) {
-                case 'undefined':
-                    break;
                 case 'string':
                     node.appendChild(document.createTextNode(child as string));
                     break;
                 case 'number':
                     node.appendChild(document.createTextNode(child.toString()));
                     break;
+                case 'object':
+                    if (child) {
+                        if ((child as IVirtualNode<any>).toNode) {
+                            node.appendChild((child as IVirtualNode<any>).toNode());
+                        } else {
+                            node.appendChild(document.createTextNode(child.toString()));
+                        }
+                    }
                 default:
-                    node.appendChild((child as IVirtualNode<any>).toNode());
                     break;
             }
         }
