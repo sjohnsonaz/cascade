@@ -1,8 +1,8 @@
 import Graph from '../graph/Graph';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
-import {IVirtualNode, IVirtualNodeProps} from './IVirtualNode';
-import Diff, {DiffOperation} from './Diff';
+import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
+import Diff, { DiffOperation } from './Diff';
 
 var componentContexts: Component<any>[][] = [];
 var context: Component<any>[] = undefined;
@@ -180,7 +180,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement.childNodes[childIndex];
                                 this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex] as HTMLElement);
-                            } else {
+                            } else if (newChild instanceof VirtualNode) {
                                 this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
                             }
                         }

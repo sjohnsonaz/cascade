@@ -57,6 +57,20 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
+    it('should render Object.toString for Object values', () => {
+        var object = {
+            toString: function () {
+                return 'String output'
+            }
+        };
+        var root = (
+            <div id="parent">{object}</div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect((element.childNodes[0] as Text).data).to.equal('String output');
+        });
+    });
+
     it('should render Components', function () {
         interface ICustomComponentProps {
             id: string;
