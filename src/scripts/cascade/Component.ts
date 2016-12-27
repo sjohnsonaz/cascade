@@ -7,12 +7,12 @@ import Diff, { DiffOperation } from './Diff';
 var componentContexts: Component<any>[][] = [];
 var context: Component<any>[] = undefined;
 
-export default class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
+export abstract class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     uniqueId: number;
     props: T;
     children: Array<IVirtualNode<any> | string | number>;
     key: string;
-    root: IVirtualNode<any> | string | number;
+    root: any;
     element: Node;
     context: Component<any>[];
 
@@ -74,9 +74,7 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
         });
     }
 
-    render(): IVirtualNode<any> | string | number {
-        return this;
-    }
+    abstract render(): any;
 
     toNode(oldRoot?: VirtualNode<any> | string | number): Node {
         var root = Graph.peek(this, 'root');
@@ -96,29 +94,37 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                         element = oldElement;
                     }
                     break;
-                case 'number':
+                case 'object':
+                    if (root) {
+                        // Diff this case
+                        if (root instanceof Component) {
+                            if (root.constructor === oldRoot.constructor) {
+                                root.element = oldElement;
+                                element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
+                            } else {
+                                element = root.toNode();
+                            }
+                        } else if (root.type) {
+                            if (root.type == (oldRoot as VirtualNode<any>).type) {
+                                root.element = oldElement;
+                                element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
+                            } else {
+                                element = root.toNode();
+                            }
+                        } else {
+                            element = document.createTextNode(root.toString());
+                        }
+                    }
+                    break;
+                case 'undefined':
+                    break;
+                // Number and anything else    
+                // case 'number':
+                default:
                     if (root !== oldRoot) {
                         element = document.createTextNode(root.toString());
                     } else {
                         element = oldElement;
-                    }
-                    break;
-                default:
-                    // Diff this case
-                    if (root instanceof Component) {
-                        if (root.constructor === oldRoot.constructor) {
-                            root.element = oldElement;
-                            element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
-                        } else {
-                            element = root.toNode();
-                        }
-                    } else {
-                        if (root.type = (oldRoot as VirtualNode<any>).type) {
-                            root.element = oldElement;
-                            element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
-                        } else {
-                            element = root.toNode();
-                        }
                     }
                     break;
             }
@@ -127,11 +133,17 @@ export default class Component<T extends IVirtualNodeProps> implements IVirtualN
                 case 'string':
                     element = document.createTextNode(root as string);
                     break;
-                case 'number':
-                    element = document.createTextNode(root.toString());
+                case 'object':
+                    if (root) {
+                        element = root.toNode();
+                    }
                     break;
+                case 'undefined':
+                    break;
+                // Number and anything else
+                // case 'number':
                 default:
-                    element = root.toNode();
+                    element = document.createTextNode(root.toString());
                     break;
             }
         }

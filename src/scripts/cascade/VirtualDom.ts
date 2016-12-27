@@ -1,6 +1,6 @@
-import {IVirtualNode} from './IVirtualNode';
+import { IVirtualNode } from './IVirtualNode';
 import VirtualNode from './VirtualNode';
-import Component from './Component';
+import { Component } from './Component';
 import Graph from '../graph/Graph';
 
 export default class VirtualDom {
@@ -14,7 +14,7 @@ export default class VirtualDom {
         }
     }
 
-    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => void, reRender?: (n: IVirtualNode<any> | string | number) => void) {
+    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => void, reRender?: (n: any) => void) {
         var fixedNode = typeof node === 'string' ?
             document.getElementById(node) :
             node;
@@ -26,7 +26,7 @@ export default class VirtualDom {
         if (callback) {
             callback(renderedComponent);
         }
-        Graph.subscribe(virtualNode, 'root', function(root: IVirtualNode<any> | string | number) {
+        Graph.subscribe(virtualNode, 'root', function (root: any) {
             if (reRender) {
                 reRender(root);
             }

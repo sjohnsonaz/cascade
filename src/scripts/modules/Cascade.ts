@@ -8,7 +8,7 @@ import {default as Graph} from '../graph/Graph';
 export {observable, computed, array} from '../graph/Decorators';
 export {IVirtualNode, IVirtualNodeProps} from '../cascade/IVirtualNode';
 export {default as VirtualNode} from '../cascade/VirtualNode';
-export {default as Component} from '../cascade/Component';
+export {Component} from '../cascade/Component';
 import {default as VirtualDom} from '../cascade/VirtualDom';
 
 export default class Cascade {

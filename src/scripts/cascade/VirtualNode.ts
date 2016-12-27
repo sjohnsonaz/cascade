@@ -1,4 +1,4 @@
-import Component from './Component';
+import { Component } from './Component';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 
 export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {

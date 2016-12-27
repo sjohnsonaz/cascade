@@ -1,14 +1,14 @@
-import {IVirtualNode, IVirtualNodeProps} from '../cascade/IVirtualNode';
+import { IVirtualNode, IVirtualNodeProps } from '../cascade/IVirtualNode';
 import VirtualNode from '../cascade/VirtualNode';
-import Component from '../cascade/Component';
-import {Elements} from './Elements';
+import { Component } from '../cascade/Component';
+import { Elements } from './Elements';
 
 declare global {
     namespace JSX {
         export interface Element extends IVirtualNode<IVirtualNodeProps> { }
 
         export interface ElementClass extends Component<IVirtualNodeProps> {
-            render(): IVirtualNode<any> | string | number;
+            render(): any;
         }
 
         export interface ElementAttributesProperty {
