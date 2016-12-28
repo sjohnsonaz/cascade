@@ -4,11 +4,11 @@ import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     type: string;
     props: T;
-    children: Array<IVirtualNode<any> | string | number>;
+    children: any;
     key: string;
     element: Node;
 
-    constructor(type: string, props?: T, ...children: Array<IVirtualNode<any> | string | number>) {
+    constructor(type: string, props?: T, ...children: Array<any>) {
         this.type = type;
         this.props = props || ({} as any);
         this.key = this.props.key;
@@ -19,7 +19,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         this.children = children ? this.fixChildrenArrays(children) : [];
     }
 
-    private fixChildrenArrays(children: Array<IVirtualNode<any> | string | number>, fixedChildren?: any[]) {
+    private fixChildrenArrays(children: Array<any>, fixedChildren?: any[]) {
         fixedChildren = fixedChildren || [];
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
@@ -48,9 +48,6 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                 case 'string':
                     node.appendChild(document.createTextNode(child as string));
                     break;
-                case 'number':
-                    node.appendChild(document.createTextNode(child.toString()));
-                    break;
                 case 'object':
                     if (child) {
                         if ((child as IVirtualNode<any>).toNode) {
@@ -59,7 +56,11 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                             node.appendChild(document.createTextNode(child.toString()));
                         }
                     }
+                case 'undefined':
+                    break;
+                // case 'number':
                 default:
+                    node.appendChild(document.createTextNode(child.toString()));
                     break;
             }
         }

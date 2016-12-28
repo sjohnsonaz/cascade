@@ -10,13 +10,13 @@ var context: Component<any>[] = undefined;
 export abstract class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     uniqueId: number;
     props: T;
-    children: Array<IVirtualNode<any> | string | number>;
+    children: any;
     key: string;
     root: any;
     element: Node;
     context: Component<any>[];
 
-    constructor(props?: T, ...children: Array<IVirtualNode<any> | string | number>) {
+    constructor(props?: T, ...children: any[]) {
         this.uniqueId = Math.floor(Math.random() * 1000000);
         this.props = props || ({} as any);
         this.key = this.props.key;
@@ -54,7 +54,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             return root;
         });
         // Only update if we are re-rendering
-        Graph.subscribe(this, 'root', (root: VirtualNode<any> | string | number, oldRoot: VirtualNode<any> | string | number) => {
+        Graph.subscribe(this, 'root', (root: any, oldRoot: any) => {
             if (oldRoot) {
                 var element = this.element;
                 this.toNode(oldRoot);
@@ -76,7 +76,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
 
     abstract render(): any;
 
-    toNode(oldRoot?: VirtualNode<any> | string | number): Node {
+    toNode(oldRoot?: any): Node {
         var root = Graph.peek(this, 'root');
         var oldElement = this.element;
 
@@ -201,18 +201,31 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                     case DiffOperation.ADD:
                         var newChild = diffItem.item;
                         var newElement;
+                        // TODO: Null and Undefined should never happen
                         switch (typeof newChild) {
                             case 'string':
                                 newElement = document.createTextNode(newChild as string);
-                                break;
-                            case 'number':
-                                newElement = document.createTextNode(newChild.toString());
+                                oldElement.insertBefore(newElement, oldElement.childNodes[childIndex + 1]);
                                 break;
                             case 'object':
-                                newElement = (newChild as any).toNode();
+                                if (newChild) {
+                                    if ((newChild as any).toNode) {
+                                        newElement = (newChild as any).toNode();
+                                    } else {
+                                        newElement = document.createTextNode(newChild.toString());
+                                    }
+                                    oldElement.insertBefore(newElement, oldElement.childNodes[childIndex + 1]);
+                                }
+                                break;
+                            // case 'undefined':
+                            // break;
+                            // Number and anything else
+                            // case 'number':
+                            default:
+                                newElement = document.createTextNode(newChild.toString());
+                                oldElement.insertBefore(newElement, oldElement.childNodes[childIndex + 1]);
                                 break;
                         }
-                        oldElement.insertBefore(newElement, oldElement.childNodes[childIndex + 1]);
                         break;
                 }
             }
@@ -243,19 +256,24 @@ function compareVirtualNodes(nodeA: VirtualNode<any> | string | number, nodeB: V
     var typeB = typeof nodeB;
     if (typeA === typeB) {
         switch (typeA) {
-            case 'string':
-            case 'number':
-                return nodeA === nodeB;
             case 'object':
-                if ((nodeA as IVirtualNode<any>).key === (nodeB as IVirtualNode<any>).key) {
-                    if (nodeA instanceof Component) {
-                        return nodeA.constructor === nodeB.constructor;
+                if (nodeA && (nodeA as any).toNode && (nodeB as any).toNode) {
+                    if ((nodeA as IVirtualNode<any>).key === (nodeB as IVirtualNode<any>).key) {
+                        if (nodeA instanceof Component) {
+                            return nodeA.constructor === nodeB.constructor;
+                        } else {
+                            return (nodeA as VirtualNode<any>).type === (nodeB as VirtualNode<any>).type;
+                        }
                     } else {
-                        return (nodeA as VirtualNode<any>).type === (nodeB as VirtualNode<any>).type;
+                        return false;
                     }
                 } else {
-                    return false;
+                    return nodeA === nodeB;
                 }
+            // case 'string':
+            // case 'number':
+            default:
+                return nodeA === nodeB;
         }
     } else {
         return false;

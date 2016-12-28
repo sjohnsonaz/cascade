@@ -4,7 +4,7 @@ import { Component } from './Component';
 import Graph from '../graph/Graph';
 
 export default class VirtualDom {
-    static createElement<T extends Object>(type: string | (new (props: T, ...children: Array<IVirtualNode<any> | string>) => Component<T>), props: T, ...children: Array<IVirtualNode<any> | string>): IVirtualNode<T> {
+    static createElement<T extends Object>(type: string | (new (props: T, ...children: Array<any>) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
         if (typeof type === 'string') {
             return new VirtualNode(type, props, ...children);
         } else {

@@ -5,7 +5,7 @@ export interface IVirtualNodeProps {
 
 export interface IVirtualNode<T extends IVirtualNodeProps> {
     props: T;
-    children: Array<IVirtualNode<any> | string | number>;
+    children: any;
     key: string;
 
     toNode(): Node;
