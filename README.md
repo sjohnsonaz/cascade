@@ -59,7 +59,7 @@ Cascade uses either JSX or direct JavaScript calls to create a Virtual Dom. Thes
 Cascade.createElement<T extends Object>(
     type: string | Component,
     props: T,
-    ...children: Array<IVirtualNode<any> | string>
+    ...children: Array<any>
 ): IVirtualNode<any>;
 ```
 
