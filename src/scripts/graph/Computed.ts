@@ -1,4 +1,4 @@
-import {IObservable, ISubscriber} from './IObservable';
+import { IObservable, ISubscriber } from './IObservable';
 import Observable from './Observable';
 import ComputedQueue from './ComputedQueue';
 

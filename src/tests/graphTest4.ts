@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import {observable} from '../scripts/modules/Cascade';
+import { observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsAB = 0;
@@ -18,10 +18,10 @@ class ViewModel {
     }
 }
 
-describe('Graph.pull', function() {
-    it('should push changes after pull', function() {
+describe('Graph.pull', function () {
+    it('should push changes after pull', function () {
         var model: any = new ViewModel();
-        model._graph.subscribe('abc', function(value) {
+        model._graph.subscribe('abc', function (value) {
             if (complete) {
                 expect(ab).to.equal(13);
                 expect(model.runsAB).to.equal(2);

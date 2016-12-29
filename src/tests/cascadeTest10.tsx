@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {Component, observable} from '../scripts/modules/Cascade';
+import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     @observable id: string = 'oldId';
@@ -20,18 +20,18 @@ class Parent extends Component<IParentProps> {
     }
 }
 
-describe('Component', function() {
-    it('should render property updates', function() {
+describe('Component', function () {
+    it('should render property updates', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs = [];
         //document.body.appendChild(container);
-        Cascade.render(container, <Parent viewModel={viewModel} />, function(element: HTMLElement) {
+        Cascade.render(container, <Parent viewModel={viewModel} />, function (element: HTMLElement) {
             var parent = container.querySelector('#parent');
             runs.push((parent.childNodes[0] as HTMLElement).id);
         });
-        viewModel.id= 'newId';
-        setTimeout(function() {
+        viewModel.id = 'newId';
+        setTimeout(function () {
             var parent = container.querySelector('#parent');
             runs.push((parent.childNodes[0] as HTMLElement).id);
             expect(runs[0]).to.equal('oldId');

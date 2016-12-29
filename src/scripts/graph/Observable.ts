@@ -1,4 +1,4 @@
-import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
+import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
 
 var computedContexts: IObservable<any>[][] = [];
 var context: IObservable<any>[] = undefined;

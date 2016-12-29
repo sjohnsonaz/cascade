@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import {observable} from '../scripts/modules/Cascade';
+import { observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsB = 0;
@@ -21,8 +21,8 @@ class ViewModel {
     }
 }
 
-describe('Graph.pull', function() {
-    it('should pull changes to multiple layers - lower first', function() {
+describe('Graph.pull', function () {
+    it('should pull changes to multiple layers - lower first', function () {
         var model: any = new ViewModel();
         model.a = 11;
         var b = model.b;
@@ -34,7 +34,7 @@ describe('Graph.pull', function() {
         expect(model.runsD).to.equal(0);
     });
 
-    it('should pull changes to multiple layers - higher first', function() {
+    it('should pull changes to multiple layers - higher first', function () {
         var model: any = new ViewModel();
         model.a = 11;
         var c = model.c;

@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import {observable} from '../scripts/modules/Cascade';
+import { observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runs = 0;
@@ -12,8 +12,8 @@ class ViewModel {
     }
 }
 
-describe('Graph', function() {
-    it('should pull changes to dirty computed values', function() {
+describe('Graph', function () {
+    it('should pull changes to dirty computed values', function () {
         var model: any = new ViewModel();
         model.a = 11;
         expect(model.ab).to.equal(13);

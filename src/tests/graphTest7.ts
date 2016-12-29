@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import {observable} from '../scripts/modules/Cascade';
+import { observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsB = 0;
@@ -26,10 +26,10 @@ class ViewModel {
     }
 }
 
-describe('Graph.pull', function() {
-    it('should pull changes to deep layers', function() {
+describe('Graph.pull', function () {
+    it('should pull changes to deep layers', function () {
         var model: any = new ViewModel();
-        model._graph.subscribe('e', function(value) {
+        model._graph.subscribe('e', function (value) {
             if (result) {
                 result.finalE = value;
                 result.finalRunsE = model.runsE

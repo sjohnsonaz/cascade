@@ -1,7 +1,7 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {Component, VirtualNode} from '../scripts/modules/Cascade';
-import Diff, {DiffOperation} from '../scripts/cascade/Diff';
+import Cascade, { Component, VirtualNode } from '../scripts/modules/Cascade';
+import Diff, { DiffOperation } from '../scripts/cascade/Diff';
 
 interface IComponentProps {
 
@@ -27,8 +27,8 @@ class NewComponent extends Component<IComponentProps> {
     }
 }
 
-describe('Component', function() {
-    it('should be comparable with Diff', function() {
+describe('Component', function () {
+    it('should be comparable with Diff', function () {
         var oldComponent: Component<any> = <OldComponent /> as any;
         var newComponent: Component<any> = <NewComponent /> as any;
         var diff = Diff.compare<VirtualNode<any>>(
@@ -51,14 +51,14 @@ describe('Component', function() {
             var diffItem = diff[index];
             switch (diffItem.operation) {
                 case DiffOperation.REMOVE:
-                nodesToRemove.push(diffItem.item);
-                break;
+                    nodesToRemove.push(diffItem.item);
+                    break;
                 case DiffOperation.NONE:
-                nodesToLeave.push(diffItem.item);
-                break;
+                    nodesToLeave.push(diffItem.item);
+                    break;
                 case DiffOperation.ADD:
-                nodesToAdd.push(diffItem.item);
-                break;
+                    nodesToAdd.push(diffItem.item);
+                    break;
             }
         }
         expect(nodesToAdd.length).to.equal(1);

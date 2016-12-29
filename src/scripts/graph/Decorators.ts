@@ -35,10 +35,10 @@ function attachObservable<T>(target: any, propertyKey: string) {
     Object.defineProperty(target, propertyKey, {
         enumerable: true,
         configurable: true,
-        get: function() {
+        get: function () {
             return createObservableIfNotExists(this, propertyKey).getValue();
         },
-        set: function(value: T) {
+        set: function (value: T) {
             createObservableIfNotExists(this, propertyKey, value, true);
         }
     });
@@ -48,10 +48,10 @@ export function array<T>(target: any, propertyKey: string, descriptor?: TypedPro
     Object.defineProperty(target, propertyKey, {
         enumerable: true,
         configurable: true,
-        get: function() {
+        get: function () {
             return createArrayIfNotExists(this, propertyKey).getValue();
         },
-        set: function(value: Array<T>) {
+        set: function (value: Array<T>) {
             createArrayIfNotExists(this, propertyKey, value, true);
         }
     });
@@ -61,7 +61,7 @@ function attachComputed<T>(target: any, propertyKey: string, descriptor?: TypedP
     descriptor = descriptor || {};
     definition = definition || descriptor.get;
     descriptor.enumerable = true;
-    descriptor.get = function() {
+    descriptor.get = function () {
         return createComputedIfNotExists(this, propertyKey, definition, false, this, setter).getValue();
     }
     return descriptor;
@@ -84,7 +84,7 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
 }
 
 export function computed<T>(definition: (n?: T) => T, setter?: (n: T) => any) {
-    return function(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
+    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
         return attachComputed(target, propertyKey, descriptor, definition, setter);
     }
 }

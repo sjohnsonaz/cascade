@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import {observable, array} from '../scripts/modules/Cascade';
+import { observable, array } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runs: number = 0;
@@ -15,11 +15,11 @@ class ViewModel {
     }
 }
 
-describe('Graph', function() {
-    it('should observe changes to Arrays', function() {
+describe('Graph', function () {
+    it('should observe changes to Arrays', function () {
         var viewModel: any = new ViewModel();
         var complete = false;
-        viewModel._graph.subscribe('loop', function(value) {
+        viewModel._graph.subscribe('loop', function (value) {
             viewModel.runs++;
             if (complete) {
                 expect(value).to.equal(120);

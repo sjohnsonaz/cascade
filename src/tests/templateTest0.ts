@@ -1,10 +1,10 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 import Template from '../scripts/template/Template';
-import {observable} from '../scripts/modules/Cascade';
+import { observable } from '../scripts/modules/Cascade';
 
-describe.skip('Template', function() {
-    it('should parse text into a Template and fragment', function() {
+describe.skip('Template', function () {
+    it('should parse text into a Template and fragment', function () {
         var template = new Template('\r\n\
             <div id="testNode">Test Node</div>\r\n\
         ');
@@ -13,7 +13,7 @@ describe.skip('Template', function() {
         expect(!!testNode).to.equal(true);
     });
 
-    it('should create nodes with conditional bindings', function() {
+    it('should create nodes with conditional bindings', function () {
         var template = new Template('\r\n\
             <div>always render</div>\r\n\
             @if: false {\r\n\
@@ -29,7 +29,7 @@ describe.skip('Template', function() {
         expect(testTrue && !testFalse).to.equal(true);
     });
 
-    it('should output values', function() {
+    it('should output values', function () {
         var viewModel = {
             showFirst: true,
             showSecond: false,
@@ -50,7 +50,7 @@ describe.skip('Template', function() {
         expect(testFirst && testFirst.innerHTML == 'abcd' && !testSecond).to.equal(true);
     });
 
-    it('should use with to control scope', function() {
+    it('should use with to control scope', function () {
         var viewModel = {
             a: '1234',
             b: {
@@ -73,7 +73,7 @@ describe.skip('Template', function() {
         expect(!!builtTemplate).to.equal(true);
     });
 
-    it('should use observable models', function() {
+    it('should use observable models', function () {
         class User {
             @observable firstName: string;
             @observable lastName: string;

@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {Component, observable, array} from '../scripts/modules/Cascade';
+import Cascade, { Component, observable, array } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runsA: number = 0;
@@ -38,15 +38,15 @@ class Child extends Component<IChildProps> {
     }
 }
 
-describe('Component', function() {
-    it('should updated directly nested Components with arrays', function() {
+describe('Component', function () {
+    it('should updated directly nested Components with arrays', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />);
-        setTimeout(function() {
+        setTimeout(function () {
             viewModel.list.push(5);
-            setTimeout(function() {
+            setTimeout(function () {
                 expect(container.querySelectorAll('li').length).to.equal(5);
                 expect(viewModel.runsA).to.equal(1);
                 expect(viewModel.runsB).to.equal(2);

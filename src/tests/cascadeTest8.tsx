@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {Component, observable} from '../scripts/modules/Cascade';
+import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     @observable a: string = 'a';
@@ -28,12 +28,12 @@ class Parent extends Component<IParentProps> {
     }
 }
 
-describe('Component', function() {
-    it('should use ref callbacks', function() {
+describe('Component', function () {
+    it('should use ref callbacks', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
-        Cascade.render(container, <Parent viewModel={viewModel} ref={viewModel.parentRef.bind(viewModel)}/>);
+        Cascade.render(container, <Parent viewModel={viewModel} ref={viewModel.parentRef.bind(viewModel)} />);
         expect((viewModel.parentNode as HTMLElement).tagName).to.equal('DIV');
         expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
     });

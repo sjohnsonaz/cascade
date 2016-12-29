@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import {observable} from '../scripts/modules/Cascade';
+import { observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     runs = 0;
@@ -12,8 +12,8 @@ class ViewModel {
     }
 }
 
-describe('Graph.dispose', function() {
-    it('should dispose subscriptions to props', function() {
+describe('Graph.dispose', function () {
+    it('should dispose subscriptions to props', function () {
         var model: any = new ViewModel();
         var ab = model.ab;
         model._graph.dispose();

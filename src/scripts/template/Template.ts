@@ -49,7 +49,7 @@ export default class Template {
     }
 
     static replaceControlStatements(text) {
-        return text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function(match, $1, $2, $3, offset, string) {
+        return text.replace(/\@([^{]*)\{([^}]*)\}|\@([a-zA-Z0-9]*)/g, function (match, $1, $2, $3, offset, string) {
             if ($3) {
                 return '<!-- ' + $3.trim() + ' -->';
             } else {
@@ -104,7 +104,7 @@ export default class Template {
             case Node.DOCUMENT_FRAGMENT_NODE:
                 if (node.childNodes.length) {
                     Template.pushContext(node);
-                    Array.prototype.slice.call(node.childNodes).forEach(function(currentValue, index, array) {
+                    Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
                         Template.createBindings(currentValue);
                     });
                     Template.popContext();
@@ -121,7 +121,7 @@ export default class Template {
                 }
                 if (node.childNodes.length) {
                     Template.pushContext(node);
-                    Array.prototype.slice.call(node.childNodes).forEach(function(currentValue, index, array) {
+                    Array.prototype.slice.call(node.childNodes).forEach(function (currentValue, index, array) {
                         Template.createBindings(currentValue);
                     });
                     Template.popContext();

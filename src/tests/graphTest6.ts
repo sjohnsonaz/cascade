@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {observable} from '../scripts/modules/Cascade';
+import Cascade, { observable } from '../scripts/modules/Cascade';
 
 var runsParent = 0;
 var runsChild = 0;
@@ -44,8 +44,8 @@ class Child {
     }
 }
 
-describe('Graph.dispose', function() {
-    it('should dispose observables recursively', function() {
+describe('Graph.dispose', function () {
+    it('should dispose observables recursively', function () {
         var model: any = new Parent();
         Cascade.disposeAll(model);
         expect(model._graph.observables.a.subscribers.length).to.equal(0);

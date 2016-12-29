@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {Component, observable} from '../scripts/modules/Cascade';
+import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
 class ViewModel {
     clicked: number = 0;
@@ -51,8 +51,8 @@ class Child extends Component<IChildProps> {
     }
 }
 
-describe('Component', function() {
-    it('should attach events to DOM elements', function() {
+describe('Component', function () {
+    it('should attach events to DOM elements', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
