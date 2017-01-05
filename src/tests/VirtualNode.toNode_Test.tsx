@@ -71,6 +71,45 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
+    it('should render standard properties', () => {
+        var root = (
+            <div id="testId"></div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.id).to.equal('testId');
+        });
+    });
+
+    it('should render standard attributes', () => {
+        var root = (
+            <div>
+                <form id="formId" />
+                <input form="formId" />
+            </div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect((element.childNodes[1] as HTMLInputElement).getAttribute('form')).to.equal('formId');
+        });
+    });
+
+    it('should render custom attributes', () => {
+        var root = (
+            <div data-custom="test value"></div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.getAttribute('data-custom')).to.equal('test value');
+        });
+    });
+
+    it('should render style attributes', () => {
+        var root = (
+            <div style="width: 100%"></div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.style.width).to.equal('100%');
+        });
+    });
+
     it('should render Components', function () {
         interface ICustomComponentProps {
             id: string;
