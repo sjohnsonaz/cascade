@@ -78,7 +78,9 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
     }
 
     static setAttribute(element: HTMLElement, property: string, value: any) {
-        if (property.indexOf('-') >= 0) {
+        if (property === 'style') {
+            element.style.cssText = value;
+        } else if (property.indexOf('-') >= 0) {
             element.setAttribute(property, value);
         } else {
             try {
