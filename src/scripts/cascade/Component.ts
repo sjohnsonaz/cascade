@@ -15,6 +15,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     root: any;
     element: Node;
     context: Component<any>[];
+    rendered: boolean = false;
 
     constructor(props?: T, ...children: any[]) {
         this.uniqueId = Math.floor(Math.random() * 1000000);
@@ -55,7 +56,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         });
         // Only update if we are re-rendering
         Graph.subscribe(this, 'root', (root: any, oldRoot: any) => {
-            if (oldRoot) {
+            if (this.rendered) {
                 var element = this.element;
                 this.toNode(oldRoot);
                 if (element !== this.element) {
@@ -96,34 +97,44 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                     break;
                 case 'object':
                     if (root) {
-                        // Diff this case
                         if (root instanceof Component) {
+                            // Root is a Component
                             if (root.constructor === oldRoot.constructor) {
+                                // Root and OldRoot are both the same Component - Diff this case
                                 root.element = oldElement;
                                 element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
                             } else {
+                                // Root is a different Component
                                 element = root.toNode();
                             }
                         } else if (root.type) {
-                            if (root.type == (oldRoot as VirtualNode<any>).type) {
+                            // Root is a VirtualNode
+                            if (root.type === (oldRoot as VirtualNode<any>).type && root.key === (oldRoot as VirtualNode<any>).key) {
+                                // Root and OldRoot are both the same VirtualNode - Diff this case
                                 root.element = oldElement;
                                 element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
                             } else {
+                                // Root is a different VirtualNode
                                 element = root.toNode();
                             }
                         } else {
+                            // Root is an Object
                             element = document.createTextNode(root.toString());
                         }
+                        // Ignore Null
                     }
                     break;
                 case 'undefined':
+                    // Ignore Undefined    
                     break;
                 // Number and anything else    
                 // case 'number':
                 default:
                     if (root !== oldRoot) {
+                        // Render to a string
                         element = document.createTextNode(root.toString());
                     } else {
+                        // Root and OldRoot are the same
                         element = oldElement;
                     }
                     break;
@@ -141,8 +152,10 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                             element = document.createTextNode(root.toString());
                         }
                     }
+                    // Ignore Null
                     break;
                 case 'undefined':
+                    // Ignore Undefined    
                     break;
                 // Number and anything else
                 // case 'number':
@@ -158,12 +171,17 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             }
         }
 
+        if (!element) {
+            element = document.createComment('Empty Component');
+        }
         this.element = element;
+        this.rendered = true;
         return element;
     }
 
     diff(newRoot: any, oldRoot: any, oldElement: HTMLElement) {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
+            // We are either rendering for the first time, or cleanly replacing
             switch (typeof newRoot) {
                 case 'object':
                     if (newRoot) {
@@ -275,9 +293,11 @@ function compareVirtualNodes(nodeA: any, nodeB: any) {
     var typeA = typeof nodeA;
     var typeB = typeof nodeB;
     if (typeA === typeB) {
+        // The two are of the same type
         switch (typeA) {
             case 'object':
-                if (nodeA && (nodeA as any).toNode && (nodeB as any).toNode) {
+                // If nodeA and nodeB are both IVirtualNodes
+                if (nodeA && nodeB && (nodeA as any).toNode && (nodeB as any).toNode) {
                     if ((nodeA as IVirtualNode<any>).key === (nodeB as IVirtualNode<any>).key) {
                         if (nodeA instanceof Component) {
                             return nodeA.constructor === nodeB.constructor;
@@ -288,8 +308,10 @@ function compareVirtualNodes(nodeA: any, nodeB: any) {
                         return false;
                     }
                 } else {
+                    // This covers null
                     return nodeA === nodeB;
                 }
+            // case 'undefined';
             // case 'string':
             // case 'number':
             default:

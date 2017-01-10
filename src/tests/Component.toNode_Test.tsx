@@ -150,7 +150,7 @@ describe('Component.toNode', () => {
         )
         var container = document.createElement('div');
         Cascade.render(container, root);
-        expect(container.childNodes[0].childNodes.length).to.equal(0);
+        expect(container.childNodes[0].childNodes[0]).to.be.instanceof(Comment);
     });
 
     it('should not render null', () => {
@@ -168,7 +168,7 @@ describe('Component.toNode', () => {
         )
         var container = document.createElement('div');
         Cascade.render(container, root);
-        expect(container.childNodes[0].childNodes.length).to.equal(0);
+        expect(container.childNodes[0].childNodes[0]).to.be.instanceof(Comment);
     });
 
     it('should render nested VirtualNodes', () => {
@@ -375,7 +375,7 @@ describe('Component.toNode', () => {
         )
         var container = document.createElement('div');
         Cascade.render(container, root);
-        expect(container.childNodes[0].childNodes.length).to.equal(0);
+        expect(container.childNodes[0].childNodes[0]).to.be.instanceof(Comment);
     });
 
     it('should not render nested undefined', () => {
@@ -400,6 +400,6 @@ describe('Component.toNode', () => {
         )
         var container = document.createElement('div');
         Cascade.render(container, root);
-        expect(container.childNodes[0].childNodes.length).to.equal(0);
+        expect(container.childNodes[0].childNodes[0]).to.be.instanceof(Comment);
     });
 });
