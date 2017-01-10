@@ -160,7 +160,11 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
 
     diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: HTMLElement) {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
-            return newRoot.toNode();
+            if (newRoot.toNode) {
+                return newRoot.toNode();
+            } else {
+                return newRoot;
+            }
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
@@ -191,7 +195,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement.childNodes[childIndex];
-                                this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex] as HTMLElement);
+                                this.diff(newChild.getRootRecursive() as any, (oldChild as any).getRootRecursive() as any, oldElement.childNodes[childIndex] as HTMLElement);
                             } else if (newChild instanceof VirtualNode) {
                                 this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
                             }
@@ -232,6 +236,14 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             //return newRoot.toNode(oldElement);
             return oldElement;
         }
+    }
+
+    getRootRecursive() {
+        var root = Graph.peek(this, 'root');
+        if (root instanceof Component) {
+            root = root.getRootRecursive();
+        }
+        return root;
     }
 
     static getContext() {
