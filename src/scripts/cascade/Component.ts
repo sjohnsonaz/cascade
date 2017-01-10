@@ -102,7 +102,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                             if (root.constructor === oldRoot.constructor) {
                                 // Root and OldRoot are both the same Component - Diff this case
                                 root.element = oldElement;
-                                element = this.diff(Graph.peek(root, 'root'), Graph.peek(oldRoot, 'root'), oldElement as HTMLElement);
+                                element = this.diffComponents(root, oldRoot, oldElement as HTMLElement);
                             } else {
                                 // Root is a different Component
                                 element = root.toNode();
@@ -112,7 +112,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                             if (root.type === (oldRoot as VirtualNode<any>).type && root.key === (oldRoot as VirtualNode<any>).key) {
                                 // Root and OldRoot are both the same VirtualNode - Diff this case
                                 root.element = oldElement;
-                                element = this.diff(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
+                                element = this.diffVirtualNodes(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
                             } else {
                                 // Root is a different VirtualNode
                                 element = root.toNode();
@@ -179,26 +179,80 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return element;
     }
 
-    diff(newRoot: any, oldRoot: any, oldElement: HTMLElement) {
-        if (!oldRoot || oldRoot.type !== newRoot.type) {
-            // We are either rendering for the first time, or cleanly replacing
-            switch (typeof newRoot) {
+    diffComponents(newRoot: Component<any>, oldRoot: Component<any>, oldElement: HTMLElement) {
+        var innerRoot = Graph.peek(newRoot, 'root');
+        var innerOldRoot = Graph.peek(oldRoot, 'root');
+        if (!innerOldRoot) {
+            // We are replacing
+            switch (typeof innerRoot) {
                 case 'object':
-                    if (newRoot) {
-                        if (newRoot.toNode) {
-                            return newRoot.toNode();
+                    if (innerRoot) {
+                        if (innerRoot.toNode) {
+                            return innerRoot.toNode();
                         } else {
-                            return newRoot.toString();
+                            return document.createTextNode(innerRoot.toString());
                         }
                     }
                     break;
-                case 'string':
-                    return newRoot;
                 case 'undefined':
                     break;
                 default:
-                    return newRoot.toString();
+                    return document.createTextNode(innerRoot.toString());
             }
+        } else {
+            switch (typeof innerRoot) {
+                case 'object':
+                    if (innerRoot) {
+                        // InnerRoot is not Null
+                        if (innerRoot instanceof Component) {
+                            // InnerRoot is a Component
+                            if (innerOldRoot instanceof Component && innerRoot.constructor === innerOldRoot.constructor && innerRoot.key === innerOldRoot.key) {
+                                // InnerRoot is the same Component as InnerOldRoot - Diff this case
+                                return this.diffComponents(innerRoot, innerOldRoot, oldElement);
+                            } else {
+                                // Replace
+                                return innerRoot.toNode();
+                            }
+                        } else if (innerRoot instanceof VirtualNode) {
+                            if (innerOldRoot instanceof VirtualNode && innerRoot.type === innerOldRoot.type && innerRoot.key === innerOldRoot.key) {
+                                // InnerRoot is the same VirtualNode as InnerOldRoot - Diff this case
+                                return this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement);
+                            } else {
+                                // Replace
+                                return innerRoot.toNode();
+                            }
+                        }
+                    }
+                    // Ignore Null
+                    break;
+                case 'undefined':
+                    // Ignore Undefined    
+                    break;
+                case 'string':
+                    if (innerRoot === innerOldRoot) {
+                        // InnerRoot is the same as InnerOldRoot
+                        return oldElement;
+                    } else {
+                        // Replace
+                        return document.createTextNode(innerRoot);
+                    }
+                default:
+                    if (innerRoot === innerOldRoot) {
+                        // InnerRoot is the same as InnerOldRoot
+                        return oldElement;
+                    } else {
+                        // Replace
+                        return document.createTextNode(innerRoot.toString());
+                    }
+            }
+        }
+        return oldElement;
+    }
+
+    diffVirtualNodes(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: HTMLElement) {
+        if (!oldRoot || oldRoot.type !== newRoot.type) {
+            // We are cleanly replacing
+            return newRoot.toNode();
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
@@ -229,9 +283,9 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement.childNodes[childIndex];
-                                this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex] as HTMLElement);
+                                this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement);
                             } else if (newChild instanceof VirtualNode) {
-                                this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
+                                this.diffVirtualNodes(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
                             }
                         }
                         childIndex--;
