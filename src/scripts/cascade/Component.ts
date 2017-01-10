@@ -135,7 +135,11 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                     break;
                 case 'object':
                     if (root) {
-                        element = root.toNode();
+                        if (root.toNode) {
+                            element = root.toNode();
+                        } else {
+                            element = document.createTextNode(root.toString());
+                        }
                     }
                     break;
                 case 'undefined':
@@ -158,12 +162,24 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return element;
     }
 
-    diff(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: HTMLElement) {
+    diff(newRoot: any, oldRoot: any, oldElement: HTMLElement) {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
-            if (newRoot.toNode) {
-                return newRoot.toNode();
-            } else {
-                return newRoot;
+            switch (typeof newRoot) {
+                case 'object':
+                    if (newRoot) {
+                        if (newRoot.toNode) {
+                            return newRoot.toNode();
+                        } else {
+                            return newRoot.toString();
+                        }
+                    }
+                    break;
+                case 'string':
+                    return newRoot;
+                case 'undefined':
+                    break;
+                default:
+                    return newRoot.toString();
             }
         } else {
             // Old and New Roots match
@@ -195,7 +211,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement.childNodes[childIndex];
-                                this.diff(newChild.getRootRecursive() as any, (oldChild as any).getRootRecursive() as any, oldElement.childNodes[childIndex] as HTMLElement);
+                                this.diff(Graph.peek(newChild, 'root') as any, Graph.peek(oldChild, 'root') as any, oldElement.childNodes[childIndex] as HTMLElement);
                             } else if (newChild instanceof VirtualNode) {
                                 this.diff(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
                             }
@@ -238,14 +254,6 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         }
     }
 
-    getRootRecursive() {
-        var root = Graph.peek(this, 'root');
-        if (root instanceof Component) {
-            root = root.getRootRecursive();
-        }
-        return root;
-    }
-
     static getContext() {
         return context;
     }
@@ -263,7 +271,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     }
 }
 
-function compareVirtualNodes(nodeA: VirtualNode<any> | string | number, nodeB: VirtualNode<any> | string | number) {
+function compareVirtualNodes(nodeA: any, nodeB: any) {
     var typeA = typeof nodeA;
     var typeB = typeof nodeB;
     if (typeA === typeB) {

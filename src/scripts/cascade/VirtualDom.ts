@@ -22,7 +22,11 @@ export default class VirtualDom {
         while (fixedNode.firstChild) {
             fixedNode.removeChild(fixedNode.firstChild);
         }
-        fixedNode.appendChild(renderedComponent);
+        if (renderedComponent instanceof Node) {
+            fixedNode.appendChild(renderedComponent);
+        } else {
+            console.error('Root render is not a Node.  Nothing was rendered, and nothing will be updated');
+        }
         if (callback) {
             callback(renderedComponent);
         }

@@ -24,6 +24,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "^3.4.34",
+    "@types/es6-shim": "^0.31.32",
     "@types/mocha": "^2.2.33",
     "chai": "^3.5.0",
     "es6-shim": "^0.35.1",

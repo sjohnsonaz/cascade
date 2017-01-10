@@ -51,7 +51,10 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                 case 'object':
                     if (child) {
                         if ((child as IVirtualNode<any>).toNode) {
-                            node.appendChild((child as IVirtualNode<any>).toNode());
+                            var renderedNode = (child as IVirtualNode<any>).toNode();
+                            if (renderedNode instanceof Node) {
+                                node.appendChild(renderedNode);
+                            }
                         } else {
                             node.appendChild(document.createTextNode(child.toString()));
                         }
