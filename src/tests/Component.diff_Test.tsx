@@ -73,43 +73,40 @@ describe('Component.diff', () => {
         }, 20);
     });
 
-    it.skip('should update nested roots', (done) => {
+    it('should update empty nested Components', (done) => {
         class ViewModel {
             @observable value = false;
         }
+        interface IContentProps {
+            value: boolean;
+        }
+        class Content extends Component<IContentProps> {
+            render() {
+                return this.props.value ? true : null;
+            }
+        }
         interface IViewProps {
-            viewModel?: ViewModel;
-        }
-        class Content extends Component<IViewProps> {
-            render() {
-                return this.props.viewModel.value ? true : null;
-            }
-        }
-        class Container extends Component<IViewProps> {
-            render() {
-                return (
-                    <section>
-                        <header>Header</header>
-                        <div>{this.children}</div>
-                    </section>
-                );
-            }
+            viewModel: ViewModel;
         }
         class View extends Component<IViewProps> {
             render() {
                 return (
-                    <Container>
-                        <Content viewModel={viewModel} />
-                    </Container>
+                    <Content value={viewModel.value} />
                 );
             }
         }
         var viewModel = new ViewModel();
+        var root = (
+            <div>
+                <View viewModel={viewModel} />
+            </div>
+        );
         var container = document.createElement('div')
-        Cascade.render(container, <View viewModel={viewModel} />);
+        Cascade.render(container, root);
         viewModel.value = true;
+        expect(container.childNodes[0].childNodes.length).to.equal(1);
         window.setTimeout(() => {
-            expect(container.childNodes[0].childNodes[1].textContent).to.equal('true');
+            expect(container.childNodes[0].childNodes.length).to.equal(1);
             done();
         }, 20);
     });
