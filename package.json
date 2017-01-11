@@ -12,8 +12,9 @@
     "build": "tsc",
     "prepublish": "tsc --declaration",
     "test": "node src/mocha/NodeRunner.js",
-    "browser": "webpack --config webpack.config.js",
-    "dev": "webpack --config webpack.dev.config.js --watch --progress",
+    "min": "webpack --config webpack.config.js --progress",
+    "dev": "webpack --config webpack.dev.config.js --progress",
+    "watch": "webpack --config webpack.dev.config.js --watch --progress",
     "dev-local": "tsc --declaration --watch"
   },
   "repository": {
