@@ -85,7 +85,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         var rootType = typeof root;
 
         // Test if we must diff.
-        // If we have an old root, we have rendered before.
+        // If we have an old root, we may need to diff.
         if (oldRoot && typeof oldRoot === rootType) {
             switch (rootType) {
                 case 'string':
@@ -99,20 +99,20 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                     if (root) {
                         if (root instanceof Component) {
                             // Root is a Component
-                            if (root.constructor === oldRoot.constructor) {
+                            if (root.constructor === oldRoot.constructor && root.key === oldRoot.key) {
                                 // Root and OldRoot are both the same Component - Diff this case
                                 root.element = oldElement;
-                                element = this.diffComponents(root, oldRoot, oldElement as HTMLElement);
+                                element = this.diffComponents(root, oldRoot, oldElement);
                             } else {
                                 // Root is a different Component
                                 element = root.toNode();
                             }
                         } else if (root.type) {
                             // Root is a VirtualNode
-                            if (root.type === (oldRoot as VirtualNode<any>).type && root.key === (oldRoot as VirtualNode<any>).key) {
+                            if (root.type === oldRoot.type && root.key === oldRoot.key) {
                                 // Root and OldRoot are both the same VirtualNode - Diff this case
                                 root.element = oldElement;
-                                element = this.diffVirtualNodes(root as VirtualNode<any>, oldRoot as VirtualNode<any>, oldElement as HTMLElement);
+                                element = this.diffVirtualNodes(root, oldRoot, oldElement as HTMLElement);
                             } else {
                                 // Root is a different VirtualNode
                                 element = root.toNode();
@@ -179,7 +179,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return element;
     }
 
-    diffComponents(newRoot: Component<any>, oldRoot: Component<any>, oldElement: HTMLElement) {
+    diffComponents(newRoot: Component<any>, oldRoot: Component<any>, oldElement: Node) {
         var innerRoot = Graph.peek(newRoot, 'root');
         var innerOldRoot = Graph.peek(oldRoot, 'root');
         if (!innerOldRoot) {
@@ -216,7 +216,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                         } else if (innerRoot instanceof VirtualNode) {
                             if (innerOldRoot instanceof VirtualNode && innerRoot.type === innerOldRoot.type && innerRoot.key === innerOldRoot.key) {
                                 // InnerRoot is the same VirtualNode as InnerOldRoot - Diff this case
-                                return this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement);
+                                return this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement as HTMLElement);
                             } else {
                                 // Replace
                                 return innerRoot.toNode();
