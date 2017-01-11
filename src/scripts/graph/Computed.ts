@@ -117,12 +117,6 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             }
             this.references = context;
         }
-        // TODO: Should we rethrow
-        /*
-        else {
-            throw this.error;
-        }
-        */
         return output;
     }
     dispose() {
