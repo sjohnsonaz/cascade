@@ -171,12 +171,18 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             this.props.ref(element);
         }
 
+        this.afterRender(element);
+
         if (!element) {
             element = document.createComment('Empty Component');
         }
         this.element = element;
         this.rendered = true;
         return element;
+    }
+
+    afterRender(node: Node) {
+
     }
 
     diffComponents(newRoot: Component<any>, oldRoot: Component<any>, oldElement: Node) {
