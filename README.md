@@ -127,3 +127,15 @@ Cascade.render(
     <UserView user={User} />
 );
 ```
+
+## Troubleshooting and Optimization
+
+### Computed Subscriptions
+
+Computed properties subscribe to observables simply by reading them.  So any property that is read, will generate a subscription.  If you don't want to subscribe, use `Cascade.peek(obj: any, property: string)` to read the value without subscribing.
+
+Also, if you need to call methods inside of a computed, those methods may read from observables as well.  This behavior may or may not be what you intend.  To protect against this, use `Cascade.wrapContext(callback: () => any, thisArg?: any)`, which will capture any generated subscriptions without actually subscribing to them.
+
+### Component Subscriptions
+
+Components manage their subscriptions through the `Component.root` computed property.  Internally, this calls the `Component.render` method, so any observable read while rendering will generate a subscription.  In order to reduce re-renders, read observable properites as late as possible.  Meaning, it's better to read inside a child component, than inside a parent and then pass the value into the child.  This way only the child re-renders when the value is updated.

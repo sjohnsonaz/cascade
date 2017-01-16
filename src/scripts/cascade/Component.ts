@@ -8,6 +8,7 @@ var componentContexts: Component<any>[][] = [];
 var context: Component<any>[] = undefined;
 
 export abstract class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
+    // TODO: Remove unused uniqueId?
     uniqueId: number;
     props: T;
     children: any;
@@ -18,6 +19,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     rendered: boolean = false;
 
     constructor(props?: T, ...children: any[]) {
+        // TODO: Remove unused uniqueId?
         this.uniqueId = Math.floor(Math.random() * 1000000);
         this.props = props || ({} as any);
         this.key = this.props.key;
