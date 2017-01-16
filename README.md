@@ -139,3 +139,7 @@ Also, if you need to call methods inside of a computed, those methods may read f
 ### Component Subscriptions
 
 Components manage their subscriptions through the `Component.root` computed property.  Internally, this calls the `Component.render` method, so any observable read while rendering will generate a subscription.  In order to reduce re-renders, read observable properites as late as possible.  Meaning, it's better to read inside a child component, than inside a parent and then pass the value into the child.  This way only the child re-renders when the value is updated.
+
+### Multiple Installations
+
+If a Component or Computed is not correctly updating, there may be more than one copy of Cascade referenced.  There must be exactly one copy for subscriptions to be tracked correctly.
