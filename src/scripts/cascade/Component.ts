@@ -167,10 +167,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             }
         }
 
-        if (element !== oldElement) {
-            if (this.props && this.props.ref) {
-                this.props.ref(element);
-            }
+        if (this.props && this.props.ref) {
+            this.props.ref(element);
         }
 
         if (!element) {
