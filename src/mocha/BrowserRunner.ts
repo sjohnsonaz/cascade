@@ -6,6 +6,7 @@ import 'reflect-metadata';
 import '../tests/VirtualNode.toNode_Test';
 import '../tests/Component.toNode_Test';
 import '../tests/Component.diff_Test';
+import '../tests/Component.update_Test';
 import '../tests/Cascade.render_Component_Test';
 import '../tests/ComponentTest';
 import '../tests/cascadeTest1';
