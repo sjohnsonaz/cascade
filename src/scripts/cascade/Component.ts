@@ -255,7 +255,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return oldElement;
     }
 
-    diffVirtualNodes(newRoot: VirtualNode<any>, oldRoot: VirtualNode<any>, oldElement: HTMLElement) {
+    diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement) {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
             return newRoot.toNode();
@@ -327,7 +327,12 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                         break;
                 }
             }
-            //return newRoot.toNode(oldElement);
+
+            // Call the ref for newRoot
+            if (newRoot.props.ref) {
+                newRoot.props.ref(oldElement);
+            }
+
             return oldElement;
         }
     }
@@ -358,11 +363,11 @@ function compareVirtualNodes(nodeA: any, nodeB: any) {
             case 'object':
                 // If nodeA and nodeB are both IVirtualNodes
                 if (nodeA && nodeB && (nodeA as any).toNode && (nodeB as any).toNode) {
-                    if ((nodeA as IVirtualNode<any>).key === (nodeB as IVirtualNode<any>).key) {
+                    if ((nodeA as IVirtualNode<IVirtualNodeProps>).key === (nodeB as IVirtualNode<IVirtualNodeProps>).key) {
                         if (nodeA instanceof Component) {
                             return nodeA.constructor === nodeB.constructor;
                         } else {
-                            return (nodeA as VirtualNode<any>).type === (nodeB as VirtualNode<any>).type;
+                            return (nodeA as VirtualNode<IVirtualNodeProps>).type === (nodeB as VirtualNode<IVirtualNodeProps>).type;
                         }
                     } else {
                         return false;
