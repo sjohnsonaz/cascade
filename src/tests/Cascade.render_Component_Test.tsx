@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { Component } from '../scripts/modules/Cascade';
+import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
 describe('Cascade.render Component', () => {
     it('should render VirtualNodes', () => {
@@ -313,7 +313,7 @@ describe('Cascade.render Component', () => {
         expect(container.childNodes[0]).to.be.instanceof(Comment);
     });
 
-    it('should use afterRender and ref', function () {
+    it('should use afterRender and ref', () => {
         class ViewModel {
             parentNode: Node;
             childNode: Node;
@@ -356,5 +356,59 @@ describe('Cascade.render Component', () => {
         expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
         expect((viewModel.parentNode as HTMLElement).tagName).to.equal('DIV');
         expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
+    });
+
+    it('should use afterRender and ref after update', (done) => {
+        class ViewModel {
+            parentNode: Node;
+            childNode: Node;
+            afterRenderNode: Node;
+            @observable value = 1;
+            parentRef = (node: Node) => {
+                this.parentNode = node;
+            }
+            childRef = (node: Node) => {
+                this.childNode = node;
+            }
+        }
+
+        interface IParentProps {
+            viewModel: ViewModel;
+        }
+
+        class Parent extends Component<IParentProps> {
+            afterRender(node: Node) {
+                viewModel.afterRenderNode = node;
+            }
+
+            render() {
+                let {viewModel} = this.props;
+                return (
+                    <div>
+                        <span ref={viewModel.childRef}>Text</span>
+                        <span>{viewModel.value}</span>
+                    </div>
+                );
+            }
+        }
+
+        var viewModel = new ViewModel();
+        var container = document.createElement('div');
+        var root = (
+            <div>
+                <Parent viewModel={viewModel} ref={viewModel.parentRef} />
+            </div>
+        );
+        Cascade.render(container, root);
+        viewModel.afterRenderNode = undefined;
+        viewModel.parentNode = undefined;
+        viewModel.childNode = undefined;
+        viewModel.value = 2;
+        window.setTimeout(() => {
+            expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
+            expect((viewModel.parentNode as HTMLElement).tagName).to.equal('DIV');
+            expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
+            done();
+        }, 20);
     });
 });
