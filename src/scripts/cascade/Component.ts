@@ -4,8 +4,8 @@ import VirtualNode from './VirtualNode';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import Diff, { DiffOperation } from './Diff';
 
-var componentContexts: Component<any>[][] = [];
-var context: Component<any>[] = undefined;
+var componentContexts: Component<IVirtualNodeProps>[][] = [];
+var context: Component<IVirtualNodeProps>[] = undefined;
 
 export abstract class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     // TODO: Remove unused uniqueId?
@@ -15,7 +15,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     key: string;
     root: any;
     element: Node;
-    context: Component<any>[];
+    context: Component<IVirtualNodeProps>[];
     rendered: boolean = false;
 
     constructor(props?: T, ...children: any[]) {
@@ -185,7 +185,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
 
     }
 
-    diffComponents(newRoot: Component<any>, oldRoot: Component<any>, oldElement: Node) {
+    diffComponents(newRoot: Component<IVirtualNodeProps>, oldRoot: Component<IVirtualNodeProps>, oldElement: Node) {
         var innerRoot = Graph.peek(newRoot, 'root');
         var innerOldRoot = Graph.peek(oldRoot, 'root');
         if (!innerOldRoot) {
@@ -252,6 +252,12 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                     }
             }
         }
+
+        // Call the ref for newRoot
+        if (newRoot.props.ref) {
+            newRoot.props.ref(oldElement);
+        }
+
         return oldElement;
     }
 
