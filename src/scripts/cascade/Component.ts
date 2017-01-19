@@ -186,6 +186,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     }
 
     diffComponents(newRoot: Component<IVirtualNodeProps>, oldRoot: Component<IVirtualNodeProps>, oldElement: Node) {
+        var output: Node;
         var innerRoot = Graph.peek(newRoot, 'root');
         var innerOldRoot = Graph.peek(oldRoot, 'root');
         if (!innerOldRoot) {
@@ -194,16 +195,16 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                 case 'object':
                     if (innerRoot) {
                         if (innerRoot.toNode) {
-                            return innerRoot.toNode();
+                            output = innerRoot.toNode();
                         } else {
-                            return document.createTextNode(innerRoot.toString());
+                            output = document.createTextNode(innerRoot.toString());
                         }
                     }
                     break;
                 case 'undefined':
                     break;
                 default:
-                    return document.createTextNode(innerRoot.toString());
+                    output = document.createTextNode(innerRoot.toString());
             }
         } else {
             switch (typeof innerRoot) {
@@ -214,18 +215,18 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                             // InnerRoot is a Component
                             if (innerOldRoot instanceof Component && innerRoot.constructor === innerOldRoot.constructor && innerRoot.key === innerOldRoot.key) {
                                 // InnerRoot is the same Component as InnerOldRoot - Diff this case
-                                return this.diffComponents(innerRoot, innerOldRoot, oldElement);
+                                output = this.diffComponents(innerRoot, innerOldRoot, oldElement);
                             } else {
                                 // Replace
-                                return innerRoot.toNode();
+                                output = innerRoot.toNode();
                             }
                         } else if (innerRoot instanceof VirtualNode) {
                             if (innerOldRoot instanceof VirtualNode && innerRoot.type === innerOldRoot.type && innerRoot.key === innerOldRoot.key) {
                                 // InnerRoot is the same VirtualNode as InnerOldRoot - Diff this case
-                                return this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement as HTMLElement);
+                                output = this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement as HTMLElement);
                             } else {
                                 // Replace
-                                return innerRoot.toNode();
+                                output = innerRoot.toNode();
                             }
                         }
                     }
@@ -237,36 +238,36 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                 case 'string':
                     if (innerRoot === innerOldRoot) {
                         // InnerRoot is the same as InnerOldRoot
-                        return oldElement;
+                        output = oldElement;
                     } else {
                         // Replace
-                        return document.createTextNode(innerRoot);
+                        output = document.createTextNode(innerRoot);
                     }
                 default:
                     if (innerRoot === innerOldRoot) {
                         // InnerRoot is the same as InnerOldRoot
-                        return oldElement;
+                        output = oldElement;
                     } else {
                         // Replace
-                        return document.createTextNode(innerRoot.toString());
+                        output = document.createTextNode(innerRoot.toString());
                     }
             }
         }
 
         // Call the ref for newRoot
         if (newRoot.props.ref) {
-            newRoot.props.ref(oldElement);
+            newRoot.props.ref(output);
         }
 
-        newRoot.afterRender(oldElement);
+        newRoot.afterRender(output);
 
-        return oldElement;
+        return output;
     }
 
     diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement) {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
-            return newRoot.toNode();
+            oldElement = newRoot.toNode();
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
