@@ -171,7 +171,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             this.props.ref(element);
         }
 
-        this.afterRender(element);
+        this.afterRender(element, this.rendered);
 
         if (!element) {
             element = document.createComment('Empty Component');
@@ -181,7 +181,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return element;
     }
 
-    afterRender(node: Node) {
+    afterRender(node: Node, updating: boolean) {
 
     }
 
@@ -259,7 +259,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             newRoot.props.ref(output);
         }
 
-        newRoot.afterRender(output);
+        newRoot.afterRender(output, this.rendered);
 
         return output;
     }
