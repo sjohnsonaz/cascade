@@ -259,7 +259,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             newRoot.props.ref(output);
         }
 
-        newRoot.afterRender(output, this.rendered);
+        newRoot.afterRender(output, true);
 
         return output;
     }
