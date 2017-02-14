@@ -16,17 +16,17 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         // if (this.props.key) {
         // delete this.props.key;
         // }
-        this.children = children ? this.fixChildrenArrays(children) : [];
+        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
-    private fixChildrenArrays(children: Array<any>, fixedChildren?: any[]) {
+    static fixChildrenArrays(children: Array<any>, fixedChildren?: any[]) {
         fixedChildren = fixedChildren || [];
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
             // Remove undefined elements
             if (typeof child !== 'undefined') {
                 if (child instanceof Array) {
-                    this.fixChildrenArrays(child, fixedChildren);
+                    VirtualNode.fixChildrenArrays(child, fixedChildren);
                 } else {
                     fixedChildren.push(child);
                 }

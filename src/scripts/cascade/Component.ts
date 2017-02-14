@@ -27,7 +27,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         // if (this.props.key) {
         // delete this.props.key;
         // }
-        this.children = children || [];
+        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
     init() {
