@@ -104,4 +104,42 @@ describe('Component.toNode', function () {
             }, 0);
         }, 0);
     });
+
+    it.skip('should render high order Components', () => {
+        class Child extends Component<any> {
+            render() {
+                return (
+                    <div>{this.children}</div>
+                );
+            }
+        }
+        class Parent extends Component<any> {
+            render() {
+                return (
+                    <Child>{this.children}</Child>
+                );
+            }
+        }
+        class View extends Component<any>{
+            render() {
+                return (
+                    <Parent>
+                        <div>0</div>
+                        <div>1</div>
+                        <div>2</div>
+                    </Parent>
+                );
+            }
+        }
+
+        var root = (
+            <View />
+        );
+
+        var container = document.createElement('div');
+
+        Cascade.render(container, root, function (element: HTMLElement) {
+            expect(element.childNodes[0].childNodes.length).to.equal(3);
+        });
+    });
 });
