@@ -12,7 +12,7 @@ module.exports = {
     },
     devtool: 'source-map',
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
+        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
     },
     module: {
         loaders: [{
@@ -21,6 +21,9 @@ module.exports = {
         }]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin('cascade', './dist/bundle/cascade.js')
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'cascade',
+            filename: './dist/bundle/cascade.js'
+        })
     ]
 };
