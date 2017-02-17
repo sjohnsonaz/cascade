@@ -105,12 +105,12 @@ describe('Component.toNode', function () {
         }, 0);
     });
 
-    it('should render high order Components', () => {
+    it('should pass children directly into high order Components', () => {
+        let length = undefined;
         class Child extends Component<any> {
             render() {
-                return (
-                    <div>{this.children}</div>
-                );
+                length = this.children.length;
+                return <div>this.children</div>;
             }
         }
         class Parent extends Component<any> {
@@ -139,7 +139,7 @@ describe('Component.toNode', function () {
         var container = document.createElement('div');
 
         Cascade.render(container, root, function (element: HTMLElement) {
-            expect(element.childNodes.length).to.equal(3);
+            expect(length).to.equal(3);
         });
     });
 });
