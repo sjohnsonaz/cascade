@@ -111,6 +111,18 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
+    it('should render SVG elements', () => {
+        var root = (
+            <svg height="210" width="400">
+                <path d="M150 0 L75 200 L225 200 Z" />
+                Sorry, your browser does not support inline SVG.
+            </svg>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.children[0].getAttribute('d')).to.equal('M150 0 L75 200 L225 200 Z');
+        });
+    });
+
     it('should render Components', function () {
         interface ICustomComponentProps {
             id: string;
