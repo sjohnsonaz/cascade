@@ -11,8 +11,8 @@ export namespace Elements {
         className?: string;
         id?: string;
         msContentZoomFactor?: number;
-        onariarequest?: (ev?: AriaRequestEvent) => any;
-        oncommand?: (ev?: CommandEvent) => any;
+        onariarequest?: (ev?: Event) => any;
+        oncommand?: (ev?: Event) => any;
         ongotpointercapture?: (ev?: PointerEvent) => any;
         onlostpointercapture?: (ev?: PointerEvent) => any;
         onmsgesturechange?: (ev?: MSGestureEvent) => any;
