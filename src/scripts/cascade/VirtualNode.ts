@@ -85,6 +85,9 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
             element.style.cssText = value;
         } else if (property.indexOf('on') >= 0) {
             element[property] = value;
+        } else if (property === 'className') {
+            element[property] = value;
+            //} else if (property.indexOf('-') >= 0) {
         } else {
             element.setAttribute(property, value);
         }
@@ -95,6 +98,9 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
             element.style.cssText = undefined;
         } else if (property.indexOf('on') >= 0) {
             element[property] = undefined;
+        } else if (property === 'className') {
+            element[property] = undefined;
+            //} else if (property.indexOf('-') >= 0) {
         } else {
             element.removeAttribute(property);
         }
