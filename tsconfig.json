@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -14,18 +15,12 @@
     "noLib": false,
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
-    "outDir": "dist",
     "sourceMap": true,
     "reactNamespace": "Cascade"
   },
-  "exclude": [
-    "cascade-*",
-    "dist",
-    "node_modules"
+  "include": [
+    "src"
   ],
   "compileOnSave": true,
-  "buildOnSave": false,
-  "atom": {
-    "rewriteTsconfig": false
-  }
+  "buildOnSave": false
 }
