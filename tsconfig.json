@@ -21,6 +21,10 @@
   "include": [
     "src"
   ],
+  "lib": [
+    "dom",
+    "es6"
+  ],
   "compileOnSave": true,
   "buildOnSave": false
 }
