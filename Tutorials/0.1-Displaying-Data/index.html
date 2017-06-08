@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Displaying Data - Cascade</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Displaying Data";
+    var mkdocs_page_input_path = "Tutorials\\0.1-Displaying-Data.md";
+    var mkdocs_page_url = "/Tutorials/0.1-Displaying-Data/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Cascade</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Tutorials</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../0.0-Getting-Started/">Getting Started</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Displaying Data</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#project-organization">Project Organization</a></li>
+    
+
+    <li class="toctree-l3"><a href="#building-your-project">Building your Project</a></li>
+    
+
+    <li class="toctree-l3"><a href="#application-state">Application State</a></li>
+    
+
+    <li class="toctree-l3"><a href="#components">Components</a></li>
+    
+
+    <li class="toctree-l3"><a href="#rendering">Rendering</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.2-Updating-Data/">Updating Data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.3-Computed-Properties/">Computed Properties</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Cascade</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Tutorials &raquo;</li>
+        
+      
+    
+    <li>Displaying Data</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>In this tutorial, we take a look at Cascade, what it can do, and the fundamental parts of any Cascade project.  You should already have a TypeScript environment running, and have included Cascade in your project dependencies.</p>
+<h2 id="project-organization">Project Organization</h2>
+<p>Any Cascade project includes <strong>Application State</strong> and <strong>Components</strong>.  This is similar to many common patterns such as <strong>MVC</strong> or <strong>MVVM</strong>, where you have a distinct separation between your data, and how you display it.  Ultimately, the specifics of your pattern are up to you, but the overal concept is the same.  We will introduce some common patterns in later tutorials.</p>
+<p>Before we get started, your TypeScript project should have a <code>tsconfig.json</code> file.  Open this file, and ensure the following options are set:</p>
+<pre><code class="json">&quot;jsx&quot;: &quot;react&quot;,
+&quot;reactNamespace&quot;: &quot;Cascade&quot;,
+&quot;experimentalDecorators&quot;: true,
+&quot;emitDecoratorMetadata&quot;: true
+</code></pre>
+
+<p>The <code>emitDecoratorMetadata</code> value is optional, as we will see later.</p>
+<p>Also, ensure that you have <code>src</code> and <code>public</code> directories in your project.</p>
+<h2 id="building-your-project">Building your Project</h2>
+<p>It will be easier to develop our project if we can run it.  Let's start by setting up a simple set of files and getting the to build.</p>
+<p>Inside the <code>public</code> directory, create a file <code>index.html</code>.  This will be the main HTML file that runs the project.</p>
+<pre><code class="html">&lt;!DOCTYPE&gt;
+&lt;html&gt;
+
+&lt;head&gt;
+    &lt;title&gt;Tutorial 0&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;bundle/main.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+
+<p>This file creates a <code>&lt;div&gt;</code> to mount our component, and then loads the script.  Note that we're loading our script from <code>bundle/main.js</code>, which is a file that doesn't currently exist.  We are going to build it later.</p>
+<p>Inside the <code>src/scripts</code> directory, create a file <code>main.tsx</code>.</p>
+<pre><code class="TypeScript">window.onload = function () {
+    console.log('started');
+}
+</code></pre>
+
+<p>We now must set up Webpack to build our <code>main.tsx</code> file.  Inside the webpack configs (there are two if you're using the ts-boilerplate), ensure that the <code>entry</code> and <code>output</code> objects have the correct values.  it should read:</p>
+<pre><code class="javascript">    entry: {
+        'main': './src/scripts/main.tsx'
+    },
+    output: {
+        filename: './public/bundle/[name].js',
+        libraryTarget: 'var',
+        library: '[name]'
+    },
+</code></pre>
+
+<p>This is likely very similar to what is already there.  Simply change <code>main.ts</code> to <code>main.tsx</code>, the filename from <code>dist</code> to <code>public</code>, and remove the <code>.min</code> portion of the filename.</p>
+<p>Now to test it, run</p>
+<pre><code>npm run dev
+</code></pre>
+<p>If you want to run automatically as you're developing, call</p>
+<pre><code>npm run watch
+</code></pre>
+<p>If you want to run a minified version of the file, call</p>
+<pre><code>npm run min
+</code></pre>
+<p>If it is successful, open the <code>public/index.html</code> file in your browser.  Open the browser's console, and you should see <code>started</code> printed to the screen.</p>
+<h2 id="application-state">Application State</h2>
+<p>Cascade stores its data in <strong>Application State</strong> objects.  Depending on what you want to store, they may contain values, other objects, arrays, or even methods to manipulate the data.  </p>
+<p>Let's say we want to create a <strong>Model</strong> of a <strong>User</strong>.  It should store common information for our users, like first and last name.  We also will want to edit it.</p>
+<p>So, we start by declaring a class, and adding several properties.  Inside your project, create a folder <code>src/scripts/models</code>, and inside it a file <code>User.ts</code>.</p>
+<pre><code class="TypeScript">export default class User {
+    firstName: string;
+    lastName: string;
+}
+</code></pre>
+
+<p>Fantastic!  We now have a User class which will correctly store our data!  We have also exported it as default from this file.</p>
+<h2 id="components">Components</h2>
+<p>Cascade displays its data in <strong>Components</strong>, which are simply classes that render to the DOM.  They may render Nodes, strings, numbers, nothing, or even other Components.</p>
+<p>So, since we have our User model, let's display it!  Inside your project, create a folder <code>src/scripts/views/user</code>, and inside it a file <code>UserView.tsx</code>.</p>
+<p>First, we must import Cascade into the file.</p>
+<pre><code class="TypeScript">import Cascade, { Component } from 'cascade';
+</code></pre>
+
+<p>We have imported Cascade, and the Component class.  While we will not necessarily use the <code>Cascade</code> import directly in our code, the JSX interpreter will transpile our JSX statements into Cascade calls.  This process turns what appear to be XML elements into:</p>
+<pre><code class="TypeScript">Cascade.createElement&lt;T extends Object&gt;(type: string | (new (props: T, ...children: Array&lt;any&gt;) =&gt; Component&lt;T&gt;), props: T, ...children: Array&lt;any&gt;): IVirtualNode&lt;T&gt;;`.
+</code></pre>
+
+<p>Now we must import our User model.</p>
+<pre><code class="TypeScript">import User from '../../models/User';
+</code></pre>
+
+<p>We now must define what properties our component takes.  Our component will take in a user.  These appear as XML Attributes in our JSX code.</p>
+<pre><code class="TypeScript">export interface IUserViewProps {
+    user: User;
+}
+</code></pre>
+
+<p>Next we need to define our component itself.</p>
+<pre><code class="TypeScript">export default class UserView extends Component&lt;IUserViewProps&gt; {
+    render() {
+        let {user} = this.props;
+        return (
+            &lt;div&gt;
+                &lt;p&gt;First name: {user.firstName}&lt;/p&gt;
+                &lt;p&gt;Last name: {user.lastName}&lt;/p&gt;
+            &lt;/div&gt;
+        );
+    }
+}
+</code></pre>
+
+<p>This component takes in a user, and displays the <code>firstName</code> and <code>lastName</code> inside to <code>&lt;p&gt;</code> elements, wrapped inside one <code>&lt;div&gt;</code> element.</p>
+<p>There are a couple things to note:</p>
+<ol>
+<li>We used the Props interface inside the Component definition.  This provides intellisense both when writing the component, and later when we use it.</li>
+<li>We used object destructuring to get <code>user</code> from <code>this.props</code>.  This is a shorthand that is much simpler than <code>let user = this.props.user;</code>.  It especially comes in handy if you're doing that for multiple properties.</li>
+<li>Every component must define a render method, even if it returns nothing.</li>
+<li>A component may return exactly one value.  Here we wrapped our multiple <code>&lt;p&gt;</code> tags in a single <code>&lt;div&gt;</code> tag.</li>
+<li>We user the <code>{}</code> notation to insert the <code>user</code> values into the elements.</li>
+</ol>
+<h2 id="rendering">Rendering</h2>
+<p>We now must render our <strong>Application State</strong> into <strong>Component</strong> and display it to the DOM.</p>
+<p>Inside the <code>main.tsx</code> we must import all of our files, and then render them.</p>
+<pre><code class="TypeScript">import Cascade from 'cascade'
+
+import User from './models/User';
+import UserView from './views/UserView';
+
+window.onload = function () {
+    var user = new User();
+    user.firstName = 'First';
+    user.lastName = 'Last';
+
+    Cascade.render(
+        document.getElementById('root'),
+        &lt;UserView user={User} /&gt;
+    );
+};
+</code></pre>
+
+<p>There are a couple things to note:</p>
+<ol>
+<li>We imported Cascade, our <code>User</code>, and our <code>UserView</code>.</li>
+<li>We write our code inside the onload function to ensure it runs after everything is ready.</li>
+<li>We create a new user and set the first and last name properties.</li>
+<li>We get the <code>root</code> element from the DOM</li>
+<li>We create a new <code>UserView</code> with JSX, pass in the user.</li>
+<li>We pass the <code>root</code> element and the <code>UserView</code> to <code>Cascade.render()</code>.</li>
+</ol>
+<p>Now build the project and run the HTML file in your browser.  It should display your user in the HTML you specified.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../0.2-Updating-Data/" class="btn btn-neutral float-right" title="Updating Data">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../0.0-Getting-Started/" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../0.0-Getting-Started/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../0.2-Updating-Data/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

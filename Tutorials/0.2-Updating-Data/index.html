@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Updating Data - Cascade</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Updating Data";
+    var mkdocs_page_input_path = "Tutorials\\0.2-Updating-Data.md";
+    var mkdocs_page_url = "/Tutorials/0.2-Updating-Data/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Cascade</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Tutorials</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../0.0-Getting-Started/">Getting Started</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.1-Displaying-Data/">Displaying Data</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Updating Data</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#updating-our-application">Updating our Application</a></li>
+    
+
+    <li class="toctree-l3"><a href="#observable-properties">Observable Properties</a></li>
+    
+
+    <li class="toctree-l3"><a href="#updating-data">Updating data</a></li>
+    
+
+    <li class="toctree-l3"><a href="#running-our-application">Running our Application</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.3-Computed-Properties/">Computed Properties</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Cascade</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Tutorials &raquo;</li>
+        
+      
+    
+    <li>Updating Data</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="updating-our-application">Updating our Application</h2>
+<p>We've successfully created a working Application.  When we run it, data is presented to the browser as intended.  But what happens if we want to change the data?  Currently, if we change the model, nothing.  Lucky for you, Cascade makes this simple.</p>
+<h2 id="observable-properties">Observable Properties</h2>
+<p>Cascade provides <strong>Observable</strong> properties for objects.  Once established, these special properties may be <strong>subscribed</strong> to.  Then, if the value of the property changes, the subscribers will be notified with the updated value.  These special properties can be read and written to exactly like regular properties.</p>
+<p>We can use the TypeScript decorator <code>@observable</code> in the class definition to make a property observable.</p>
+<pre><code class="Typescript">@observable property: type = value;
+</code></pre>
+
+<p>If we don't want to use the decorator, we can attach an observable property to an object with the call:</p>
+<pre><code class="Typescript">Cascade.createObservable&lt;T&gt;(obj: any, property: string, value?: T);
+</code></pre>
+
+<p>Let's take our <code>User</code> example from the last chapter, and make it observable.  So, simply import the <code>@observable</code> decorator, and add it in front of any properties you want to observe.</p>
+<pre><code class="TypeScript">import { observable } from 'cascade';
+
+export default class User {
+    @observable firstName: string;
+    @observable lastName: string;
+}
+</code></pre>
+
+<p>And there we have it!  Our <code>firstName</code> and <code>lastName</code> properties are now Observables!</p>
+<h2 id="updating-data">Updating data</h2>
+<p>Now that we can watch for changes in our data, let's set up some inputs!  </p>
+<pre><code class="TypeScript">export default class UserView extends Component&lt;IUserViewProps&gt; {
+    render() {
+        let {user} = this.props;
+        return (
+            &lt;div&gt;
+                &lt;p&gt;First name: {user.firstName}&lt;/p&gt;
+                &lt;p&gt;Last name: {user.lastName}&lt;/p&gt;
+                &lt;p&gt;First name: &lt;input type=&quot;text&quot; value={user.firstName} /&gt;&lt;/p&gt;
+                &lt;p&gt;Last name: &lt;input type=&quot;text&quot; value={user.lastName} /&gt;&lt;/p&gt;
+            &lt;/div&gt;
+        );
+    }
+}
+</code></pre>
+
+<p>There are a couple of things to note:</p>
+<ol>
+<li>We have included two <code>&lt;input&gt;</code> tags.</li>
+<li>We inject the value using <code>{}</code> notation.</li>
+</ol>
+<p>When you run it, you will see your data now displayed in two text fields.  But what happens when you type in the inputs?  Currently, still nothing.</p>
+<p>Cascade works with <strong>one way data binding</strong>, meaning that changes to data flow from <strong>Application State</strong> to <strong>Components</strong> not the other way around.  This is to prevent <strong>circular references</strong>, where an update moves from A to B to C and so on, but somehow goes back to A.  If that happens, we will end up in an infinite loop.</p>
+<p>So, any changes to our <code>User</code> will show up in our <code>UserView</code>, but changes to our <code>UserView</code> don't automatically go back to our <code>User</code>.  In order for that to happen, we need to handle <code>Events</code>.</p>
+<p>An <code>Event</code> is triggered when something happens, like when a user clicks the mouse, or presses a key.  It can even happen when an AJAX call completes.  Normally, a program will execute its instructions until there is nothing left to do, and it will either end, or wait for input.  So, we need to handle that input.</p>
+<p>For our <code>UserView</code> add these two methods above the <code>render</code> method.</p>
+<pre><code class="TypeScript">updateFirstName = (event) =&gt; {
+    this.props.user.firstName = event.target.value;
+}
+
+updateLastName = (event) =&gt; {
+    this.props.user.lastName = event.target.value;
+}
+</code></pre>
+
+<p>There are a couple of things to note:</p>
+<ol>
+<li>These methods will handle the <code>Event</code>, and store the value of the target into our <code>User</code>.</li>
+<li>We are using the <strong>Arrow Function</strong> notation, as the <code>this</code> value may be changed while executing.</li>
+</ol>
+<p>But how do we hook these handlers up to our inputs?</p>
+<pre><code class="TypeScript">&lt;p&gt;First name: &lt;input type=&quot;text&quot; value={user.firstName} oninput={this.updateFirstName} /&gt;&lt;/p&gt;
+&lt;p&gt;Last name: &lt;input type=&quot;text&quot; value={user.lastName} oninput={this.updateLastName} /&gt;&lt;/p&gt;
+</code></pre>
+
+<p>And that's it!  Any time the user updates the text inputs, the <code>Event</code> is triggered, and the <code>User</code> is updated.</p>
+<p>We could also use regular methods instead of Arrow Functions for <code>updateFirstName</code> and <code>updateLastName</code>.  In that case, when we inject them, we must use <code>Function.bind()</code>.</p>
+<pre><code class="TypeScript">&lt;p&gt;First name: &lt;input type=&quot;text&quot; value={user.firstName} oninput={this.updateFirstName.bind(this)} /&gt;&lt;/p&gt;
+&lt;p&gt;Last name: &lt;input type=&quot;text&quot; value={user.lastName} oninput={this.updateLastName.bind(this)} /&gt;&lt;/p&gt;
+</code></pre>
+
+<p>In many cases, this syntax is harder to read, but it is personal preference.  In some cases, where you must inject a specific value into the method, <code>Function.bind(this, value)</code> is useful.</p>
+<h2 id="running-our-application">Running our Application</h2>
+<p>So, we can now display and update our <code>User</code>.  Try running it and see what happens!</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../0.3-Computed-Properties/" class="btn btn-neutral float-right" title="Computed Properties">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../0.1-Displaying-Data/" class="btn btn-neutral" title="Displaying Data"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../0.1-Displaying-Data/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../0.3-Computed-Properties/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>
