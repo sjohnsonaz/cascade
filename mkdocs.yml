@@ -1,0 +1,9 @@
+site_name: My Docs
+pages:
+    - Home: index.md
+    - Tutorials:
+        - Getting Started: Tutorials/0.0-Getting-Started.md
+        - Displaying Data: Tutorials/0.1-Displaying-Data.md
+        - Updating Data: Tutorials/0.2-Updating-Data.md
+        - Computed Properties: Tutorials/0.3-Computed-Properties.md
+theme: readthedocs
