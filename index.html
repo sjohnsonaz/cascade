@@ -52,6 +52,15 @@
     <a class="current" href=".">Home</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#cascade">Cascade</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#a-modern-library-for-creating-user-interfaces">A modern library for creating user interfaces</a></li>
+        
+        </ul>
+    
+
     </ul>
 	    </li>
           
@@ -113,7 +122,44 @@
           <div role="main">
             <div class="section">
               
-                <p>Cascade is a JavaScript/TypeScript library for creating modern user interfaces. It combines Reactive ViewModels with Functional DOM Components to create seamless flow of data.</p>
+                <h1 id="cascade">Cascade</h1>
+<h2 id="a-modern-library-for-creating-user-interfaces">A modern library for creating user interfaces</h2>
+<p>Written for JavaScript and TypeScript, Cascade is a complete framework for displaying and synchronizing application data.</p>
+<p>Using modern techniques, the framework simply <em>"gets out of your way"</em>.  You simply set up your <strong>Application State</strong>, display it in a <strong>Component</strong>, and Cascade handles the rest.  If you update the data, the DOM is automatically updated as well!</p>
+<p>Plus, using careful dependency tracking, updates are planned for maximum efficiency!</p>
+<p>Getting a Cascade application going is super easy!</p>
+<pre><code class="TypeScript">/* Import Cascade */
+import Cascade, { Component, observable } from 'cascade';
+
+/* Define your Application State */
+class ApplicationState {
+    @observable value = 'Some value';
+}
+
+/* Define your Component Props */
+interface IViewProps {
+    applicationState: ApplicationState;
+}
+
+/* Define your Component */
+class View extends Component&lt;IViewProps&gt; {
+    render() {
+        let { applicationState } = this.props;
+        return (
+            &lt;div&gt;{applicationState.value}&lt;/div&gt;
+        );
+    }
+}
+
+/* Render your Application */
+let applicationState = new ApplicationState();
+Cascade.render(document.body, &lt;View applicationState={applicationState} /&gt;);
+
+/* Update your Application State */
+applicationState.value = 'Some NEW value';
+</code></pre>
+
+<p><strong>So go ahead and <a href="./Tutorials/0.0-Getting-Started/">get started</a>!</strong></p>
               
             </div>
           </div>
@@ -164,5 +210,5 @@
 
 <!--
 MkDocs version : 0.16.3
-Build Date UTC : 2017-06-08 19:45:26
+Build Date UTC : 2017-06-08 23:57:24
 -->

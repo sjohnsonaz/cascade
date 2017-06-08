@@ -2,12 +2,22 @@
     "docs": [
         {
             "location": "/",
-            "text": "Cascade is a JavaScript/TypeScript library for creating modern user interfaces. It combines Reactive ViewModels with Functional DOM Components to create seamless flow of data.",
+            "text": "Cascade\n\n\nA modern library for creating user interfaces\n\n\nWritten for JavaScript and TypeScript, Cascade is a complete framework for displaying and synchronizing application data.\n\n\nUsing modern techniques, the framework simply \n\"gets out of your way\"\n.  You simply set up your \nApplication State\n, display it in a \nComponent\n, and Cascade handles the rest.  If you update the data, the DOM is automatically updated as well!\n\n\nPlus, using careful dependency tracking, updates are planned for maximum efficiency!\n\n\nGetting a Cascade application going is super easy!\n\n\n/* Import Cascade */\nimport Cascade, { Component, observable } from 'cascade';\n\n/* Define your Application State */\nclass ApplicationState {\n    @observable value = 'Some value';\n}\n\n/* Define your Component Props */\ninterface IViewProps {\n    applicationState: ApplicationState;\n}\n\n/* Define your Component */\nclass View extends Component<IViewProps> {\n    render() {\n        let { applicationState } = this.props;\n        return (\n            <div>{applicationState.value}</div>\n        );\n    }\n}\n\n/* Render your Application */\nlet applicationState = new ApplicationState();\nCascade.render(document.body, <View applicationState={applicationState} />);\n\n/* Update your Application State */\napplicationState.value = 'Some NEW value';\n\n\n\n\nSo go ahead and \nget started\n!",
             "title": "Home"
         },
         {
+            "location": "/#cascade",
+            "text": "",
+            "title": "Cascade"
+        },
+        {
+            "location": "/#a-modern-library-for-creating-user-interfaces",
+            "text": "Written for JavaScript and TypeScript, Cascade is a complete framework for displaying and synchronizing application data.  Using modern techniques, the framework simply  \"gets out of your way\" .  You simply set up your  Application State , display it in a  Component , and Cascade handles the rest.  If you update the data, the DOM is automatically updated as well!  Plus, using careful dependency tracking, updates are planned for maximum efficiency!  Getting a Cascade application going is super easy!  /* Import Cascade */\nimport Cascade, { Component, observable } from 'cascade';\n\n/* Define your Application State */\nclass ApplicationState {\n    @observable value = 'Some value';\n}\n\n/* Define your Component Props */\ninterface IViewProps {\n    applicationState: ApplicationState;\n}\n\n/* Define your Component */\nclass View extends Component<IViewProps> {\n    render() {\n        let { applicationState } = this.props;\n        return (\n            <div>{applicationState.value}</div>\n        );\n    }\n}\n\n/* Render your Application */\nlet applicationState = new ApplicationState();\nCascade.render(document.body, <View applicationState={applicationState} />);\n\n/* Update your Application State */\napplicationState.value = 'Some NEW value';  So go ahead and  get started !",
+            "title": "A modern library for creating user interfaces"
+        },
+        {
             "location": "/Tutorials/0.0-Getting-Started/",
-            "text": "Using Cascade requires only a few steps.  It's designed for TypeScript, but is completely compatible with pure JavaScript.  For the JavaScript startup guide, please see \nGetting Started JavaScript\n.\n\n\nInstalling TypeScript\n\n\nFor simplicity in these tutorials, you can download a simple boilerplate at \nhttps://github.com/sjohnsonaz/ts-boilerplate\n.  Follow its instructions to get a TypeScript environment up and running.  Otherwise, you will need to set up Node, TypeScript, and Webpack to compile and run these projects.\n\n\nInstalling Cascade\n\n\nFor TypeScript, it is recommended to install Cascade via npm.  It should be installed as a \"dependency\" for most projects, unless you're creating a shared library.  Shared libraries should install Cascade as a \"peerDependency\".\n\n\nnpm install cascade --save",
+            "text": "Using Cascade requires only a few steps.  It's designed for TypeScript, but is completely compatible with pure JavaScript.\n\n\nInstalling TypeScript\n\n\nFor simplicity in these tutorials, you can download a simple boilerplate at \nhttps://github.com/sjohnsonaz/ts-boilerplate\n.  Follow its instructions to get a TypeScript environment up and running.  Otherwise, you will need to set up Node, TypeScript, and Webpack to compile and run these projects.\n\n\nInstalling Cascade\n\n\nFor TypeScript, it is recommended to install Cascade via npm.  It should be installed as a \"dependency\" for most projects, unless you're creating a shared library.  Shared libraries should install Cascade as a \"peerDependency\".\n\n\nnpm install cascade --save\n\n\n\nCascade can also be downloaded from \nhttps://github.com/sjohnsonaz/cascade/releases\n.",
             "title": "Getting Started"
         },
         {
@@ -17,7 +27,7 @@
         },
         {
             "location": "/Tutorials/0.0-Getting-Started/#installing-cascade",
-            "text": "For TypeScript, it is recommended to install Cascade via npm.  It should be installed as a \"dependency\" for most projects, unless you're creating a shared library.  Shared libraries should install Cascade as a \"peerDependency\".  npm install cascade --save",
+            "text": "For TypeScript, it is recommended to install Cascade via npm.  It should be installed as a \"dependency\" for most projects, unless you're creating a shared library.  Shared libraries should install Cascade as a \"peerDependency\".  npm install cascade --save  Cascade can also be downloaded from  https://github.com/sjohnsonaz/cascade/releases .",
             "title": "Installing Cascade"
         },
         {
