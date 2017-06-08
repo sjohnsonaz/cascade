@@ -29,3 +29,6 @@ webpack.dev.config.js
 
 # Editor configuration files
 .vscode/
+
+# MkDocs files
+site
