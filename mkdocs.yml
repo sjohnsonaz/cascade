@@ -1,4 +1,7 @@
 site_name: Cascade
+site_url: https://sjohnsonaz.github.io/cascade
+repo_url: https://github.com/sjohnsonaz/cascade
+copyright: Copyright &copy; 2017 Sean Johnson
 pages:
     - Home: index.md
     - Tutorials:
