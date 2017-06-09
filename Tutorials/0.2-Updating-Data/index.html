@@ -69,13 +69,10 @@
     <a class="current" href="./">Updating Data</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#updating-our-application">Updating our Application</a></li>
-    
-
     <li class="toctree-l3"><a href="#observable-properties">Observable Properties</a></li>
     
 
-    <li class="toctree-l3"><a href="#updating-data">Updating data</a></li>
+    <li class="toctree-l3"><a href="#handling-input">Handling Input</a></li>
     
 
     <li class="toctree-l3"><a href="#running-our-application">Running our Application</a></li>
@@ -129,8 +126,7 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="updating-our-application">Updating our Application</h2>
-<p>We've successfully created a working Application.  When we run it, data is presented to the browser as intended.  But what happens if we want to change the data?  Currently, if we change the model, nothing.  Lucky for you, Cascade makes this simple.</p>
+                <p>We've successfully created a working Application.  When we run it, data is presented to the browser as intended.  But what happens if we want to change the data?  Currently, if we change the model, nothing.  Lucky for you, Cascade makes this simple.</p>
 <h2 id="observable-properties">Observable Properties</h2>
 <p>Cascade provides <strong>Observable</strong> properties for objects.  Once established, these special properties may be <strong>subscribed</strong> to.  Then, if the value of the property changes, the subscribers will be notified with the updated value.  These special properties can be read and written to exactly like regular properties.</p>
 <p>We can use the TypeScript decorator <code>@observable</code> in the class definition to make a property observable.</p>
@@ -151,7 +147,7 @@ export default class User {
 </code></pre>
 
 <p>And there we have it!  Our <code>firstName</code> and <code>lastName</code> properties are now Observables!</p>
-<h2 id="updating-data">Updating data</h2>
+<h2 id="handling-input">Handling Input</h2>
 <p>Now that we can watch for changes in our data, let's set up some inputs!  </p>
 <pre><code class="TypeScript">export default class UserView extends Component&lt;IUserViewProps&gt; {
     render() {
