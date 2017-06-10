@@ -4,6 +4,7 @@
   "description": "A library for creating modern user interfaces.",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
   "contributors": [],
+  "homepage": "https://sjohnsonaz.github.io/cascade",
   "license": "MIT",
   "main": "dist/scripts/modules/Cascade.js",
   "typings": "dist/scripts/modules/Cascade.d.ts",
