@@ -4,7 +4,7 @@
     
     <url>
      <loc>https://sjohnsonaz.github.io/cascade/</loc>
-     <lastmod>2017-06-09</lastmod>
+     <lastmod>2017-06-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,26 +12,42 @@
     
         
     <url>
-     <loc>https://sjohnsonaz.github.io/cascade/Tutorials/0.0-Getting-Started/</loc>
-     <lastmod>2017-06-09</lastmod>
+     <loc>https://sjohnsonaz.github.io/cascade/0-Overview/0.0-Getting-Started/</loc>
+     <lastmod>2017-06-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>https://sjohnsonaz.github.io/cascade/Tutorials/0.1-Displaying-Data/</loc>
-     <lastmod>2017-06-09</lastmod>
+     <loc>https://sjohnsonaz.github.io/cascade/0-Overview/0.1-Displaying-Data/</loc>
+     <lastmod>2017-06-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>https://sjohnsonaz.github.io/cascade/Tutorials/0.2-Updating-Data/</loc>
-     <lastmod>2017-06-09</lastmod>
+     <loc>https://sjohnsonaz.github.io/cascade/0-Overview/0.2-Updating-Data/</loc>
+     <lastmod>2017-06-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>https://sjohnsonaz.github.io/cascade/Tutorials/0.3-Computed-Properties/</loc>
-     <lastmod>2017-06-09</lastmod>
+     <loc>https://sjohnsonaz.github.io/cascade/0-Overview/0.3-Computed-Properties/</loc>
+     <lastmod>2017-06-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://sjohnsonaz.github.io/cascade/0-Overview/0.4-Handling-Events/</loc>
+     <lastmod>2017-06-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>https://sjohnsonaz.github.io/cascade/1-Reactive-Programming/1.0-Computed-Chains/</loc>
+     <lastmod>2017-06-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

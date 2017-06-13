@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Computed Chains - Cascade</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Computed Chains";
+    var mkdocs_page_input_path = "1-Reactive-Programming\\1.0-Computed-Chains.md";
+    var mkdocs_page_url = "/1-Reactive-Programming/1.0-Computed-Chains/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Cascade</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Overview</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../0-Overview/0.0-Getting-Started/">Getting Started</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../0-Overview/0.1-Displaying-Data/">Displaying Data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../0-Overview/0.2-Updating-Data/">Updating Data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../0-Overview/0.3-Computed-Properties/">Computed Properties</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../0-Overview/0.4-Handling-Events/">Handling Events</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Reactive Programming</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Computed Chains</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#computed-properties">Computed Properties</a></li>
+    
+
+    <li class="toctree-l3"><a href="#push-updates">Push Updates</a></li>
+    
+
+    <li class="toctree-l3"><a href="#pull-updates">Pull Updates</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Cascade</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Reactive Programming &raquo;</li>
+        
+      
+    
+    <li>Computed Chains</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/sjohnsonaz/cascade/edit/master/docs/1-Reactive-Programming\1.0-Computed-Chains.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>Cascade uses <code>observable</code> and <code>computed</code> properties to synchronize data across its Objects.  To do this, it uses a form of <strong>Reactive Programming</strong>, in which values across the data structure are linked together.  So if a value is changed in one portion, other portions might <em>React</em> and update themselves.</p>
+<h2 id="computed-properties">Computed Properties</h2>
+<p>A <code>computed</code> property is merely a function which runs to calculate a value.  However, if the <code>computed</code> references an <code>observable</code> property, and that property is updated, the <code>computed</code> will be run again.</p>
+<h2 id="push-updates">Push Updates</h2>
+<p>When an <code>observable</code> updates, its values is pushed to its subscribers.  However, those subscribers then wait for all changes to be, so that updates can be processed all at once.</p>
+<h2 id="pull-updates">Pull Updates</h2>
+<p>When an <code>computed</code> has been marked dirty, and something needs its value immediately, it will be calculated immediately.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../../0-Overview/0.4-Handling-Events/" class="btn btn-neutral" title="Handling Events"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright &copy; 2017 Sean Johnson</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/sjohnsonaz/cascade" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../../0-Overview/0.4-Handling-Events/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>
