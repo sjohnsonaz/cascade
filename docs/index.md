@@ -42,4 +42,4 @@ Cascade.render(document.body, <View applicationState={applicationState} />);
 applicationState.value = 'Some NEW value';
 ````
 
-**So go ahead and [get started](Tutorials/0.0-Getting-Started/)!**
+**So go ahead and [get started](0-Overview/0.0-Getting-Started/)!**
