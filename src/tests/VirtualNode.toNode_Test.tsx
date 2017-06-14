@@ -111,6 +111,17 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
+    it('should render event attributes with function references', () => {
+        let count = 0;
+        var root = (
+            <button onclick={() => { count++; }}>OK</button>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            element.click();
+            expect(count).to.equal(1);
+        });
+    });
+
     it('should render SVG elements', () => {
         var root = (
             <svg height="210" width="400">
