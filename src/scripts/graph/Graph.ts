@@ -1,14 +1,20 @@
 declare var Reflect: any;
 
-import {IObservable, ISubscriber, ISubscriberFunction} from './IObservable';
+import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
 import Observable from './Observable';
 import Computed from './Computed';
 import ObservableArray from './ObservableArray';
 
+/**
+ * 
+ */
 export interface ObservableIndex {
     [index: string]: IObservable<any>;
 }
 
+/**
+ * 
+ */
 export default class Graph {
     parent: any;
     observables: ObservableIndex = {};
@@ -17,10 +23,18 @@ export default class Graph {
         this.parent = parent;
     }
 
+    /**
+     * 
+     * @param property 
+     */
     peek(property: string) {
         return this.observables[property].peek();
     }
 
+    /**
+     * 
+     * @param property 
+     */
     getReferences(property: string) {
         var observable = this.observables[property];
         if (observable instanceof Computed) {
@@ -30,6 +44,10 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param property 
+     */
     getSubscribers(property: string) {
         var observable = this.observables[property];
         if (observable) {
@@ -39,6 +57,9 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     */
     dispose() {
         for (var index in this.observables) {
             if (this.observables.hasOwnProperty(index)) {
@@ -47,6 +68,9 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     */
     disposeAll() {
         for (var index in this.observables) {
             if (this.observables.hasOwnProperty(index)) {
@@ -60,6 +84,11 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param property 
+     * @param subscriber 
+     */
     subscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (!this.observables[property]) {
             // Force value to update.
@@ -69,6 +98,11 @@ export default class Graph {
         return value;
     }
 
+    /**
+     * 
+     * @param property 
+     * @param subscriber 
+     */
     subscribeOnly(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (!this.observables[property]) {
             // Force value to update.
@@ -78,12 +112,21 @@ export default class Graph {
         return value;
     }
 
+    /**
+     * 
+     * @param property 
+     * @param subscriber 
+     */
     unsubscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (this.observables[property]) {
             this.observables[property].subscribe(subscriber);
         }
     }
 
+    /**
+     * 
+     * @param obj 
+     */
     static disposeAll(obj) {
         var graph = obj._graph;
         for (var index in obj) {
@@ -106,7 +149,11 @@ export default class Graph {
         }
     }
 
-    static attachGraph(obj) {
+    /**
+     * 
+     * @param obj the object on which to attach a Graph
+     */
+    static attachGraph(obj: any) {
         if (!obj._graph) {
             Object.defineProperty(obj, '_graph', {
                 configurable: true,
@@ -118,6 +165,12 @@ export default class Graph {
         return obj._graph as Graph;
     }
 
+    /**
+     * 
+     * @param obj the object on which to define a property
+     * @param property the name of the property
+     * @param observable the IObservable to store the property value
+     */
     static createProperty(obj: any, property: string, observable: IObservable<any>) {
         var graph = Graph.attachGraph(obj);
         if (graph.observables[property]) {
@@ -127,32 +180,65 @@ export default class Graph {
         graph.observables[property] = observable;
     }
 
+    /**
+     * 
+     * @param obj the object on which to define a property
+     * @param property the name of the property
+     * @param observable the IObservable to store the property value
+     * @param readOnly the Boolean specifying if this property is read only
+     */
     static attachObservable<T>(obj: any, property: string, observable: IObservable<T>, readOnly: boolean = false) {
         Graph.createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
             enumerable: true,
             configurable: true,
-            get: function() {
+            get: function () {
                 return observable.getValue();
             },
-            set: readOnly ? undefined : function(value: T | Array<T>) {
+            set: readOnly ? undefined : function (value: T | Array<T>) {
                 (observable as any).setValue(value);
             }
         });
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param value 
+     */
     static createObservable<T>(obj: any, property: string, value?: T) {
         Graph.attachObservable(obj, property, new Observable(value));
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param definition 
+     * @param defer 
+     * @param setter 
+     */
     static createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, setter?: (n: T) => any) {
         Graph.attachObservable(obj, property, new Computed(definition, defer, undefined, setter), true);
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param value 
+     */
     static createObservableArray<T>(obj: any, property: string, value?: Array<T>) {
         Graph.attachObservable<Array<T>>(obj, property, new ObservableArray(value));
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param subscriberFunction 
+     */
     static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
         var graph: Graph = obj._graph;
         if (graph) {
@@ -160,6 +246,12 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param subscriberFunction 
+     */
     static subscribeOnly<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
         var graph: Graph = obj._graph;
         if (graph) {
@@ -167,10 +259,20 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static peek(obj: any, property: string) {
         return obj._graph ? (obj._graph as Graph).peek(property) : undefined;
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static run(obj: any, property: string) {
         var graph: Graph = obj._graph;
         if (graph) {
@@ -184,7 +286,11 @@ export default class Graph {
             }
         }
     }
-
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static getObservable(obj: any, property) {
         var graph: Graph = obj._graph;
         if (graph) {
@@ -192,6 +298,11 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static getSubscribers(obj: any, property) {
         var graph: Graph = obj._graph;
         if (graph) {
@@ -199,6 +310,11 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static getReferences(obj: any, property: string) {
         var graph: Graph = obj._graph;
         if (graph) {
@@ -206,6 +322,11 @@ export default class Graph {
         }
     }
 
+    /**
+     * 
+     * @param callback 
+     * @param thisArg 
+     */
     static wrapContext(callback: () => any, thisArg?: any) {
         Observable.pushContext();
         if (thisArg) {
