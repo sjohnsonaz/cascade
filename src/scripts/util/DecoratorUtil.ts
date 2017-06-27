@@ -29,13 +29,3 @@ export default class DecoratorUtil {
         });
     }
 }
-
-export function minLength(length: number = 0): any {
-    return function minLength(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<boolean>): any {
-        DecoratorUtil.attachObservable<boolean>(target, propertyKey + '_minLength', (value: boolean, thisArg: any) => {
-            return new Computed<boolean>(function () {
-                return target[propertyKey].length >= length;
-            }, false, thisArg);
-        }, true);
-    }
-}

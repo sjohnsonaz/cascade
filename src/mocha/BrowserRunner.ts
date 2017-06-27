@@ -32,4 +32,5 @@ import '../tests/graphTest8';
 import '../tests/ObservableTest';
 import '../tests/ObservableArrayTest';
 import '../tests/ComputedTest';
+import '../tests/DecoratorUtil_Test';
 import '../tests/templateTest0';
