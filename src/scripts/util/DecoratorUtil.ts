@@ -2,7 +2,7 @@ import Graph from '../graph/Graph';
 import { IObservable } from '../graph/IObservable';
 import Computed from '../graph/Computed';
 
-type ObservableFactory<T> = {
+export type ObservableFactory<T> = {
     (value: T, thisArg: any): IObservable<T>;
 }
 export default class DecoratorUtil {
