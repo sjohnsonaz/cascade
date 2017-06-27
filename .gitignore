@@ -30,6 +30,7 @@ node_modules
 
 # Build directory
 dist/
+docs/apidocs/
 
 # Packed files
 *.tgz
