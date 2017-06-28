@@ -124,7 +124,7 @@ export default class Graph {
     }
 
     /**
-     * 
+     * Dispose all Observables in a Graph
      * @param obj 
      */
     static disposeAll(obj) {
@@ -150,7 +150,7 @@ export default class Graph {
     }
 
     /**
-     * 
+     * Attach a Graph to an object
      * @param obj the object on which to attach a Graph
      */
     static attachGraph(obj: any) {
@@ -286,6 +286,7 @@ export default class Graph {
             }
         }
     }
+
     /**
      * 
      * @param obj 
