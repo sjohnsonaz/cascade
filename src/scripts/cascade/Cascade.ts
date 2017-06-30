@@ -1,5 +1,5 @@
 import Graph from '../graph/Graph';
-import { IObservable, ISubscriberFunction } from '../graph/IObservable';
+import { IObservable, ISubscriber, ISubscriberFunction } from '../graph/IObservable';
 import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
 import ObservableArray from '../graph/ObservableArray';
@@ -13,7 +13,7 @@ export default class Cascade {
      * Dispose all Observables in a Graph
      * @param obj 
      */
-    static disposeAll(obj) {
+    static disposeAll(obj: any) {
         var graph = obj._graph;
         for (var index in obj) {
             if (obj.hasOwnProperty(index)) {
@@ -178,7 +178,7 @@ export default class Cascade {
      * @param obj 
      * @param property 
      */
-    static getObservable(obj: any, property) {
+    static getObservable(obj: any, property: string) {
         var graph: Graph = obj._graph;
         if (graph) {
             return graph.observables[property];
@@ -190,7 +190,7 @@ export default class Cascade {
      * @param obj 
      * @param property 
      */
-    static getSubscribers(obj: any, property) {
+    static getSubscribers(obj: any, property: string) {
         var graph: Graph = obj._graph;
         if (graph) {
             return graph.getSubscribers(property);
