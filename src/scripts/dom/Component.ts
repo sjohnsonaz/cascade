@@ -1,8 +1,8 @@
-import Graph from '../graph/Graph';
+import Cascade from '../cascade/Cascade';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
-import Diff, { DiffOperation } from './Diff';
+import Diff, { DiffOperation } from '../util/Diff';
 
 var componentContexts: Component<IVirtualNodeProps>[][] = [];
 var context: Component<IVirtualNodeProps>[] = undefined;
@@ -32,11 +32,11 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
 
     init() {
         // This should subscribe to all observables used by render.
-        Graph.createComputed(this, 'root', () => {
+        Cascade.createComputed(this, 'root', () => {
             // Dispose of old context
             if (this.context) {
                 for (var index = 0, length = this.context.length; index < length; index++) {
-                    var computed = Graph.getObservable(this.context[index], 'root') as Computed<any>;
+                    var computed = Cascade.getObservable(this.context[index], 'root') as Computed<any>;
                     computed.dispose();
                 }
             }
@@ -57,7 +57,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             return root;
         });
         // Only update if we are re-rendering
-        Graph.subscribe(this, 'root', (root: any, oldRoot: any) => {
+        Cascade.subscribe(this, 'root', (root: any, oldRoot: any) => {
             if (this.rendered) {
                 var element = this.element;
                 this.toNode(oldRoot);
@@ -80,7 +80,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     abstract render(): any;
 
     toNode(oldRoot?: any): Node {
-        var root = Graph.peek(this, 'root');
+        var root = Cascade.peek(this, 'root');
         var oldElement = this.element;
 
         var element: Node;
@@ -187,8 +187,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
 
     diffComponents(newRoot: Component<IVirtualNodeProps>, oldRoot: Component<IVirtualNodeProps>, oldElement: Node) {
         var output: Node;
-        var innerRoot = Graph.peek(newRoot, 'root');
-        var innerOldRoot = Graph.peek(oldRoot, 'root');
+        var innerRoot = Cascade.peek(newRoot, 'root');
+        var innerOldRoot = Cascade.peek(oldRoot, 'root');
         if (!innerOldRoot) {
             // We are replacing
             switch (typeof innerRoot) {

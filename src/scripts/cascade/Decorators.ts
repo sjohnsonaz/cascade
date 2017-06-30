@@ -1,10 +1,10 @@
-import Graph from './Graph';
-import Observable from './Observable';
-import ObservableArray from './ObservableArray';
-import Computed from './Computed';
+import Cascade from './Cascade';
+import Observable from '../graph/Observable';
+import ObservableArray from '../graph/ObservableArray';
+import Computed from '../graph/Computed';
 
 function createObservableIfNotExists<T>(obj: any, property: string, value?: T, set?: boolean): Observable<T> {
-    Graph.attachGraph(obj);
+    Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
         obj._graph.observables[property] = new Observable<T>(value);
     } else if (set) {
@@ -14,7 +14,7 @@ function createObservableIfNotExists<T>(obj: any, property: string, value?: T, s
 }
 
 function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>, set?: boolean): ObservableArray<T> {
-    Graph.attachGraph(obj);
+    Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
         obj._graph.observables[property] = new ObservableArray<T>(value);
     } else if (set) {
@@ -24,7 +24,7 @@ function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>,
 }
 
 function createComputedIfNotExists<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, thisArg?: any, setter?: (n?: T) => any): Computed<T> {
-    Graph.attachGraph(obj);
+    Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
         obj._graph.observables[property] = new Computed<T>(definition, defer, thisArg, setter);
     }
