@@ -12,6 +12,7 @@ export { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 export { default as VirtualNode } from '../dom/VirtualNode';
 export { Component } from '../dom/Component';
 
+export { default as DecoratorUtil, ObservableFactory } from '../util/DecoratorUtil';
 export { observable, computed, array } from '../cascade/Decorators';
 
 import { default as Cascade } from '../cascade/Cascade';
