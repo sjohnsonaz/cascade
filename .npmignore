@@ -31,4 +31,5 @@ webpack.dev.config.js
 .vscode/
 
 # MkDocs files
+mkdocs.yml
 site
