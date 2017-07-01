@@ -38,9 +38,9 @@ describe('Component', function () {
     it('should update when observables change', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        var runs = [];
+        var runs: string[] = [];
         //document.body.appendChild(container);
-        Cascade.render(container, <Parent viewModel={viewModel} />, function (element: HTMLElement) {
+        Cascade.render(container, <Parent viewModel={viewModel} />, function () {
             var child = container.querySelector('#child');
             runs.push((child.childNodes[1] as Text).data);
         });

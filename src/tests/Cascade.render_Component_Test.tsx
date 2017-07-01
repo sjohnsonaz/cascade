@@ -104,7 +104,7 @@ describe('Cascade.render Component', () => {
         interface IViewProps {
         }
         class View extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return undefined;
             }
         }
@@ -117,7 +117,7 @@ describe('Cascade.render Component', () => {
         interface IViewProps {
         }
         class View extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return null;
             }
         }
@@ -277,7 +277,7 @@ describe('Cascade.render Component', () => {
         interface IViewProps {
         }
         class Content extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return null;
             }
         }
@@ -297,7 +297,7 @@ describe('Cascade.render Component', () => {
         interface IViewProps {
         }
         class Content extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return undefined;
             }
         }
@@ -336,7 +336,7 @@ describe('Cascade.render Component', () => {
             }
 
             render() {
-                let {viewModel} = this.props;
+                let { viewModel } = this.props;
                 return (
                     <div>
                         <span ref={viewModel.childRef}>Text</span>
@@ -382,7 +382,7 @@ describe('Cascade.render Component', () => {
             }
 
             render() {
-                let {viewModel} = this.props;
+                let { viewModel } = this.props;
                 return (
                     <div>
                         <span ref={viewModel.childRef}>Text</span>

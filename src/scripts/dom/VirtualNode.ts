@@ -1,4 +1,3 @@
-import { Component } from './Component';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 
 export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {
@@ -59,6 +58,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                             node.appendChild(document.createTextNode(child.toString()));
                         }
                     }
+                    break;
                 case 'undefined':
                     break;
                 // case 'number':

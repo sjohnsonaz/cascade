@@ -82,7 +82,7 @@ describe.skip('Template', function () {
                 return this.firstName + ' ' + this.lastName;
             }
 
-            constructor(firstName, lastName) {
+            constructor(firstName: string, lastName: string) {
                 this.firstName = firstName;
                 this.lastName = lastName;
                 this.phone = [1, 2, 3];

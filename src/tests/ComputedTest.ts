@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { Computed, computed, observable, Observable } from '../scripts/modules/Cascade';
+import Cascade, { Computed, observable, Observable } from '../scripts/modules/Cascade';
 
 describe('Computed', () => {
     it('should compute non-observable values', () => {

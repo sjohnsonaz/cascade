@@ -35,7 +35,7 @@ describe('Graph', function () {
     it('should have minimal computed updates', function () {
         var viewModel: any = new ViewModel();
         var complete = false;
-        viewModel._graph.subscribe('abcd', function (value) {
+        viewModel._graph.subscribe('abcd', function (value: number) {
             viewModel.runs++;
             if (complete) {
                 expect(value).to.equal(150);

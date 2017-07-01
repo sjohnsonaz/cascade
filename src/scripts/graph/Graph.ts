@@ -1,9 +1,5 @@
-declare var Reflect: any;
-
 import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
-import Observable from './Observable';
 import Computed from './Computed';
-import ObservableArray from './ObservableArray';
 
 /**
  * 

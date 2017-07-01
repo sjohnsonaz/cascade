@@ -180,9 +180,7 @@ export default class Cascade {
      */
     static getObservable(obj: any, property: string) {
         var graph: Graph = obj._graph;
-        if (graph) {
-            return graph.observables[property];
-        }
+        return graph ? graph.observables[property] : undefined;
     }
 
     /**
@@ -192,9 +190,7 @@ export default class Cascade {
      */
     static getSubscribers(obj: any, property: string) {
         var graph: Graph = obj._graph;
-        if (graph) {
-            return graph.getSubscribers(property);
-        }
+        return graph ? graph.getSubscribers(property) : undefined;
     }
 
     /**
@@ -204,9 +200,7 @@ export default class Cascade {
      */
     static getReferences(obj: any, property: string) {
         var graph: Graph = obj._graph;
-        if (graph) {
-            return graph.getReferences(property);
-        }
+        return graph ? graph.getReferences(property) : undefined;
     }
 
     /**

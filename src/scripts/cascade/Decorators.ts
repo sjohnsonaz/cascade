@@ -44,7 +44,7 @@ function attachObservable<T>(target: any, propertyKey: string) {
     });
 }
 
-export function array<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
+export function array<T>(target: any, propertyKey: string): any {
     Object.defineProperty(target, propertyKey, {
         enumerable: true,
         configurable: true,
@@ -76,7 +76,7 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
             var type = Reflect.getMetadata("design:type", target, propertyKey);
         }
         if (type === Array) {
-            array(target, propertyKey, descriptor);
+            array(target, propertyKey);
         } else {
             attachObservable(target, propertyKey);
         }

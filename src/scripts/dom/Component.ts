@@ -243,6 +243,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                         // Replace
                         output = document.createTextNode(innerRoot);
                     }
+                    break;
                 default:
                     if (innerRoot === innerOldRoot) {
                         // InnerRoot is the same as InnerOldRoot
@@ -268,6 +269,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
             oldElement = newRoot.toNode();
+            // TODO: Figure out correct return value.
+            return undefined;
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);

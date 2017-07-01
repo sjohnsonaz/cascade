@@ -29,7 +29,7 @@ class ViewModel {
 describe('Graph.pull', function () {
     it('should pull changes to deep layers', function () {
         var model: any = new ViewModel();
-        model._graph.subscribe('e', function (value) {
+        model._graph.subscribe('e', function (value: number) {
             if (result) {
                 result.finalE = value;
                 result.finalRunsE = model.runsE

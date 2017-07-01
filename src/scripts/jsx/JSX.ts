@@ -1,5 +1,4 @@
 import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
-import VirtualNode from '../dom/VirtualNode';
 import { Component } from '../dom/Component';
 import { Elements } from './Elements';
 
