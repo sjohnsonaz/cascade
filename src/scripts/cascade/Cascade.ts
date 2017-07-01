@@ -4,7 +4,7 @@ import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
 import ObservableArray from '../graph/ObservableArray';
 
-import { IVirtualNode } from '../dom/IVirtualNode';
+import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 import VirtualNode from '../dom/VirtualNode';
 import { Component } from '../dom/Component';
 
@@ -218,7 +218,7 @@ export default class Cascade {
         return Observable.popContext();
     }
 
-    static createElement<T extends Object>(type: string | (new (props: T, ...children: Array<any>) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
+    static createElement<T extends IVirtualNodeProps>(type: string | (new (props: T, ...children: Array<any>) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
         if (typeof type === 'string') {
             return new VirtualNode(type, props, ...children);
         } else {
