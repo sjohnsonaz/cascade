@@ -266,11 +266,10 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     }
 
     diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement) {
+        // TODO: This case should not happen.
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
             oldElement = newRoot.toNode();
-            // TODO: Figure out correct return value.
-            return undefined;
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
@@ -303,6 +302,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                                 newChild.element = oldElement.childNodes[childIndex];
                                 this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement);
                             } else if (newChild instanceof VirtualNode) {
+                                // TODO: This is the only case where we don't know if oldChild exists and has the same type as newChild.
+                                // Perhaps we should figure that out here intead of inside diffVirtualNodes.
                                 this.diffVirtualNodes(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
                             }
                         }
@@ -344,9 +345,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             if (newRoot.props.ref) {
                 newRoot.props.ref(oldElement);
             }
-
-            return oldElement;
         }
+        return oldElement;
     }
 
     static getContext() {
