@@ -88,6 +88,8 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         } else if (property === 'className') {
             element[property] = value;
             //} else if (property.indexOf('-') >= 0) {
+        } else if (property === 'value') {
+            element[property] = value;
         } else {
             element.setAttribute(property, value);
         }
@@ -101,6 +103,8 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         } else if (property === 'className') {
             element[property] = undefined;
             //} else if (property.indexOf('-') >= 0) {
+        } else if (property === 'value') {
+            element[property] = undefined;
         } else {
             element.removeAttribute(property);
         }
