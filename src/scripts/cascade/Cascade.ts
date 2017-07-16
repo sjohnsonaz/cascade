@@ -2,7 +2,7 @@ import Graph from '../graph/Graph';
 import { IObservable, ISubscriber, ISubscriberFunction } from '../graph/IObservable';
 import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
-import ObservableArray from '../graph/ObservableArray';
+import ObservableArray from '../graph/ObservableArrayLegacy';
 
 import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 import VirtualNode from '../dom/VirtualNode';

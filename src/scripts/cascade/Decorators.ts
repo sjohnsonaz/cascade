@@ -1,6 +1,6 @@
 import Cascade from './Cascade';
 import Observable from '../graph/Observable';
-import ObservableArray from '../graph/ObservableArray';
+import ObservableArray from '../graph/ObservableArrayLegacy';
 import Computed from '../graph/Computed';
 
 function createObservableIfNotExists<T>(obj: any, property: string, value?: T, set?: boolean): Observable<T> {
