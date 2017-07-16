@@ -110,7 +110,7 @@ describe('Cascade.render Component', () => {
         }
         var container = document.createElement('div');
         Cascade.render(container, <View />);
-        expect(container.childNodes[0]).to.be.instanceof(Comment);
+        expect(container.childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
     it('should not render null', () => {
@@ -123,7 +123,7 @@ describe('Cascade.render Component', () => {
         }
         var container = document.createElement('div');
         Cascade.render(container, <View />);
-        expect(container.childNodes[0]).to.be.instanceof(Comment);
+        expect(container.childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
     it('should render nested VirtualNodes', () => {
@@ -290,7 +290,7 @@ describe('Cascade.render Component', () => {
         }
         var container = document.createElement('div');
         Cascade.render(container, <View />);
-        expect(container.childNodes[0]).to.be.instanceof(Comment);
+        expect(container.childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
     it('should not render nested undefined', () => {
@@ -310,7 +310,7 @@ describe('Cascade.render Component', () => {
         }
         var container = document.createElement('div');
         Cascade.render(container, <View />);
-        expect(container.childNodes[0]).to.be.instanceof(Comment);
+        expect(container.childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
     it('should use afterRender and ref', () => {
