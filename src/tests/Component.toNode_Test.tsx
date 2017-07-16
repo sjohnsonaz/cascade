@@ -139,7 +139,7 @@ describe('Component.toNode', () => {
         interface IViewProps {
         }
         class View extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return undefined;
             }
         }
@@ -157,7 +157,7 @@ describe('Component.toNode', () => {
         interface IViewProps {
         }
         class View extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return null;
             }
         }
@@ -357,7 +357,7 @@ describe('Component.toNode', () => {
         interface IViewProps {
         }
         class Content extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return null;
             }
         }
@@ -382,7 +382,7 @@ describe('Component.toNode', () => {
         interface IViewProps {
         }
         class Content extends Component<IViewProps> {
-            render() {
+            render(): JSX.Element {
                 return undefined;
             }
         }

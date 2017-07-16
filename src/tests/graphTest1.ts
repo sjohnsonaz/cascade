@@ -22,7 +22,7 @@ describe('Graph', function () {
     it('should have minimal updates to mixed level Computed props', function () {
         var viewModel: any = new ViewModel();
         var complete = false;
-        viewModel._graph.subscribe('aab', function (value) {
+        viewModel._graph.subscribe('aab', function (value: number) {
             viewModel.runs++;
             if (complete) {
                 expect(value).to.equal(24);

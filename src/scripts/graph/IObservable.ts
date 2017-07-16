@@ -1,5 +1,5 @@
 export interface ISubscriber {
-    notify();
+    notify(): void;
 }
 
 export interface ISubscriberFunction<T> {

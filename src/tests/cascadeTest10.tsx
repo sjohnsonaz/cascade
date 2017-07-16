@@ -24,9 +24,9 @@ describe('Component', function () {
     it('should render property updates', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
-        var runs = [];
+        var runs: string[] = [];
         //document.body.appendChild(container);
-        Cascade.render(container, <Parent viewModel={viewModel} />, function (element: HTMLElement) {
+        Cascade.render(container, <Parent viewModel={viewModel} />, function () {
             var parent = container.querySelector('#parent');
             runs.push((parent.childNodes[0] as HTMLElement).id);
         });

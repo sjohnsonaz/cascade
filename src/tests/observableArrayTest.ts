@@ -12,6 +12,22 @@ describe('ObservableArray', () => {
         var value = new ObservableArray([1]);
         expect(value.getValue().length).to.equal(1);
     });
+
+    it('should notify subscribers on set method', () => {
+        var value = new ObservableArray<number>();
+        value.subscribeOnly((currentValue) => {
+            expect(currentValue.length).to.equal(1);
+        });
+        value.set(0, 10 as any);
+    });
+
+    it('should notify subscribers on setter', () => {
+        var value = new ObservableArray<number>();
+        value.subscribeOnly((currentValue) => {
+            expect(currentValue.length).to.equal(1);
+        });
+        value[0] = 10;
+    });
 });
 
 describe('Cascade.createObservable', () => {

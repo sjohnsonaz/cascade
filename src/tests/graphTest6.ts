@@ -14,8 +14,8 @@ class Parent {
         runsParent++;
         return this.a + this.b;
     }
-    @observable childObservable;
-    childStatic;
+    @observable childObservable: Child;
+    childStatic: Child;
     constructor() {
         var ab = this.ab;
         childObservable = new Child(this);
@@ -26,14 +26,14 @@ class Parent {
 }
 
 class Child {
-    parent;
+    parent: Parent;
     @observable c = 1;
     @observable d = 2;
     @observable get abcd() {
         runsChild++;
         return this.parent.a + this.parent.b + this.c + this.d;
     }
-    constructor(parent) {
+    constructor(parent: Parent) {
         Object.defineProperty(this, 'parent', {
             writable: true,
             configurable: true,

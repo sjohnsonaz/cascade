@@ -21,7 +21,7 @@ class ViewModel {
 describe('Graph.pull', function () {
     it('should push changes after pull', function () {
         var model: any = new ViewModel();
-        model._graph.subscribe('abc', function (value) {
+        model._graph.subscribe('abc', function () {
             if (complete) {
                 expect(ab).to.equal(13);
                 expect(model.runsAB).to.equal(2);

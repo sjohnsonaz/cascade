@@ -1,7 +1,7 @@
 {
   "name": "cascade",
-  "version": "0.0.23",
-  "description": "A library for creating modern user interfaces.",
+  "version": "0.0.25",
+  "description": "A modern library for creating user interfaces.",
   "author": "Sean Johnson <sjohnson@sjohnsonaz.com>",
   "contributors": [],
   "homepage": "https://sjohnsonaz.github.io/cascade",
@@ -9,10 +9,9 @@
   "main": "dist/scripts/modules/Cascade.js",
   "typings": "dist/scripts/modules/Cascade.d.ts",
   "scripts": {
-    "install": "",
     "build": "tsc",
-    "prepublish": "tsc --declaration",
-    "test": "node src/mocha/NodeRunner.js",
+    "prepublishOnly": "tsc --declaration",
+    "test": "tsc && node src/mocha/NodeRunner.js",
     "min": "webpack --config webpack.config.js --progress",
     "dev": "webpack --config webpack.dev.config.js --progress",
     "watch": "webpack --config webpack.dev.config.js --watch --progress",
@@ -36,9 +35,9 @@
     "jsdom": "11.0.0",
     "mocha": "3.4.2",
     "reflect-metadata": "0.1.10",
-    "ts-loader": "2.1.0",
+    "ts-loader": "^2.2.1",
     "typedoc": "0.7.1",
-    "typescript": "2.3.4",
+    "typescript": "^2.4.1",
     "webpack": "2.6.1"
   },
   "keywords": [

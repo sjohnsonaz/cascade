@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Diff, { IDiffItem } from '../scripts/cascade/Diff';
+import Diff, { IDiffItem } from '../scripts/util/Diff';
 
 describe('Diff', function () {
     it('should be able to diff empty and a value', function () {

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { VirtualNode, Component, observable } from '../scripts/modules/Cascade';
+import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
 describe('Component.toNode', function () {
     it('should render a Node', function () {
@@ -106,7 +106,7 @@ describe('Component.toNode', function () {
     });
 
     it('should pass children directly into high order Components', () => {
-        let length = undefined;
+        let length: number = undefined;
         class Child extends Component<any> {
             render() {
                 length = this.children.length;
@@ -138,7 +138,7 @@ describe('Component.toNode', function () {
 
         var container = document.createElement('div');
 
-        Cascade.render(container, root, function (element: HTMLElement) {
+        Cascade.render(container, root, function () {
             expect(length).to.equal(3);
         });
     });

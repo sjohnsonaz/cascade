@@ -42,7 +42,7 @@ describe('Component.update', () => {
     it('should update from inherited abstract observables', (done) => {
         abstract class Parent {
             @observable parentValue: number = 0;
-            abstract init();
+            abstract init(): void;
         }
 
         class Child extends Parent {

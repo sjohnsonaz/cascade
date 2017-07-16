@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import Cascade, { Component, VirtualNode } from '../scripts/modules/Cascade';
-import Diff, { DiffOperation } from '../scripts/cascade/Diff';
+import Diff, { DiffOperation } from '../scripts/util/Diff';
 
 interface IComponentProps {
 

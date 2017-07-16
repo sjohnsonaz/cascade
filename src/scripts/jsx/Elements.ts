@@ -1,4 +1,4 @@
-import { IVirtualNodeProps } from '../cascade/IVirtualNode';
+import { IVirtualNodeProps } from '../dom/IVirtualNode';
 
 export namespace Elements {
     export interface BaseNode {

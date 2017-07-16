@@ -1,6 +1,5 @@
-import { IVirtualNode, IVirtualNodeProps } from '../cascade/IVirtualNode';
-import VirtualNode from '../cascade/VirtualNode';
-import { Component } from '../cascade/Component';
+import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
+import { Component } from '../dom/Component';
 import { Elements } from './Elements';
 
 declare global {
