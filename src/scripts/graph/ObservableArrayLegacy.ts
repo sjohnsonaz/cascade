@@ -3,7 +3,7 @@ import Observable from './Observable';
 export default class ObservableArrayLegacy<T> extends Observable<T[]> {
     constructor(value?: T[]) {
         super();
-        this.value = this.wrapArray(value || []);
+        this.value = this.wrapArray((value instanceof Array) ? value : []);
     }
 
     wrapArray(value: T[]) {
@@ -18,7 +18,7 @@ export default class ObservableArrayLegacy<T> extends Observable<T[]> {
     setValue(value: T[]) {
         if (this.value !== value) {
             var oldValue = this.value;
-            value = this.wrapArray(value || []);
+            value = this.wrapArray((value instanceof Array) ? value : []);
             this.value = value;
             this.publish(value, oldValue);
         }
