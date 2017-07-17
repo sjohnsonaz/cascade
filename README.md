@@ -12,7 +12,7 @@ Furthermore, any Functional DOM Component which references an observable or comp
 
 ### TypeScript decorators
 
-Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function. Computed values must be declared as a getter, and arrays must be declared with their types.
+Simply use the `@observable` decorator, which will automatically detect if the property is a value, an array, or a getter function.  Computed values must be declared as a getter, and arrays must be declared with their types.  Observable hashes may be created with `@hash`.  
 
 > **Note:** Decorators depend on TypeScript. You must set `"experimentalDecorators": true` in your `tsconfig.json` file.
 
@@ -24,10 +24,14 @@ class User {
         return this.firstName + ' ' + this.lastName;
     }
     @observable list: number[] = [1, 2, 3, 4];
+    @array array: number[] = [5, 6, 7, 8];
+    @hash hash: {} = {
+        'property': 'value'
+    };
 }
 ```
 
-> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. You must also set `"emitDecoratorMetadata": true` in your `tsconfig.json` file. For IE10 and below, you must also include `es6-shim` or similar polyfills. If you don't wish to install polyfills, then you must use `@array` instead of `@observable`.
+> **Note:** Type detection for arrays depends on the optional package `reflect-metadata`. You must also set `"emitDecoratorMetadata": true` in your `tsconfig.json` file. For IE10 and below, you must also include `es6-shim` or similar polyfills.  If you don't wish to install polyfills, then you must use `@array` instead of `@observable`.
 
 ### JavaScript usage
 
@@ -37,6 +41,8 @@ You may also create observable properties directly.
 Cascade.createObservable<T>(obj: any, property: string, value?: T);
 
 Cascade.createObservableArray<T>(obj: any, property: string, value?: Array<T>);
+
+Cascade.createObservableHash<T>(obj: any, property: string, value?: IHash<T>);
 
 Cascade.createComputed<T>(obj: any, property: string, definition: (n?: T) => T, defer?: boolean, setter?: (n: T) => any);
 ```
@@ -48,8 +54,20 @@ Observable<T>(value?: T);
 
 ObservableArray<T>(value?: Array<T>);
 
+ObservableHash<T>(value?: IHash<T>);
+
 Computed<T>(definition: (n?: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any);
 ```
+
+> **Note:** Internet Explorer does not support `ObservableHash`.  It also requires `ObservableArray` values to be modified by function calls instead of setters.
+> 
+> In modern browsers which support `Proxy` objects, we can simply modify indexed values with:
+> 
+> `viewModel.list[4] = 5;`
+> 
+> However, in Internet Explorer, we would need to write:
+> 
+> `viewModel.list.set(4, 5);`
 
 ## Functional DOM Components
 
