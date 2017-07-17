@@ -4,6 +4,7 @@ import ObservableArrayLegacy from '../graph/ObservableArrayLegacy';
 import ObservableArray from '../graph/ObservableArray';
 import ObservableHash from '../graph/ObservableHash';
 import Computed from '../graph/Computed';
+import { IHash } from '../graph/IObservable';
 
 function createObservableIfNotExists<T>(obj: any, property: string, value?: T, set?: boolean): Observable<T> {
     Cascade.attachGraph(obj);
@@ -20,6 +21,17 @@ function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>,
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
         obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableArray<T>(value) : new ObservableArrayLegacy<T>(value);
+    } else if (set) {
+        obj._graph.observables[property].setValue(value);
+    }
+    return obj._graph.observables[property];
+}
+
+// TODO: Remove Proxy check
+function createHashIfNotExists<T>(obj: any, property: string, value?: IHash<T>, set?: boolean): ObservableHash<T> {
+    Cascade.attachGraph(obj);
+    if (!obj._graph.observables[property]) {
+        obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableHash<T>(value) : new Observable<IHash<T>>(value);
     } else if (set) {
         obj._graph.observables[property].setValue(value);
     }
@@ -56,6 +68,19 @@ export function array<T>(target: any, propertyKey: string): any {
         },
         set: function (value: Array<T>) {
             createArrayIfNotExists(this, propertyKey, value, true);
+        }
+    });
+}
+
+export function hash<T>(target: any, propertyKey: string): any {
+    Object.defineProperty(target, propertyKey, {
+        enumerable: true,
+        configurable: true,
+        get: function () {
+            return createHashIfNotExists(this, propertyKey).getValue();
+        },
+        set: function (value: IHash<T>) {
+            createHashIfNotExists(this, propertyKey, value, true);
         }
     });
 }
