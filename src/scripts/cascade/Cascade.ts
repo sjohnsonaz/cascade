@@ -1,7 +1,11 @@
+// TODO: Remove Proxy check
+declare var Proxy: any;
+
 import Graph from '../graph/Graph';
 import { IObservable, ISubscriber, ISubscriberFunction } from '../graph/IObservable';
 import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
+import ObservableArrayLegacy from '../graph/ObservableArrayLegacy';
 import ObservableArray from '../graph/ObservableArray';
 import ObservableHash, { IHash } from '../graph/ObservableHash';
 
@@ -117,7 +121,7 @@ export default class Cascade {
      * @param value 
      */
     static createObservableArray<T>(obj: any, property: string, value?: Array<T>) {
-        Cascade.attachObservable<Array<T>>(obj, property, new ObservableArray(value));
+        Cascade.attachObservable<Array<T>>(obj, property, typeof Proxy === 'undefined' ? new ObservableArrayLegacy(value) : new ObservableArray(value));
     }
 
     /**

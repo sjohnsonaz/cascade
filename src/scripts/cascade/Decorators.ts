@@ -15,10 +15,13 @@ function createObservableIfNotExists<T>(obj: any, property: string, value?: T, s
     return obj._graph.observables[property];
 }
 
+// TODO: Remove Proxy check
+declare var Proxy: any;
+
 function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>, set?: boolean): ObservableArray<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
-        obj._graph.observables[property] = new ObservableArray<T>(value);
+        obj._graph.observables[property] = typeof Proxy === 'undefined' ? new ObservableArrayLegacy<T>(value) : new ObservableArray<T>(value);
     } else if (set) {
         obj._graph.observables[property].setValue(value);
     }

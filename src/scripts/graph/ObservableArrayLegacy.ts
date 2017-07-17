@@ -1,99 +1,49 @@
-declare var Proxy: any;
-
-import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
 import Observable from './Observable';
 
-export default class ObservableArrayLegacy<T> extends Array<T> implements IObservable<Array<T>>{
-    subscribers: (ISubscriber | ISubscriberFunction<Array<T>>)[];
+export default class ObservableArrayLegacy<T> extends Observable<T[]> {
+    constructor(value?: T[]) {
+        super();
+        this.value = this.wrapArray(value || []);
+    }
+
+    wrapArray(value: T[]) {
+        return new LegacyArray(
+            (value instanceof LegacyArray) ?
+                value.slice(0) :
+                value,
+            this
+        );
+    }
+
+    setValue(value: T[]) {
+        if (this.value !== value) {
+            var oldValue = this.value;
+            value = this.wrapArray(value || []);
+            this.value = value;
+            this.publish(value, oldValue);
+        }
+    }
+}
+
+export class LegacyArray<T> extends Array<T> {
+    private _containingObservable?: Observable<Array<T>>;
 
     // TODO: Fix arguments to match ObservableArray.
-    constructor(base?: Array<T>) {
+    constructor(base?: Array<T>, containingObservable?: Observable<Array<T>>) {
         super();
-        var inner;
-        if (arguments.length === 1) {
-            if (base instanceof Array) {
-                inner = base;
-            } else {
-                if (typeof arguments[0] === 'undefined') {
-                    inner = [];
-                } else {
-                    inner = Array.call(this, arguments[0]);
-                }
-            }
-        } else {
-            inner = Array.apply(this, arguments);
-        }
-        for (var index in ObservableArrayLegacy.prototype) {
-            if (ObservableArrayLegacy.prototype.hasOwnProperty(index)) {
-                inner[index] = ObservableArrayLegacy.prototype[index];
+        var inner = (base || []) as LegacyArray<T>;
+        for (var index in LegacyArray.prototype) {
+            if (LegacyArray.prototype.hasOwnProperty(index)) {
+                inner[index] = LegacyArray.prototype[index];
             }
         }
-        Object.defineProperty(inner, 'subscribers', {
-            enumerable: false,
-            writable: true,
-            configurable: true,
-            value: []
-        });
-        inner.subscribers = [];
+        inner._containingObservable = containingObservable;
         return inner;
     }
 
-    getValue() {
-        var context = Observable.getContext();
-        if (context) {
-            context.push(this);
-        }
-        return this;
+    private publish(value: Array<T>, oldValue?: Array<T>) {
+        this._containingObservable.publish(value);
     }
-
-    peek() {
-        return this;
-    }
-
-    setValue(value: Array<T>) {
-        if (this !== value) {
-            this.replaceAll(value);
-        }
-    }
-
-    subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<Array<T>>) {
-        if (subscriber) {
-            this.subscribers.push(subscriber);
-        }
-    }
-
-    subscribe(subscriber: ISubscriber | ISubscriberFunction<Array<T>>) {
-        if (subscriber) {
-            this.subscribers.push(subscriber);
-            if (typeof subscriber === 'function') {
-                subscriber(this);
-            } else {
-                subscriber.notify();
-            }
-        }
-    }
-
-    unsubscribe(subscriber: ISubscriber | ISubscriberFunction<Array<T>>) {
-        if (subscriber) {
-            var index = this.subscribers.indexOf(subscriber);
-            if (index >= 0) {
-                this.subscribers.splice(index, 1);
-            }
-        }
-    }
-
-    publish(value: Array<T>, oldValue?: Array<T>) {
-        for (var index = 0, length = this.subscribers.length; index < length; index++) {
-            var subscriber = this.subscribers[index];
-            if (typeof subscriber === 'function') {
-                subscriber(this, oldValue);
-            } else {
-                subscriber.notify();
-            }
-        }
-    }
-
-    dispose() { }
 
     /**
      * @method push
