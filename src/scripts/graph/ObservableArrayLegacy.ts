@@ -1,7 +1,7 @@
 import Observable from './Observable';
 import { IArray } from './IObservable';
 
-export default class ObservableArrayLegacy<T> extends Observable<Array<T>> {
+export default class ObservableArrayLegacy<T> extends Observable<IArray<T>> {
     constructor(value?: Array<T>) {
         super();
         this.value = this.wrapArray((value instanceof Array) ? value : []);

@@ -13,15 +13,13 @@ describe('ObservableArrayLegacy', () => {
         expect(value.getValue().length).to.equal(1);
     });
 
-    /*
     it('should notify subscribers on set method', () => {
         var value = new ObservableArrayLegacy<number>();
         value.subscribeOnly((currentValue) => {
             expect(currentValue.length).to.equal(1);
         });
-        value.set(0, 10 as any);
+        value.value.set(0, 10 as any);
     });
-    */
 
     it('should notify subscribers on push method', () => {
         var value = new ObservableArrayLegacy<number>();
