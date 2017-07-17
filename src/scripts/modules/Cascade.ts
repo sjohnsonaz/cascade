@@ -7,6 +7,7 @@ export { default as Observable } from '../graph/Observable';
 export { default as Computed } from '../graph/Computed';
 export { default as ObservableArrayLegacy } from '../graph/ObservableArrayLegacy';
 export { default as ObservableArray } from '../graph/ObservableArray';
+export { default as ObservableHash } from '../graph/ObservableHash';
 export { default as Graph } from '../graph/Graph';
 
 export { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';

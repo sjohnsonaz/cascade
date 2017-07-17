@@ -37,4 +37,5 @@ import '../tests/Observable_Test';
 import '../tests/ObservableArray_Decorator_Test';
 import '../tests/ObservableArray_Test';
 import '../tests/ObservableArrayLegacy_Test';
+import '../tests/ObservableHash_Test';
 import '../tests/VirtualNode.toNode_Test';

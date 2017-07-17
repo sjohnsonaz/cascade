@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { ObservableArray, array, observable } from '../scripts/modules/Cascade';
+import Cascade, { ObservableArray } from '../scripts/modules/Cascade';
 
 // TODO: Remove Proxy check
 describe('ObservableArray', function () {
