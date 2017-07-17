@@ -29,21 +29,18 @@ export default class ObservableArray<T> extends Observable<IArray<T>> {
 }
 
 export class ProxyArray<T> extends Array<T> implements IArray<T> {
-    private _containingObservable?: Observable<IArray<T>>;
-
     constructor(value?: Array<T>, containingObservable?: Observable<Array<T>>) {
         super();
         (value as IArray<T>).set = ProxyArray.prototype.set;
         let inner = new Proxy(value, {
             set: (target: Array<T>, property: string, value: T, receiver: ProxyArray<T>) => {
                 target[property] = value;
-                if (isFinite(Number(property))) {
-                    receiver._containingObservable.publish(target, target);
+                if (isFinite(Number(property)) || property === 'length') {
+                    containingObservable.publish(target, target);
                 }
                 return true;
             }
         }) as ProxyArray<T>;
-        inner._containingObservable = containingObservable;
         return inner;
     }
 
