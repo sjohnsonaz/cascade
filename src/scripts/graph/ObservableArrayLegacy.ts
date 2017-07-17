@@ -3,9 +3,10 @@ declare var Proxy: any;
 import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
 import Observable from './Observable';
 
-export default class ObservableArray<T> extends Array<T> implements IObservable<Array<T>>{
+export default class ObservableArrayLegacy<T> extends Array<T> implements IObservable<Array<T>>{
     subscribers: (ISubscriber | ISubscriberFunction<Array<T>>)[];
 
+    // TODO: Fix arguments to match ObservableArray.
     constructor(base?: Array<T>) {
         super();
         var inner;
@@ -22,9 +23,9 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
         } else {
             inner = Array.apply(this, arguments);
         }
-        for (var index in ObservableArray.prototype) {
-            if (ObservableArray.prototype.hasOwnProperty(index)) {
-                inner[index] = ObservableArray.prototype[index];
+        for (var index in ObservableArrayLegacy.prototype) {
+            if (ObservableArrayLegacy.prototype.hasOwnProperty(index)) {
+                inner[index] = ObservableArrayLegacy.prototype[index];
             }
         }
         Object.defineProperty(inner, 'subscribers', {
@@ -34,9 +35,6 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
             value: []
         });
         inner.subscribers = [];
-        if (typeof Proxy !== 'undefined') {
-            inner = new Proxy(inner, handler);
-        }
         return inner;
     }
 
@@ -231,17 +229,3 @@ export default class ObservableArray<T> extends Array<T> implements IObservable<
         this.publish(this);
     }
 }
-
-function setHandler<T>(target: ObservableArray<T>, property: string | number, value: T) {
-    let number = Number(property);
-    if (isFinite(number)) {
-        target.set(number, value as any);
-    } else {
-        target[property] = value;
-    }
-    return true;
-}
-
-let handler = {
-    set: setHandler
-};

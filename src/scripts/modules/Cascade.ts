@@ -5,8 +5,8 @@ export { Elements } from '../jsx/Elements';
 export { IObservable, ISubscriber, ISubscriberFunction } from '../graph/IObservable';
 export { default as Observable } from '../graph/Observable';
 export { default as Computed } from '../graph/Computed';
-export { default as ObservableArray } from '../graph/ObservableArrayLegacy';
-export { default as ObservableArrayProxy } from '../graph/ObservableArrayProxy';
+export { default as ObservableArrayLegacy } from '../graph/ObservableArrayLegacy';
+export { default as ObservableArray } from '../graph/ObservableArray';
 export { default as Graph } from '../graph/Graph';
 
 export { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';

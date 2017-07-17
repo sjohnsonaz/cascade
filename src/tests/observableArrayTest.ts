@@ -26,7 +26,7 @@ describe('ObservableArray', () => {
         value.subscribeOnly((currentValue) => {
             expect(currentValue.length).to.equal(1);
         });
-        value[0] = 10;
+        value.value[0] = 10;
     });
 });
 
