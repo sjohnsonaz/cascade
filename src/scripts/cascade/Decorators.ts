@@ -19,7 +19,7 @@ function createObservableIfNotExists<T>(obj: any, property: string, value?: T, s
 function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>, set?: boolean): ObservableArray<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
-        obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableArrayLegacy<T>(value) : new ObservableArray<T>(value);
+        obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableArray<T>(value) : new ObservableArrayLegacy<T>(value);
     } else if (set) {
         obj._graph.observables[property].setValue(value);
     }

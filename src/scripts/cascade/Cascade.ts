@@ -122,7 +122,7 @@ export default class Cascade {
      * @param value 
      */
     static createObservableArray<T>(obj: any, property: string, value?: Array<T>) {
-        Cascade.attachObservable<Array<T>>(obj, property, Cascade.proxyAvailable ? new ObservableArrayLegacy(value) : new ObservableArray(value));
+        Cascade.attachObservable<Array<T>>(obj, property, Cascade.proxyAvailable ? new ObservableArray(value) : new ObservableArrayLegacy(value));
     }
 
     /**
