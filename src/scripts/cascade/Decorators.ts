@@ -16,12 +16,10 @@ function createObservableIfNotExists<T>(obj: any, property: string, value?: T, s
 }
 
 // TODO: Remove Proxy check
-declare var Proxy: any;
-
 function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>, set?: boolean): ObservableArray<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
-        obj._graph.observables[property] = typeof Proxy === 'undefined' ? new ObservableArrayLegacy<T>(value) : new ObservableArray<T>(value);
+        obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableArrayLegacy<T>(value) : new ObservableArray<T>(value);
     } else if (set) {
         obj._graph.observables[property].setValue(value);
     }
@@ -72,12 +70,13 @@ function attachComputed<T>(target: any, propertyKey: string, descriptor?: TypedP
     return descriptor;
 }
 
+// TODO: Remove Reflect check
 export function observable<T>(target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
     if (descriptor) {
         attachComputed(target, propertyKey, descriptor);
     } else {
         // Only use Reflection if it exists.
-        if (typeof Reflect === 'object' && typeof Reflect.getMetadata === "function") {
+        if (Cascade.reflectAvailable) {
             var type = Reflect.getMetadata("design:type", target, propertyKey);
         }
         if (type === Array) {

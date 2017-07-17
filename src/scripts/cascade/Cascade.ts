@@ -114,6 +114,7 @@ export default class Cascade {
         Cascade.attachObservable(obj, property, new Computed(definition, defer, undefined, setter), true);
     }
 
+    // TODO: Remove Proxy check
     /**
      * 
      * @param obj 
@@ -121,7 +122,7 @@ export default class Cascade {
      * @param value 
      */
     static createObservableArray<T>(obj: any, property: string, value?: Array<T>) {
-        Cascade.attachObservable<Array<T>>(obj, property, typeof Proxy === 'undefined' ? new ObservableArrayLegacy(value) : new ObservableArray(value));
+        Cascade.attachObservable<Array<T>>(obj, property, Cascade.proxyAvailable ? new ObservableArrayLegacy(value) : new ObservableArray(value));
     }
 
     /**
@@ -265,4 +266,7 @@ export default class Cascade {
             }
         });
     }
+
+    static proxyAvailable: boolean = typeof Proxy !== 'undefined';
+    static reflectAvailable: boolean = (typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function');
 }
