@@ -18,7 +18,7 @@ describe('ObservableArrayLegacy', () => {
         value.subscribeOnly((currentValue) => {
             expect(currentValue.length).to.equal(1);
         });
-        value.value.set(0, 10 as any);
+        value.peek().set(0, 10 as any);
     });
 
     it('should notify subscribers on push method', () => {
@@ -28,5 +28,4 @@ describe('ObservableArrayLegacy', () => {
         });
         value.peek().push(10);
     });
-
 });

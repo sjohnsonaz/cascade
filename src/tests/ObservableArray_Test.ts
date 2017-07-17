@@ -38,6 +38,16 @@ describe('ObservableArray', function () {
         value.subscribeOnly((currentValue) => {
             expect(currentValue.length).to.equal(1);
         });
-        value.value[0] = 10;
+        value.peek()[0] = 10;
+    });
+
+    it('should notify subscribers on push method', function () {
+        if (proxyUnavailable) this.skip();
+
+        var value = new ObservableArray<number>();
+        value.subscribeOnly((currentValue) => {
+            expect(currentValue.length).to.equal(1);
+        });
+        value.peek().push(10);
     });
 });
