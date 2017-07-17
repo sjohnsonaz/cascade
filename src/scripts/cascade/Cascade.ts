@@ -127,7 +127,7 @@ export default class Cascade {
      * @param value 
      */
     static createObservableHash<T>(obj: any, property: string, value?: IHash<T>) {
-        Cascade.attachObservable<Array<T>>(obj, property, new ObservableHash(value));
+        Cascade.attachObservable<IHash<T>>(obj, property, new ObservableHash(value));
     }
 
     /**
