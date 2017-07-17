@@ -1,10 +1,7 @@
 declare var Proxy: any;
 
 import Observable from './Observable';
-
-export interface IHash<T> {
-    [index: string]: T;
-}
+import { IHash } from './IObservable';
 
 export default class ObservableHash<T> extends Observable<IHash<T>> {
     constructor(base?: IHash<T>) {

@@ -1,12 +1,13 @@
 import Observable from './Observable';
+import { IArray } from './IObservable';
 
-export default class ObservableArrayLegacy<T> extends Observable<T[]> {
-    constructor(value?: T[]) {
+export default class ObservableArrayLegacy<T> extends Observable<Array<T>> {
+    constructor(value?: Array<T>) {
         super();
         this.value = this.wrapArray((value instanceof Array) ? value : []);
     }
 
-    wrapArray(value: T[]) {
+    wrapArray(value: Array<T>) {
         return new LegacyArray(
             (value instanceof LegacyArray) ?
                 value.slice(0) :
@@ -15,7 +16,7 @@ export default class ObservableArrayLegacy<T> extends Observable<T[]> {
         );
     }
 
-    setValue(value: T[]) {
+    setValue(value: Array<T>) {
         if (this.value !== value) {
             var oldValue = this.value;
             value = this.wrapArray((value instanceof Array) ? value : []);
@@ -25,7 +26,7 @@ export default class ObservableArrayLegacy<T> extends Observable<T[]> {
     }
 }
 
-export class LegacyArray<T> extends Array<T> {
+export class LegacyArray<T> extends Array<T> implements IArray<T> {
     private _containingObservable?: Observable<Array<T>>;
 
     // TODO: Fix arguments to match ObservableArray.
@@ -148,7 +149,7 @@ export class LegacyArray<T> extends Array<T> {
         return this[index];
     }
 
-    set(index: number, value: T[]) {
+    set(index: number, value: T) {
         this[index] = value as any;
         this.publish(this);
     }

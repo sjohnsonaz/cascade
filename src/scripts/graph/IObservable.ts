@@ -17,3 +17,11 @@ export interface IObservable<T> {
     publish(value: T, oldValue?: T): void;
     dispose(): void;
 }
+
+export interface IArray<T> extends Array<T> {
+    set?: (index: number, value: T) => void;
+}
+
+export interface IHash<T> {
+    [index: string]: T;
+}

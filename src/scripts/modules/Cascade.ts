@@ -2,7 +2,7 @@ import '../jsx/JSX';
 
 export { Elements } from '../jsx/Elements';
 
-export { IObservable, ISubscriber, ISubscriberFunction } from '../graph/IObservable';
+export { IObservable, ISubscriber, ISubscriberFunction, IArray, IHash } from '../graph/IObservable';
 export { default as Observable } from '../graph/Observable';
 export { default as Computed } from '../graph/Computed';
 export { default as ObservableArrayLegacy } from '../graph/ObservableArrayLegacy';
