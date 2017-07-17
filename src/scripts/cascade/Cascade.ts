@@ -3,7 +3,7 @@ import { IObservable, ISubscriber, ISubscriberFunction } from '../graph/IObserva
 import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
 import ObservableArray from '../graph/ObservableArray';
-import ObservableHash from '../graph/ObservableHash';
+import ObservableHash, { IHash } from '../graph/ObservableHash';
 
 import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 import VirtualNode from '../dom/VirtualNode';
@@ -118,6 +118,16 @@ export default class Cascade {
      */
     static createObservableArray<T>(obj: any, property: string, value?: Array<T>) {
         Cascade.attachObservable<Array<T>>(obj, property, new ObservableArray(value));
+    }
+
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param value 
+     */
+    static createObservableHash<T>(obj: any, property: string, value?: IHash<T>) {
+        Cascade.attachObservable<Array<T>>(obj, property, new ObservableHash(value));
     }
 
     /**
