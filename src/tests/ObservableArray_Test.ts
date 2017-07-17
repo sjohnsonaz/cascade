@@ -28,7 +28,7 @@ describe('ObservableArray', function () {
         value.subscribeOnly((currentValue) => {
             expect(currentValue.length).to.equal(1);
         });
-        value.set(0, 10 as any);
+        value.peek().set(0, 10);
     });
 
     it('should notify subscribers on setter', function () {

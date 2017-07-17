@@ -27,7 +27,7 @@ export default class ObservableArrayLegacy<T> extends Observable<IArray<T>> {
 }
 
 export class LegacyArray<T> extends Array<T> implements IArray<T> {
-    private _containingObservable?: Observable<Array<T>>;
+    private _containingObservable?: Observable<IArray<T>>;
 
     // TODO: Fix arguments to match ObservableArray.
     constructor(base?: Array<T>, containingObservable?: Observable<Array<T>>) {
