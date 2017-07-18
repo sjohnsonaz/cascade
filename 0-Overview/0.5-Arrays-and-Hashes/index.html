@@ -81,6 +81,18 @@
     <a class="current" href="./">Arrays and Hashes</a>
     <ul class="subnav">
             
+    <li class="toctree-l3"><a href="#arrays">Arrays</a></li>
+    
+
+    <li class="toctree-l3"><a href="#hashes">Hashes</a></li>
+    
+
+    <li class="toctree-l3"><a href="#external-links">External Links</a></li>
+    
+
+    <li class="toctree-l3"><a href="#view-models">View Models</a></li>
+    
+
     <li class="toctree-l3"><a href="#reflection-polyfill">Reflection Polyfill</a></li>
     
 
@@ -143,6 +155,36 @@
             <div class="section">
               
                 <p>JavaScript supports two basic data structures for storing information, Arrays and Hashes.  Let's look at how we might add an Array and a Hash to a View Model.</p>
+<h2 id="arrays">Arrays</h2>
+<p>TypeScript arrays can be defined and initialized in two ways, with the <code>Array&lt;T&gt;</code> type, or <code>T[]</code> type.  Both of these are equivalent, but one or the other may be easier to write depending on the situation.  Also, for compatibility with Internet Explorer, Cascade provides an interface <code>IArray&lt;T&gt;</code>, but we will cover that in more depth later.</p>
+<p>So, if we were to create an Array of <code>string</code> elements, it would be.</p>
+<pre><code class="TypeScript">let list: string[] = [];
+</code></pre>
+
+<p>This code simply creates an variable called <code>list</code>, defined as an <code>string[]</code> and initializes it to be an empty <code>Array</code>.  It is important to note that we have initialized this variable, otherwise it would equal <code>undefined</code>.</p>
+<p>Now that we have created an <code>Array</code>, we can access its values with a regular <code>Assignment Operator</code>.  We can read and write values with:</p>
+<pre><code class="TypeScript">let value = list[0];
+list[1] = 2;
+</code></pre>
+
+<p>We can also use any of the <code>Array</code> methods, such as <code>Array.prototype.push(value: any): void;</code></p>
+<pre><code class="TypeScript">list.push(3);
+</code></pre>
+
+<h2 id="hashes">Hashes</h2>
+<p>Next, we have JavaScript Hashes, which are actually just regular Objects.</p>
+<p>TypeScript Hashes can be defined as an <code>interface</code>, which stores elements with either <code>string</code> or <code>number</code> indexes.  JavaScript allows for mixing index types, but TypeScript requies it to be one or the other.  Since we already have support for <code>number</code> indexes with Arrays, Cascade defines Hash types as:</p>
+<pre><code class="TypeScript">interface IHash&lt;T&gt; {
+    [index: string]: T;
+}
+</code></pre>
+
+<p>For ease of use, <code>IHash</code> may be imported from Cascade.</p>
+<h2 id="external-links">External Links</h2>
+<p>For more information on Arrays, visit <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array - JavaScript | MDN</a></p>
+<p>For more information on Objects, visit <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Objects - JavaScript | MDN</a></p>
+<h2 id="view-models">View Models</h2>
+<p>We may store Arrays and Hashes as properties on a View Model.  For example:</p>
 <pre><code class="TypeScript">class ViewModel {
     list = [];
     map = {};
@@ -171,7 +213,6 @@
 }
 </code></pre>
 
-<p>For this example, we may import <code>IHash</code> from Cascade, but TypeScript supports many other typing options.</p>
 <h2 id="reflection-polyfill">Reflection Polyfill</h2>
 <p>By default, Arrays must be decorated with <code>@array</code> and Hashes with <code>@hash</code>.  However, just like we can use <code>@observable</code> to decorate <code>Computed</code> properties, we can also use it to decorate Arrays, but only with some extra libraries.</p>
 <p>In order to get this automatic type detection, we have to set up an experimental TypeScript Metadata feature.  First off, you must set <code>"emitDecoratorMetadata": true</code> in your <code>tsconfig.json</code> file.  Then, you must install the package <code>reflect-metadata</code> from npm.</p>
@@ -192,7 +233,7 @@ import 'reflect-metadata';
 </code></pre>
 
 <p>However, in Internet Explorer, we must use an explicit setter method.</p>
-<pre><code class="TypeScript">ObserableArray.set(index: number, value: T): void;
+<pre><code class="TypeScript">ObserableArray&lt;T&gt;.set(index: number, value: T): void;
 </code></pre>
 
 <p>Which in practice would look like:</p>
