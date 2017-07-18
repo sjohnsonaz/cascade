@@ -122,10 +122,12 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
-    it('should render SVG elements', () => {
+    // TODO: Make this work without repeating xmlns
+    it('should render SVG elements', function () {
+        if (typeof SVGElement === 'undefined') this.skip();
         var root = (
-            <svg height="210" width="400">
-                <path d="M150 0 L75 200 L225 200 Z" />
+            <svg height="210" width="400" xmlns="http://www.w3.org/2000/svg">
+                <path d="M150 0 L75 200 L225 200 Z" xmlns="http://www.w3.org/2000/svg" />
                 Sorry, your browser does not support inline SVG.
             </svg>
         );

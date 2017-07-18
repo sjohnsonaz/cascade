@@ -34,11 +34,22 @@ export class ProxyArray<T> extends Array<T> implements IArray<T> {
         (value as IArray<T>).set = ProxyArray.prototype.set;
         let inner = new Proxy(value, {
             set: (target: Array<T>, property: string, value: T, receiver: ProxyArray<T>) => {
-                target[property] = value;
-                if (isFinite(Number(property)) || property === 'length') {
+                let result = true;
+                let oldValue = target[property];
+                if (oldValue !== value) {
+                    result = (target[property] = value) === value;
+                    if (result && isFinite(Number(property)) || property === 'length') {
+                        containingObservable.publish(target, target);
+                    }
+                }
+                return result;
+            },
+            deleteProperty: (target: Array<T>, property: string) => {
+                let result = delete target[property];
+                if (result && isFinite(Number(property))) {
                     containingObservable.publish(target, target);
                 }
-                return true;
+                return result;
             }
         }) as ProxyArray<T>;
         return inner;

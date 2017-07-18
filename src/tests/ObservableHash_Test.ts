@@ -29,4 +29,17 @@ describe('ObservableHash', function () {
         });
         value.peek()['property'] = 10;
     });
+
+    it('should notify subscribers on delete', function (done) {
+        if (!Cascade.proxyAvailable) this.skip();
+
+        var value = new ObservableHash<number>({
+            'property': 10
+        });
+        value.subscribeOnly((currentValue) => {
+            expect(currentValue['property']).to.equal(undefined);
+            done();
+        });
+        delete value.peek()['property'];
+    });
 });
