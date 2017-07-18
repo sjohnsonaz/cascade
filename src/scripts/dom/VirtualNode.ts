@@ -35,10 +35,15 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
     }
 
     toNode() {
-        var node = document.createElement(this.type);
+        if (this.props.xmlns) {
+            var node = document.createElementNS(this.props.xmlns, this.type);
+        } else {
+            var node = document.createElement(this.type);
+        }
+        let isSvg = !!this.props.xmlns;
         for (var name in this.props) {
             if (this.props.hasOwnProperty(name)) {
-                VirtualNode.setAttribute(node, name, this.props[name]);
+                VirtualNode.setAttribute(node, name, this.props[name], isSvg);
             }
         }
         for (var index = 0, length = this.children.length; index < length; index++) {
@@ -80,33 +85,59 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         return container.innerHTML;
     }
 
-    static setAttribute(element: HTMLElement, property: string, value: any) {
-        if (property === 'style') {
-            element.style.cssText = value;
-        } else if (property.indexOf('on') >= 0) {
-            element[property] = value;
-        } else if (property === 'className') {
-            element[property] = value;
-            //} else if (property.indexOf('-') >= 0) {
-        } else if (property === 'value') {
-            element[property] = value;
+    static setAttribute(element: HTMLElement, property: string, value: any, isSvg: boolean = false) {
+        if (!isSvg) {
+            if (property === 'style') {
+                element.style.cssText = value;
+            } else if (property.indexOf('-') >= 0) {
+                element.setAttribute(property, value);
+            } else if (property === 'class') {
+                element.setAttribute(property, value);
+            } else {
+                try {
+                    element[property] = value;
+                } catch (e) {
+                    element.setAttribute(property, value);
+                }
+            }
         } else {
-            element.setAttribute(property, value);
+            if (property === 'style') {
+                element.style.cssText = value;
+            } else if (property.indexOf('on') >= 0) {
+                element[property] = value;
+            } else if (property === 'className') {
+                element[property] = value;
+            } else {
+                element.setAttribute(property, value);
+            }
         }
     }
 
-    static removeAttribute(element: HTMLElement, property: string) {
-        if (property === 'style') {
-            element.style.cssText = undefined;
-        } else if (property.indexOf('on') >= 0) {
-            element[property] = undefined;
-        } else if (property === 'className') {
-            element[property] = undefined;
-            //} else if (property.indexOf('-') >= 0) {
-        } else if (property === 'value') {
-            element[property] = undefined;
+    static removeAttribute(element: HTMLElement, property: string, isSvg: boolean = false) {
+        if (!isSvg) {
+            if (property === 'style') {
+                element.style.cssText = undefined;
+            } else if (property.indexOf('-') >= 0) {
+                element.removeAttribute(property);
+            } else if (property === 'class') {
+                element.removeAttribute(property);
+            } else {
+                try {
+                    element[property] = undefined;
+                } catch (e) {
+                    element.removeAttribute(property);
+                }
+            }
         } else {
-            element.removeAttribute(property);
+            if (property === 'style') {
+                element.style.cssText = undefined;
+            } else if (property.indexOf('on') >= 0) {
+                element[property] = undefined;
+            } else if (property === 'className') {
+                element[property] = undefined;
+            } else {
+                element.removeAttribute(property);
+            }
         }
     }
 }

@@ -274,13 +274,14 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
             var propertyDiff = Diff.compareHash(oldRoot.props, newRoot.props);
+            var isSvg = !!oldElement.getAttribute('xmlns');
             for (var name in propertyDiff) {
                 if (propertyDiff.hasOwnProperty(name)) {
                     var property = propertyDiff[name];
                     if (property === null) {
-                        VirtualNode.removeAttribute(oldElement, name);
+                        VirtualNode.removeAttribute(oldElement, name, isSvg);
                     } else {
-                        VirtualNode.setAttribute(oldElement, name, property);
+                        VirtualNode.setAttribute(oldElement, name, property, isSvg);
                     }
                 }
             }
