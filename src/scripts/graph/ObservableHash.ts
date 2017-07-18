@@ -35,9 +35,22 @@ export class ProxyHash<T> implements IHash<T> {
     constructor(value?: Array<T>, containingObservable?: Observable<IHash<T>>) {
         let inner = new Proxy((value instanceof Object) ? value : [], {
             set: (target: IHash<T>, property: string, value: T, receiver: ProxyHash<T>) => {
-                target[property] = value;
-                containingObservable.publish(target, target);
-                return true;
+                let result = true;
+                let oldValue = target[property];
+                if (oldValue !== value) {
+                    result = (target[property] = value) === value;
+                    if (result) {
+                        containingObservable.publish(target, target);
+                    }
+                }
+                return result;
+            },
+            deleteProperty: (target: IHash<T>, property: string) => {
+                let result = delete target[property];
+                if (result) {
+                    containingObservable.publish(target, target);
+                }
+                return result;
             }
         }) as ProxyHash<T>;
         return inner;
