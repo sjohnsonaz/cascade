@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Arrays and Hashes - Cascade</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Arrays and Hashes";
+    var mkdocs_page_input_path = "0-Overview\\0.5-Arrays-and-Hashes.md";
+    var mkdocs_page_url = "/0-Overview/0.5-Arrays-and-Hashes/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Cascade</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Overview</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../0.0-Getting-Started/">Getting Started</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.1-Displaying-Data/">Displaying Data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.2-Updating-Data/">Updating Data</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.3-Computed-Properties/">Computed Properties</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.4-Handling-Events/">Handling Events</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Arrays and Hashes</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#reflection-polyfill">Reflection Polyfill</a></li>
+    
+
+    <li class="toctree-l3"><a href="#legacy-browser-support">Legacy Browser Support</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Reactive Programming</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../1-Reactive-Programming/1.0-Computed-Chains/">Computed Chains</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Cascade</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Overview &raquo;</li>
+        
+      
+    
+    <li>Arrays and Hashes</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/sjohnsonaz/cascade/edit/master/docs/0-Overview\0.5-Arrays-and-Hashes.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>JavaScript supports two basic data structures for storing information, Arrays and Hashes.  Let's look at how we might add an Array and a Hash to a View Model.</p>
+<pre><code class="TypeScript">class ViewModel {
+    list = [];
+    map = {};
+}
+</code></pre>
+
+<p>However, just like regular properties, changes to these properties will be ignored.  Again, if we add our decorators, we can subscribe to changes.</p>
+<pre><code class="TypeScript">class ViewModel {
+    @array list = [];
+    @hash map = {};
+}
+</code></pre>
+
+<p>It's important to note that once an Array or Hashe is marked as observable, Cascade will automatically set its value to be an Array or Hash, even if we haven't initialized it.  We don't even have to write an initialization in the code.  Plus, we don't have to check if the property is truthy before doing lookups on it.  All of that is handled by Cascade!</p>
+<p>So, we can simply write:</p>
+<pre><code class="TypeScript">class ViewModel {
+    @array list;
+    @hash map;
+}
+</code></pre>
+
+<p>We can also be more specific about what is stored in Arrays and Hashes.</p>
+<pre><code class="TypeScript">class ViewModel {
+    @array list: string[];
+    @hash map: IHash&lt;string&gt;;
+}
+</code></pre>
+
+<p>For this example, we may import <code>IHash</code> from Cascade, but TypeScript supports many other typing options.</p>
+<h2 id="reflection-polyfill">Reflection Polyfill</h2>
+<p>By default, Arrays must be decorated with <code>@array</code> and Hashes with <code>@hash</code>.  However, just like we can use <code>@observable</code> to decorate <code>Computed</code> properties, we can also use it to decorate Arrays, but only with some extra libraries.</p>
+<p>In order to get this automatic type detection, we have to set up an experimental TypeScript Metadata feature.  First off, you must set <code>"emitDecoratorMetadata": true</code> in your <code>tsconfig.json</code> file.  Then, you must install the package <code>reflect-metadata</code> from npm.</p>
+<p>Furthermore, for IE10 and below, you must also include <code>es6-shim</code> or similar polyfills.</p>
+<p>Then, in your main TypeScript file, you must include:</p>
+<pre><code class="TypeScript">import 'es6-shim';
+import 'reflect-metadata';
+</code></pre>
+
+<blockquote>
+<p><strong>Note:</strong> This does not currently support Hashes.</p>
+</blockquote>
+<h2 id="legacy-browser-support">Legacy Browser Support</h2>
+<p>In general, Cascade fully supports older browsers, including Internet Explorer 9+.  However, Arrays and Hashes are one area where some special consideration must be made.</p>
+<p>First off, Observable Hashes are not supported.  Their functionality can be emulated easily with ObservableArrays and a regular Hash object.</p>
+<p>Secondly, Observable Arrays work slightly differently in Internet Explorer.  In modern browsers, we can simply write to any index and it will be detected.</p>
+<pre><code class="TypeScript">viewModel.list[0] = 'value';
+</code></pre>
+
+<p>However, in Internet Explorer, we must use an explicit setter method.</p>
+<pre><code class="TypeScript">ObserableArray.set(index: number, value: T): void;
+</code></pre>
+
+<p>Which in practice would look like:</p>
+<pre><code class="TypeScript">viewModel.list.set(0, 'value');
+</code></pre>
+
+<p>However, TypeScript will complain that the <code>set</code> method doesn't exist on <code>Array</code>.  So, we can update our View Model to use <code>IArray&lt;T&gt;</code> instead of <code>T[]</code> or <code>Array&lt;T&gt;</code>.  This interface can be imported from Cascade.</p>
+<pre><code class="TypeScript">class ViewModel {
+    @array list: IArray&lt;string&gt;;
+    @hash map: IHash&lt;string&gt;;
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../1-Reactive-Programming/1.0-Computed-Chains/" class="btn btn-neutral float-right" title="Computed Chains">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../0.4-Handling-Events/" class="btn btn-neutral" title="Handling Events"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright &copy; 2017 Sean Johnson</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/sjohnsonaz/cascade" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../0.4-Handling-Events/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../1-Reactive-Programming/1.0-Computed-Chains/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

@@ -82,7 +82,7 @@
         },
         {
             "location": "/0-Overview/0.3-Computed-Properties/",
-            "text": "We've looked at creating \nObservable\n properties, which let us watch for changes in our \nApplication State\n.  But how do our \nComponents\n track those changes?\n\n\nIf you look at the \nUserView.render\n method, we simply read from our \nUser\n.  Cascade tracked those changes for us automatically using \nComputed\n properties.  For our Components, this is done behind the scenes.  But we can use them in our Application State just as easily.\n\n\nComputed Properties\n\n\nCascade provides \nComputed\n properties for objects, which use a getter function to produce a value.  However, any \nObservable\n properties used in this function, will automatically produce subscriptions.\n\n\nFor simplicity, we can also use the \n@observable\n decorator, except in front of a getter function.\n\n\n@observable get property(): type {\n    return this.value;\n}\n\n\n\n\nFor our \nUser\n let's add a \nfullName\n Computed property.  Add this right under the \nfirstName\n and \nlastName\n properties.\n\n\n@observable get fullName() {\n    return this.firstName + ' ' + this.lastName;\n}\n\n\n\n\nThere are a couple things to note:\n\n\n\n\nWe simply used the values in order to subscribe to them automatically.\n\n\nWe can use as many values as we want.\n\n\nWhatever we return from this method will be the value of the property.\n\n\n\n\nSubscribing Directly to Observables\n\n\nThere are two main ways of subscribing to \nObservable\n properties.  We may either subscribe directly, or through a \nComputed\n property, which we will examine next.\n\n\nCascade.subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>);\n\n\n\n\nThe \nsubscriberFunction\n will be called any time the value of the property changes.  Keep in mind, simply storing an identical value to the property is not a change, and so there will be no notification.",
+            "text": "We've looked at creating \nObservable\n properties, which let us watch for changes in our \nApplication State\n.  But how do our \nComponents\n track those changes?\n\n\nIf you look at the \nUserView.render\n method, we simply read from our \nUser\n.  Cascade tracked those changes for us automatically using \nComputed\n properties.  For our Components, this is done behind the scenes.  But we can use them in our Application State just as easily.\n\n\nComputed Properties\n\n\nCascade provides \nComputed\n properties for objects, which use a getter function to produce a value.  However, any \nObservable\n properties used in this function, will automatically produce subscriptions.\n\n\nFor simplicity, we can also use the \n@observable\n decorator, except in front of a getter function.\n\n\n@observable get property(): type {\n    return this.value;\n}\n\n\n\n\nFor our \nUser\n let's add a \nfullName\n Computed property.  Add this right under the \nfirstName\n and \nlastName\n properties.\n\n\n@observable get fullName() {\n    return this.firstName + ' ' + this.lastName;\n}\n\n\n\n\nThere are a couple things to note:\n\n\n\n\nWe simply used the values in order to subscribe to them automatically.\n\n\nWe can use as many values as we want.\n\n\nWhatever we return from this method will be the value of the property.\n\n\n\n\nSubscribing Directly to Observables\n\n\nThere are two main ways of subscribing to \nObservable\n properties.  We may either subscribe directly, or through a \nComputed\n property, which we will examine next.\n\n\nCascade.subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>);\n\n\n\n\nThe \nsubscriberFunction\n will be called any time the value of the property changes.  Keep in mind, simply storing an identical value to the property is not a change, and so there will be no notification.\n\n\nHiding Reads\n\n\nCascade.peek(obj: any, property: string): any;\n\n\n\n\nUpdate Batching\n\n\nComputed Best Practices\n\n\nResponding to updates\n\n\nCascade.wrapContext(callback: () => any, thisArg?: any): IObservable<any[]>;\n\n\n\n\nDo not write to an observable inside of a Computed.",
             "title": "Computed Properties"
         },
         {
@@ -94,6 +94,26 @@
             "location": "/0-Overview/0.3-Computed-Properties/#subscribing-directly-to-observables",
             "text": "There are two main ways of subscribing to  Observable  properties.  We may either subscribe directly, or through a  Computed  property, which we will examine next.  Cascade.subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>);  The  subscriberFunction  will be called any time the value of the property changes.  Keep in mind, simply storing an identical value to the property is not a change, and so there will be no notification.",
             "title": "Subscribing Directly to Observables"
+        },
+        {
+            "location": "/0-Overview/0.3-Computed-Properties/#hiding-reads",
+            "text": "Cascade.peek(obj: any, property: string): any;",
+            "title": "Hiding Reads"
+        },
+        {
+            "location": "/0-Overview/0.3-Computed-Properties/#update-batching",
+            "text": "",
+            "title": "Update Batching"
+        },
+        {
+            "location": "/0-Overview/0.3-Computed-Properties/#computed-best-practices",
+            "text": "",
+            "title": "Computed Best Practices"
+        },
+        {
+            "location": "/0-Overview/0.3-Computed-Properties/#responding-to-updates",
+            "text": "Cascade.wrapContext(callback: () => any, thisArg?: any): IObservable<any[]>;  Do not write to an observable inside of a Computed.",
+            "title": "Responding to updates"
         },
         {
             "location": "/0-Overview/0.4-Handling-Events/",
@@ -114,6 +134,21 @@
             "location": "/0-Overview/0.4-Handling-Events/#event-propagation",
             "text": "Event.stopPropagation();\nEvent.preventDefault();",
             "title": "Event Propagation"
+        },
+        {
+            "location": "/0-Overview/0.5-Arrays-and-Hashes/",
+            "text": "JavaScript supports two basic data structures for storing information, Arrays and Hashes.  Let's look at how we might add an Array and a Hash to a View Model.\n\n\nclass ViewModel {\n    list = [];\n    map = {};\n}\n\n\n\n\nHowever, just like regular properties, changes to these properties will be ignored.  Again, if we add our decorators, we can subscribe to changes.\n\n\nclass ViewModel {\n    @array list = [];\n    @hash map = {};\n}\n\n\n\n\nIt's important to note that once an Array or Hashe is marked as observable, Cascade will automatically set its value to be an Array or Hash, even if we haven't initialized it.  We don't even have to write an initialization in the code.  Plus, we don't have to check if the property is truthy before doing lookups on it.  All of that is handled by Cascade!\n\n\nSo, we can simply write:\n\n\nclass ViewModel {\n    @array list;\n    @hash map;\n}\n\n\n\n\nWe can also be more specific about what is stored in Arrays and Hashes.\n\n\nclass ViewModel {\n    @array list: string[];\n    @hash map: IHash<string>;\n}\n\n\n\n\nFor this example, we may import \nIHash\n from Cascade, but TypeScript supports many other typing options.\n\n\nReflection Polyfill\n\n\nBy default, Arrays must be decorated with \n@array\n and Hashes with \n@hash\n.  However, just like we can use \n@observable\n to decorate \nComputed\n properties, we can also use it to decorate Arrays, but only with some extra libraries.\n\n\nIn order to get this automatic type detection, we have to set up an experimental TypeScript Metadata feature.  First off, you must set \n\"emitDecoratorMetadata\": true\n in your \ntsconfig.json\n file.  Then, you must install the package \nreflect-metadata\n from npm.\n\n\nFurthermore, for IE10 and below, you must also include \nes6-shim\n or similar polyfills.\n\n\nThen, in your main TypeScript file, you must include:\n\n\nimport 'es6-shim';\nimport 'reflect-metadata';\n\n\n\n\n\n\nNote:\n This does not currently support Hashes.\n\n\n\n\nLegacy Browser Support\n\n\nIn general, Cascade fully supports older browsers, including Internet Explorer 9+.  However, Arrays and Hashes are one area where some special consideration must be made.\n\n\nFirst off, Observable Hashes are not supported.  Their functionality can be emulated easily with ObservableArrays and a regular Hash object.\n\n\nSecondly, Observable Arrays work slightly differently in Internet Explorer.  In modern browsers, we can simply write to any index and it will be detected.\n\n\nviewModel.list[0] = 'value';\n\n\n\n\nHowever, in Internet Explorer, we must use an explicit setter method.\n\n\nObserableArray.set(index: number, value: T): void;\n\n\n\n\nWhich in practice would look like:\n\n\nviewModel.list.set(0, 'value');\n\n\n\n\nHowever, TypeScript will complain that the \nset\n method doesn't exist on \nArray\n.  So, we can update our View Model to use \nIArray<T>\n instead of \nT[]\n or \nArray<T>\n.  This interface can be imported from Cascade.\n\n\nclass ViewModel {\n    @array list: IArray<string>;\n    @hash map: IHash<string>;\n}",
+            "title": "Arrays and Hashes"
+        },
+        {
+            "location": "/0-Overview/0.5-Arrays-and-Hashes/#reflection-polyfill",
+            "text": "By default, Arrays must be decorated with  @array  and Hashes with  @hash .  However, just like we can use  @observable  to decorate  Computed  properties, we can also use it to decorate Arrays, but only with some extra libraries.  In order to get this automatic type detection, we have to set up an experimental TypeScript Metadata feature.  First off, you must set  \"emitDecoratorMetadata\": true  in your  tsconfig.json  file.  Then, you must install the package  reflect-metadata  from npm.  Furthermore, for IE10 and below, you must also include  es6-shim  or similar polyfills.  Then, in your main TypeScript file, you must include:  import 'es6-shim';\nimport 'reflect-metadata';   Note:  This does not currently support Hashes.",
+            "title": "Reflection Polyfill"
+        },
+        {
+            "location": "/0-Overview/0.5-Arrays-and-Hashes/#legacy-browser-support",
+            "text": "In general, Cascade fully supports older browsers, including Internet Explorer 9+.  However, Arrays and Hashes are one area where some special consideration must be made.  First off, Observable Hashes are not supported.  Their functionality can be emulated easily with ObservableArrays and a regular Hash object.  Secondly, Observable Arrays work slightly differently in Internet Explorer.  In modern browsers, we can simply write to any index and it will be detected.  viewModel.list[0] = 'value';  However, in Internet Explorer, we must use an explicit setter method.  ObserableArray.set(index: number, value: T): void;  Which in practice would look like:  viewModel.list.set(0, 'value');  However, TypeScript will complain that the  set  method doesn't exist on  Array .  So, we can update our View Model to use  IArray<T>  instead of  T[]  or  Array<T> .  This interface can be imported from Cascade.  class ViewModel {\n    @array list: IArray<string>;\n    @hash map: IHash<string>;\n}",
+            "title": "Legacy Browser Support"
         },
         {
             "location": "/1-Reactive-Programming/1.0-Computed-Chains/",

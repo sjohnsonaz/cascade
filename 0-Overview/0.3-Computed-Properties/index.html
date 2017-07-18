@@ -79,11 +79,30 @@
     <li class="toctree-l3"><a href="#subscribing-directly-to-observables">Subscribing Directly to Observables</a></li>
     
 
+    <li class="toctree-l3"><a href="#hiding-reads">Hiding Reads</a></li>
+    
+
+    <li class="toctree-l3"><a href="#update-batching">Update Batching</a></li>
+    
+
+    <li class="toctree-l3"><a href="#computed-best-practices">Computed Best Practices</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#responding-to-updates">Responding to updates</a></li>
+        
+        </ul>
+    
+
     </ul>
                 </li>
                 <li class="">
                     
     <a class="" href="../0.4-Handling-Events/">Handling Events</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../0.5-Arrays-and-Hashes/">Arrays and Hashes</a>
                 </li>
     </ul>
 	    </li>
@@ -166,6 +185,17 @@
 </code></pre>
 
 <p>The <code>subscriberFunction</code> will be called any time the value of the property changes.  Keep in mind, simply storing an identical value to the property is not a change, and so there will be no notification.</p>
+<h2 id="hiding-reads">Hiding Reads</h2>
+<pre><code class="TypeScript">Cascade.peek(obj: any, property: string): any;
+</code></pre>
+
+<h2 id="update-batching">Update Batching</h2>
+<h2 id="computed-best-practices">Computed Best Practices</h2>
+<h3 id="responding-to-updates">Responding to updates</h3>
+<pre><code class="TypeScript">Cascade.wrapContext(callback: () =&gt; any, thisArg?: any): IObservable&lt;any[]&gt;;
+</code></pre>
+
+<p>Do not write to an observable inside of a Computed.</p>
               
             </div>
           </div>
