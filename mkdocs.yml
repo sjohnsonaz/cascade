@@ -10,6 +10,7 @@ pages:
         - Updating Data: 0-Overview/0.2-Updating-Data.md
         - Computed Properties: 0-Overview/0.3-Computed-Properties.md
         - Handling Events: 0-Overview/0.4-Handling-Events.md
+        - Arrays and Hashes: 0-Overview/0.5-Arrays-and-Hashes.md
     - Reactive Programming:
         - Computed Chains: 1-Reactive-Programming/1.0-Computed-Chains.md
 theme: readthedocs
