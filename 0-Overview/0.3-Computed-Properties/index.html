@@ -85,13 +85,10 @@
     <li class="toctree-l3"><a href="#update-batching">Update Batching</a></li>
     
 
-    <li class="toctree-l3"><a href="#computed-best-practices">Computed Best Practices</a></li>
+    <li class="toctree-l3"><a href="#avoid-circular-references">Avoid Circular References</a></li>
     
-        <ul>
-        
-            <li><a class="toctree-l4" href="#responding-to-updates">Responding to updates</a></li>
-        
-        </ul>
+
+    <li class="toctree-l3"><a href="#responding-to-updates">Responding to updates</a></li>
     
 
     </ul>
@@ -167,7 +164,7 @@
 }
 </code></pre>
 
-<p>For our <code>User</code> let's add a <code>fullName</code> Computed property.  Add this right under the <code>firstName</code> and <code>lastName</code> properties.</p>
+<p>For our <code>User</code> let's add a <code>fullName</code> <strong>Computed</strong> property.  Add this right under the <code>firstName</code> and <code>lastName</code> properties.</p>
 <pre><code class="Typescript">@observable get fullName() {
     return this.firstName + ' ' + this.lastName;
 }
@@ -186,16 +183,48 @@
 
 <p>The <code>subscriberFunction</code> will be called any time the value of the property changes.  Keep in mind, simply storing an identical value to the property is not a change, and so there will be no notification.</p>
 <h2 id="hiding-reads">Hiding Reads</h2>
+<p>Any time a <strong>Computed</strong> property references another <strong>Observable</strong> property, Cascade will automatically create a subscription.  However, in some cases you may want to read, but not product a subscription.  In this case, read the <strong>Observable</strong> with:</p>
 <pre><code class="TypeScript">Cascade.peek(obj: any, property: string): any;
 </code></pre>
 
 <h2 id="update-batching">Update Batching</h2>
-<h2 id="computed-best-practices">Computed Best Practices</h2>
-<h3 id="responding-to-updates">Responding to updates</h3>
-<pre><code class="TypeScript">Cascade.wrapContext(callback: () =&gt; any, thisArg?: any): IObservable&lt;any[]&gt;;
+<p>Cascade attempts to reduce updates to <strong>Computed</strong> properties whenever possible.  For example, lets say we have a some <strong>Application State</strong> with multiple <strong>Observable</strong> properties and a <strong>Computed</strong> property which references them.  Now let's say we change all of the <strong>Observable</strong> properties.  Cascade will only update the <strong>Computed</strong> once.</p>
+<pre><code class="TypeScript">class ViewModel {
+    @observable a: number = 0;
+    @observable b: number = 0;
+    @observable c: number = 0;
+    @computed get abc(): number {
+        return this.a + this.b + this.c;
+    }
+}
+
+// Create our Application State
+let viewModel = new ViewModel();
+
+// Subscribe to our Computed
+Cascade.subscribe(viewModel, 'abc', (value) =&gt; {
+    console.log(viewModel.abc);
+});
+
+// Update our values
+viewModel.a = 1;
+viewModel.b = 2;
+viewModel.c = 3;
 </code></pre>
 
-<p>Do not write to an observable inside of a Computed.</p>
+<p>In the example above, our <code>console.log()</code> will only be called twice.</p>
+<h2 id="avoid-circular-references">Avoid Circular References</h2>
+<p>In order for updates to flow, we must avoid any "circular references" or "cycles".  This means that as an update is occurring, it must not reach the same node more than once.</p>
+<p>For example, let's say we have two <strong>Computed</strong> properties, A and B.  And let's say A references B, and B references A.  So if A is updated, then we must update B.  Similarly if B is updated, we must update A.  In which case updating A, will update B, which will update A, which will update B, and so on.</p>
+<p>So it is important that these situations be avoided.</p>
+<h2 id="responding-to-updates">Responding to updates</h2>
+<p>It is best to avoid writing to <strong>Observable</strong> properties inside of a <strong>Computed</strong>.  In most cases, a second <strong>Computed</strong> which references the first will be enough.</p>
+<blockquote>
+<p><strong>Note: absolutely do not both read and write to an Observable inside of a Computed.  This will cause a circular reference.</strong></p>
+</blockquote>
+<p>If you must write to an <strong>Observable</strong> or do other work, it is best to wrap it inside of a <code>window.setTimeout()</code>, or use:</p>
+<pre><code class="TypeScript">Cascade.wrapContext(callback: () =&gt; any, thisArg?: any): IObservable&lt;any[]&gt;;
+</code></pre>
               
             </div>
           </div>
