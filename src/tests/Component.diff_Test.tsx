@@ -110,4 +110,40 @@ describe('Component.diff', () => {
             done();
         }, 20);
     });
+
+    it('should delete null values', (done) => {
+        class ViewModel {
+            @observable nonNull = 'nonNull';
+            @observable nonUndefined = 'nonUndefined';
+        }
+
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+        class View extends Component<IViewProps> {
+            render() {
+                return (
+                    <div className={viewModel.nonNull} id={viewModel.nonUndefined}></div>
+                );
+            }
+        }
+        var viewModel = new ViewModel();
+        var root = (
+            <div>
+                <View viewModel={viewModel} />
+            </div>
+        );
+        var container = document.createElement('div')
+        Cascade.render(container, root);
+        viewModel.nonNull = null;
+        viewModel.nonUndefined = undefined;
+        window.setTimeout(() => {
+            let div = container.childNodes[0].childNodes[0] as HTMLElement;
+            expect(div.className).to.not.equal('nonNull');
+            expect(div.id).to.not.equal('nonUndefined');
+            expect(div.className).to.not.equal('null');
+            expect(div.id).to.not.equal('undefined');
+            done();
+        }, 20);
+    });
 });

@@ -96,6 +96,7 @@ export default class Diff {
     }
 
     // TODO: Optimize reads
+    // TODO: Decide if truthy or non-null and non-undefined
     static compareHash(x: Object, y: Object) {
         var result = {};
 
@@ -104,6 +105,7 @@ export default class Diff {
                 var xValue = x[name];
                 var yValue = y[name];
                 if (xValue !== yValue) {
+                    // Should this be falsy?
                     if (yValue == undefined) {
                         result[name] = null;
                     } else {
@@ -118,6 +120,7 @@ export default class Diff {
                 var xValue = x[name];
                 var yValue = y[name];
                 if (xValue !== yValue) {
+                    // Should this be falsy?
                     if (yValue == undefined) {
                         result[name] = null;
                     } else {

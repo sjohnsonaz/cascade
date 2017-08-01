@@ -116,6 +116,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         }
     }
 
+    // TODO: Should we both set to empty string and delete?
     static removeAttribute(element: HTMLElement, property: string, isSvg: boolean = false) {
         if (!isSvg) {
             if (property === 'style') {
@@ -126,6 +127,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                 element.removeAttribute(property);
             } else {
                 try {
+                    element[property] = '';
                     delete element[property];
                 } catch (e) {
                     element.removeAttribute(property);
@@ -135,8 +137,10 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
             if (property === 'style') {
                 element.style.cssText = undefined;
             } else if (property.indexOf('on') >= 0) {
+                element[property] = '';
                 delete element[property];
             } else if (property === 'className') {
+                element[property] = '';
                 delete element[property];
             } else {
                 element.removeAttribute(property);
