@@ -43,7 +43,10 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         let isSvg = !!this.props.xmlns;
         for (var name in this.props) {
             if (this.props.hasOwnProperty(name)) {
-                VirtualNode.setAttribute(node, name, this.props[name], isSvg);
+                let value = this.props[name];
+                if (value !== undefined && value !== null) {
+                    VirtualNode.setAttribute(node, name, this.props[name], isSvg);
+                }
             }
         }
         for (var index = 0, length = this.children.length; index < length; index++) {
@@ -123,7 +126,7 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
                 element.removeAttribute(property);
             } else {
                 try {
-                    element[property] = undefined;
+                    delete element[property];
                 } catch (e) {
                     element.removeAttribute(property);
                 }
@@ -132,9 +135,9 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
             if (property === 'style') {
                 element.style.cssText = undefined;
             } else if (property.indexOf('on') >= 0) {
-                element[property] = undefined;
+                delete element[property];
             } else if (property === 'className') {
-                element[property] = undefined;
+                delete element[property];
             } else {
                 element.removeAttribute(property);
             }
