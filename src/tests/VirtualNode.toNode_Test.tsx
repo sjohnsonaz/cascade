@@ -71,12 +71,30 @@ describe('VirtualNode.toNode', function () {
         });
     });
 
-    it('should render standard properties', () => {
+    it('should render standard attributes', () => {
         var root = (
             <div id="testId"></div>
         );
         Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
             expect(element.id).to.equal('testId');
+        });
+    });
+
+    it('should not render undefined attributes', () => {
+        var root = (
+            <div id={undefined}></div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.id).to.not.equal('undefined');
+        });
+    });
+
+    it('should not render null attributes', () => {
+        var root = (
+            <div id={null}></div>
+        );
+        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
+            expect(element.id).to.not.equal('null');
         });
     });
 
