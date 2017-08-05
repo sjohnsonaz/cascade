@@ -161,6 +161,13 @@ export default class Cascade {
         }
     }
 
+    static unsubscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            graph.unsubscribe(property, subscriberFunction);
+        }
+    }
+
     /**
      * 
      * @param obj 
