@@ -141,11 +141,14 @@ export default class Cascade {
      * @param property 
      * @param subscriberFunction 
      */
-    static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
+    static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>, createDisposer: boolean = false) {
         var graph: Graph = obj._graph;
         if (graph) {
             graph.subscribe(property, subscriberFunction);
         }
+        return createDisposer ? function () {
+            graph.unsubscribe(property, subscriberFunction);
+        } : undefined;
     }
 
     /**
@@ -154,11 +157,14 @@ export default class Cascade {
      * @param property 
      * @param subscriberFunction 
      */
-    static subscribeOnly<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
+    static subscribeOnly<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>, createDisposer: boolean = false) {
         var graph: Graph = obj._graph;
         if (graph) {
             graph.subscribeOnly(property, subscriberFunction);
         }
+        return createDisposer ? function () {
+            graph.unsubscribe(property, subscriberFunction);
+        } : undefined;
     }
 
     static unsubscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
