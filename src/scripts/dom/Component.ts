@@ -188,6 +188,15 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return element;
     }
 
+    dispose() {
+        if (this.context) {
+            for (let index = 0, length = this.context.length; index < length; index++) {
+                this.context[index].dispose();
+            }
+        }
+        this.afterDispose(this.element);
+    }
+
     disposeContext() {
         if (this.context) {
             for (var index = 0, length = this.context.length; index < length; index++) {
@@ -195,7 +204,6 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                 computed.dispose();
             }
         }
-        this.afterDispose(this.)
     }
 
     afterRender(node: Node, updating: boolean) {
