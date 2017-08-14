@@ -11,6 +11,7 @@ import ObservableHash from '../graph/ObservableHash';
 
 import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 import VirtualNode from '../dom/VirtualNode';
+import ComponentNode from '../dom/ComponentNode';
 import { Component } from '../dom/Component';
 
 export default class Cascade {
@@ -254,6 +255,7 @@ export default class Cascade {
             var component = new type(props, ...children);
             component.init();
             return component;
+            //return new ComponentNode(type, props, ...children);
         }
     }
 
