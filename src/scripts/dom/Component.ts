@@ -86,6 +86,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         var element: Node;
         var rootType = typeof root;
 
+        var noDispose: boolean = false;
+
         // Test if we must diff.
         // If we have an old root, we may need to diff.
         if (oldRoot && typeof oldRoot === rootType) {
@@ -105,6 +107,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
                                 // Root and OldRoot are both the same Component - Diff this case
                                 root.element = oldElement;
                                 element = this.diffComponents(root, oldRoot, oldElement);
+                                noDispose = true;
                             } else {
                                 // Root is a different Component
                                 element = root.toNode();
@@ -171,6 +174,10 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             this.props.ref(element);
         }
 
+        if (!noDispose && oldRoot && oldRoot instanceof Component) {
+            //oldRoot.dispose();
+        }
+
         this.afterRender(element, this.rendered);
 
         if (!element) {
@@ -181,7 +188,21 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         return element;
     }
 
+    disposeContext() {
+        if (this.context) {
+            for (var index = 0, length = this.context.length; index < length; index++) {
+                var computed = Cascade.getObservable(this.context[index], 'root') as Computed<any>;
+                computed.dispose();
+            }
+        }
+        this.afterDispose(this.)
+    }
+
     afterRender(node: Node, updating: boolean) {
+
+    }
+
+    afterDispose(node: Node) {
 
     }
 
