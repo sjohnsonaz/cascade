@@ -1,6 +1,7 @@
 import Cascade from '../cascade/Cascade';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
+import ComponentNode from './ComponentNode';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import Diff, { DiffOperation } from '../util/Diff';
 

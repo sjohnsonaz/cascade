@@ -8,6 +8,7 @@ export default class ComponentNode<T extends IVirtualNodeProps> implements IVirt
     children: any;
     key: string;
     element: Node;
+    component: Component<T>;
 
     constructor(
         componentConstructor: new (props?: T, ...children: any[]) => Component<T>,
@@ -20,9 +21,16 @@ export default class ComponentNode<T extends IVirtualNodeProps> implements IVirt
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
+    toComponent(): Component<T> {
+        this.component = new this.componentConstructor(this.props, ...this.children);
+        this.component.init();
+        return this.component;
+    }
+
     toNode(): Node {
-        var component = new this.componentConstructor(this.props, ...this.children);
-        component.init();
-        return component.toNode();
+        if (!this.component) {
+            this.toComponent();
+        }
+        return this.component.toNode();
     }
 }
