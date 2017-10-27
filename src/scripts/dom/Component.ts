@@ -219,6 +219,10 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         var output: Node;
         var innerRoot = Cascade.peek(newRoot, 'root');
         var innerOldRoot = Cascade.peek(oldRoot, 'root');
+
+        // Update new root as rendered
+        newRoot.rendered = true;
+
         if (!innerOldRoot) {
             // We are replacing
             switch (typeof innerRoot) {
