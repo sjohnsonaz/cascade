@@ -174,7 +174,7 @@ describe('Component.diff', () => {
                 return (
                     <div id="parent">
                         <StaticChild />
-                        {viewModel.visible ? <DynamicChild /> : null}
+                        {viewModel.visible ? <DynamicChild /> : undefined}
                     </div>
                 )
             }
@@ -198,7 +198,7 @@ describe('Component.diff', () => {
                 expect(divDynamic).to.not.be.undefined;
                 if (divDynamic) {
                     expect(divDynamic.id).to.equal('dynamic');
-                }    
+                }
                 done();
             }, 20);
         })

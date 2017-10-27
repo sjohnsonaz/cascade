@@ -23,7 +23,7 @@ export default class Diff {
             for (var j = 0; j <= n; j++) {
                 if (i == 0 || j == 0) {
                     table[i][j] = 0;
-                } else if (x[i - 1] == y[j - 1]) {
+                } else if (comparison ? comparison(x[i - 1], y[j - 1]) : x[i - 1] == y[j - 1]) {
                     table[i][j] = table[i - 1][j - 1] + 1;
                 } else {
                     table[i][j] = Diff.max(table[i - 1][j], table[i][j - 1]);

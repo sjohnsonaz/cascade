@@ -13,6 +13,11 @@ describe('Diff', function () {
         expect(lcs).to.equal('');
     });
 
+    it('should be able to diff an added character', function () {
+        var lcs = createLCS(Diff.compare('a', 'ab'));
+        expect(lcs).to.equal('a');
+    });
+
     it('should be able to diff same first character', function () {
         var lcs = createLCS(Diff.compare('ab', 'ac'));
         expect(lcs).to.equal('a');
