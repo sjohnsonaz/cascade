@@ -3,7 +3,6 @@
 import 'es6-shim';
 import 'reflect-metadata';
 
-/*
 import '../tests/Cascade.createObservable_Test';
 import '../tests/Cascade.createObservableArray_Test';
 import '../tests/Cascade.createObservableHash_Test';
@@ -17,9 +16,7 @@ import '../tests/cascadeTest6';
 import '../tests/cascadeTest7';
 import '../tests/cascadeTest9';
 import '../tests/cascadeTest10';
-*/
 import '../tests/Component.diff_Test';
-/*
 import '../tests/Component.toNode_Test';
 import '../tests/Component.update_Test';
 import '../tests/ComponentTest';
@@ -45,4 +42,3 @@ import '../tests/ObservableHash_Decorator_Test';
 import '../tests/ObservableHash_Test';
 import '../tests/Subscribe_Test';
 import '../tests/VirtualNode.toNode_Test';
-*/
