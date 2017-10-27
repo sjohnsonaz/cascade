@@ -203,4 +203,115 @@ describe('Component.diff', () => {
             }, 20);
         })
     });
+
+    it('should handle change from null child Components', (done) => {
+        class ViewModel {
+            @observable visible: boolean = false;
+        }
+        class StaticChild extends Component<any> {
+            render() {
+                return (
+                    <div id="static">static child</div>
+                );
+            }
+        }
+        class DynamicChild extends Component<any> {
+            render() {
+                return (
+                    <div id="dynamic">dynamic child</div>
+                )
+            }
+        }
+        interface IParentProps {
+            viewModel: ViewModel;
+        }
+        class Parent extends Component<IParentProps> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div id="parent">
+                        <StaticChild />
+                        {viewModel.visible ? <DynamicChild /> : null}
+                    </div>
+                )
+            }
+        }
+        var viewModel = new ViewModel();
+        var root = (
+            <div id="root">
+                <Parent viewModel={viewModel} />
+            </div>
+        );
+        var container = document.createElement('div')
+        Cascade.render(container, root);
+        window.setTimeout(() => {
+            viewModel.visible = true;
+            window.setTimeout(() => {
+                let divRoot = container.childNodes[0] as HTMLElement;
+                let divParent = divRoot.childNodes[0] as HTMLElement;
+                let divStatic = divParent.childNodes[0] as HTMLElement;
+                let divDynamic = divParent.childNodes[1] as HTMLElement;
+                expect(divStatic).to.not.be.undefined;
+                expect(divDynamic).to.not.be.undefined;
+                if (divDynamic) {
+                    expect(divDynamic.id).to.equal('dynamic');
+                }
+                done();
+            }, 20);
+        })
+    });
+
+    it('should handle change to null child Components', (done) => {
+        class ViewModel {
+            @observable visible: boolean = true;
+        }
+        class StaticChild extends Component<any> {
+            render() {
+                return (
+                    <div id="static">static child</div>
+                );
+            }
+        }
+        class DynamicChild extends Component<any> {
+            render() {
+                return (
+                    <div id="dynamic">dynamic child</div>
+                )
+            }
+        }
+        interface IParentProps {
+            viewModel: ViewModel;
+        }
+        class Parent extends Component<IParentProps> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div id="parent">
+                        <StaticChild />
+                        {viewModel.visible ? <DynamicChild /> : undefined}
+                    </div>
+                )
+            }
+        }
+        var viewModel = new ViewModel();
+        var root = (
+            <div id="root">
+                <Parent viewModel={viewModel} />
+            </div>
+        );
+        var container = document.createElement('div')
+        Cascade.render(container, root);
+        window.setTimeout(() => {
+            viewModel.visible = false;
+            window.setTimeout(() => {
+                let divRoot = container.childNodes[0] as HTMLElement;
+                let divParent = divRoot.childNodes[0] as HTMLElement;
+                let divStatic = divParent.childNodes[0] as HTMLElement;
+                let divDynamic = divParent.childNodes[1] as HTMLElement;
+                expect(divStatic).to.not.be.undefined;
+                expect(divDynamic).to.be.undefined;
+                done();
+            }, 20);
+        })
+    });
 });

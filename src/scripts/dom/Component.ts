@@ -322,6 +322,9 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             var childIndex = oldRoot.children.length - 1;
             for (var index = 0, length = diff.length; index < length; index++) {
                 var diffItem = diff[index];
+                if (diffItem.item === null || diffItem.itemB === null) {
+                    continue;
+                }
                 switch (diffItem.operation) {
                     case DiffOperation.REMOVE:
                         oldElement.removeChild(oldElement.childNodes[childIndex]);
