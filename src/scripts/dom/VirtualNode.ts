@@ -22,8 +22,8 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         fixedChildren = fixedChildren || [];
         for (var index = 0, length = children.length; index < length; index++) {
             var child = children[index];
-            // Remove undefined elements
-            if (typeof child !== 'undefined') {
+            // Remove undefined and null elements
+            if (typeof child !== 'undefined' && child !== null) {
                 if (child instanceof Array) {
                     VirtualNode.fixChildrenArrays(child, fixedChildren);
                 } else {
