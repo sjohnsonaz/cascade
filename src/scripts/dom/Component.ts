@@ -35,12 +35,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
         // This should subscribe to all observables used by render.
         Cascade.createComputed(this, 'root', () => {
             // Dispose of old context
-            if (this.context) {
-                for (var index = 0, length = this.context.length; index < length; index++) {
-                    var computed = Cascade.getObservable(this.context[index], 'root') as Computed<any>;
-                    computed.dispose(true);
-                }
-            }
+            this.disposeContext();
 
             // Push this to the current context
             if (context) {
@@ -190,9 +185,14 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     }
 
     dispose() {
+        var computed = Cascade.getObservable(this, 'root') as Computed<any>;
+        computed.dispose(true);
         if (this.context) {
-            for (let index = 0, length = this.context.length; index < length; index++) {
-                this.context[index].dispose();
+            for (var index = 0, length = this.context.length; index < length; index++) {
+                let component = this.context[index];
+                var computed = Cascade.getObservable(component, 'root') as Computed<any>;
+                computed.dispose(true);
+                component.dispose();
             }
         }
         this.afterDispose(this.element);
@@ -201,8 +201,10 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     disposeContext() {
         if (this.context) {
             for (var index = 0, length = this.context.length; index < length; index++) {
-                var computed = Cascade.getObservable(this.context[index], 'root') as Computed<any>;
-                computed.dispose();
+                let component = this.context[index];
+                var computed = Cascade.getObservable(component, 'root') as Computed<any>;
+                computed.dispose(true);
+                component.dispose();
             }
         }
     }
