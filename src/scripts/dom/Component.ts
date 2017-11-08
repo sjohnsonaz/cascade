@@ -191,7 +191,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             for (var index = 0, length = this.context.length; index < length; index++) {
                 let component = this.context[index];
                 var computed = Cascade.getObservable(component, 'root') as Computed<any>;
-                computed.dispose(true);
+                computed.dispose();
                 component.dispose();
             }
         }
@@ -203,7 +203,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             for (var index = 0, length = this.context.length; index < length; index++) {
                 let component = this.context[index];
                 var computed = Cascade.getObservable(component, 'root') as Computed<any>;
-                computed.dispose(true);
+                computed.dispose();
                 component.dispose();
             }
         }
