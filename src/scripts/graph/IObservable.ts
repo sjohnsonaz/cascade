@@ -1,5 +1,6 @@
 export interface ISubscriber {
     notify(): void;
+    dispose(recursive?: boolean): void;
 }
 
 export interface ISubscriberFunction<T> {
@@ -15,7 +16,7 @@ export interface IObservable<T> {
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     unsubscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     publish(value: T, oldValue?: T): void;
-    dispose(): void;
+    dispose(recursive?: boolean): void;
 }
 
 export interface IArray<T> extends Array<T> {

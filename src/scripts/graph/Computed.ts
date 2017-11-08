@@ -119,11 +119,20 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         }
         return output;
     }
-    dispose() {
+
+    dispose(recursive?: boolean) {
+        super.dispose(recursive);
         this.disposed = true;
-        for (var index = 0, length = this.references.length; index < length; index++) {
-            var reference = this.references[index];
-            reference.unsubscribe(this);
+        if (recursive) {
+            for (var index = 0, length = this.references.length; index < length; index++) {
+                var reference = this.references[index];
+                reference.dispose(true);
+            }
+        } else {
+            for (var index = 0, length = this.references.length; index < length; index++) {
+                var reference = this.references[index];
+                reference.unsubscribe(this);
+            }
         }
     }
 }

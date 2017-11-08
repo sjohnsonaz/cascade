@@ -78,4 +78,87 @@ describe('Component.update', () => {
             done();
         }, 20);
     });
+
+    it('should dispose of nested Components', async () => {
+        class ViewModel {
+            @observable valueA: string = 'value A';
+            @observable valueB: string = 'value B';
+            @observable valueC: string = 'value C';
+        }
+
+        class View extends Component<{
+            viewModel: ViewModel;
+        }> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div key="view">
+                        <Parent viewModel={viewModel} />
+                        <div>{viewModel.valueA}</div>
+                    </div>
+                )
+            }
+        }
+
+        class Parent extends Component<{
+            viewModel: ViewModel;
+        }> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div key="parent">
+                        <Child viewModel={viewModel} />
+                        <div>{viewModel.valueB}</div>
+                    </div>
+                )
+            }
+        }
+
+        let childRenderCount = 0;
+        class Child extends Component<{
+            viewModel: ViewModel;
+        }> {
+            render() {
+                childRenderCount++;
+                let { viewModel } = this.props;
+                return (
+                    <div key="child">{viewModel.valueC}</div>
+                )
+            }
+        }
+
+        let viewModel = new ViewModel();
+
+        var root = (
+            <div>
+                <View viewModel={viewModel} />
+            </div>
+        );
+
+        var container = document.createElement('div');
+        Cascade.render(container, root);
+
+        await wait(0);
+
+        viewModel.valueA = 'new value A';
+
+        await wait(0);
+
+        viewModel.valueB = 'new value B';
+
+        await wait(0);
+
+        viewModel.valueC = 'new value C';
+
+        await wait(20);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('new value C');
+        expect(childRenderCount).to.equal(4);
+    });
 });
+
+export function wait(time: number) {
+    return new Promise((resolve) => {
+        window.setTimeout(resolve, time);
+    });
+}

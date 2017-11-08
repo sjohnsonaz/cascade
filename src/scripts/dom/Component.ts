@@ -38,7 +38,7 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             if (this.context) {
                 for (var index = 0, length = this.context.length; index < length; index++) {
                     var computed = Cascade.getObservable(this.context[index], 'root') as Computed<any>;
-                    computed.dispose();
+                    computed.dispose(true);
                 }
             }
 

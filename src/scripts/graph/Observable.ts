@@ -12,6 +12,7 @@ export default class Observable<T> implements IObservable<T> {
         this.subscribers = [];
     }
 
+    // TODO: Change this to push only unique
     getValue() {
         if (context) {
             context.push(this);
@@ -61,7 +62,10 @@ export default class Observable<T> implements IObservable<T> {
             }
         }
     }
-    dispose() { }
+
+    dispose(recursive?: boolean) {
+        this.subscribers.length = 0;
+    }
 
     static getContext() {
         return context;
