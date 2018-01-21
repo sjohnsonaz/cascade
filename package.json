@@ -10,7 +10,8 @@
   "typings": "dist/scripts/modules/Cascade.d.ts",
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "tsc --declaration",
+    "prepublishOnly": "rimraf ./dist && tsc --declaration",
+    "clean": "rimraf ./dist",
     "test": "tsc && node src/mocha/NodeRunner.js",
     "min": "webpack --config webpack.config.js --progress",
     "dev": "webpack --config webpack.dev.config.js --progress",
@@ -35,6 +36,7 @@
     "jsdom": "11.2.0",
     "mocha": "3.5.3",
     "reflect-metadata": "0.1.10",
+    "rimraf": "^2.6.2",
     "ts-loader": "2.3.7",
     "typedoc": "0.8.0",
     "typescript": "2.5.3",
