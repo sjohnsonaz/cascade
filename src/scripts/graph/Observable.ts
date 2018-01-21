@@ -1,7 +1,14 @@
 import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
 
-var computedContexts: IObservable<any>[][] = [];
-var context: IObservable<any>[] = undefined;
+// Store ObservableContext in window to prevent multiple Cascade instance problem.
+export interface IObservableContext {
+    computedContexts: IObservable<any>[][];
+    context: IObservable<any>[];
+}
+var observableContext: IObservableContext = window['$_cascade_observable_context'] || {};
+window['$_cascade_observable_context'] = observableContext;
+observableContext.computedContexts = observableContext.computedContexts || [];
+observableContext.context = observableContext.context || undefined;
 
 export default class Observable<T> implements IObservable<T> {
     value: T;
@@ -14,8 +21,8 @@ export default class Observable<T> implements IObservable<T> {
 
     // TODO: Change this to push only unique
     getValue() {
-        if (context) {
-            context.push(this);
+        if (observableContext.context) {
+            observableContext.context.push(this);
         }
         return this.value;
     }
@@ -68,18 +75,18 @@ export default class Observable<T> implements IObservable<T> {
     }
 
     static getContext() {
-        return context;
+        return observableContext.context;
     }
 
     static pushContext() {
-        context = [];
-        computedContexts.unshift(context);
-        return context;
+        observableContext.context = [];
+        observableContext.computedContexts.unshift(observableContext.context);
+        return observableContext.context;
     }
 
     static popContext() {
-        var oldContext = computedContexts.shift();
-        context = computedContexts[0];
+        var oldContext = observableContext.computedContexts.shift();
+        observableContext.context = observableContext.computedContexts[0];
         return oldContext;
     }
 }

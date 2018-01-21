@@ -5,8 +5,15 @@ import ComponentNode from './ComponentNode';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import Diff, { DiffOperation } from '../util/Diff';
 
-var componentContexts: Component<IVirtualNodeProps>[][] = [];
-var context: Component<IVirtualNodeProps>[] = undefined;
+// Store ConponentContext in window to prevent multiple Cascade instance problem.
+export interface IComponentContext {
+    componentContexts: Component<IVirtualNodeProps>[][];
+    context: Component<IVirtualNodeProps>[];
+}
+var componentContext: IComponentContext = window['$_cascade_component_context'] || {};
+window['$_cascade_component_context'] = componentContext;
+componentContext.componentContexts = componentContext.componentContexts || [];
+componentContext.context = componentContext.context || undefined;
 
 export abstract class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
     // TODO: Remove unused uniqueId?
@@ -38,8 +45,8 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
             this.disposeContext();
 
             // Push this to the current context
-            if (context) {
-                context.push(this);
+            if (componentContext.context) {
+                componentContext.context.push(this);
             }
 
             // Create a new context
@@ -387,18 +394,18 @@ export abstract class Component<T extends IVirtualNodeProps> implements IVirtual
     }
 
     static getContext() {
-        return context;
+        return componentContext.context;
     }
 
     static pushContext() {
-        context = [];
-        componentContexts.unshift(context);
-        return context;
+        componentContext.context = [];
+        componentContext.componentContexts.unshift(componentContext.context);
+        return componentContext.context;
     }
 
     static popContext() {
-        var oldContext = componentContexts.shift();
-        context = componentContexts[0];
+        var oldContext = componentContext.componentContexts.shift();
+        componentContext.context = componentContext.componentContexts[0];
         return oldContext;
     }
 }
