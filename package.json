@@ -29,18 +29,18 @@
   "bugs": {},
   "dependencies": {},
   "devDependencies": {
-    "@types/chai": "4.0.4",
-    "@types/mocha": "2.2.43",
+    "@types/chai": "4.1.2",
+    "@types/mocha": "2.2.48",
     "chai": "4.1.2",
     "es6-shim": "0.35.3",
-    "jsdom": "11.2.0",
+    "jsdom": "11.6.2",
     "mocha": "3.5.3",
-    "reflect-metadata": "0.1.10",
-    "rimraf": "^2.6.2",
-    "ts-loader": "2.3.7",
-    "typedoc": "0.8.0",
-    "typescript": "2.5.3",
-    "webpack": "3.6.0"
+    "reflect-metadata": "0.1.12",
+    "rimraf": "2.6.2",
+    "ts-loader": "3.5.0",
+    "typedoc": "0.10.0",
+    "typescript": "2.7.1",
+    "webpack": "3.10.0"
   },
   "keywords": [
     "cascade",
