@@ -72,3 +72,36 @@ describe('Computed @observable Decorator', () => {
         expect(viewModel.value).to.equal(1);
     });
 });
+
+describe('Cascade.waitToEqual', () => {
+    it('should run on equal, and not run twice', async () => {
+        class ViewModel {
+            @observable a: boolean = false;
+        }
+        var viewModel = new ViewModel();
+        window.setTimeout(() => {
+            viewModel.a = true;
+            window.setTimeout(() => {
+                viewModel.a = false;
+            }, 10)
+        }, 10)
+        let result = await Cascade.waitToEqual(viewModel, 'a', true, 100);
+        expect(result).to.equal(true);
+    });
+
+    it('should not run if not equal, and then throw an error if time elapses', async () => {
+        class ViewModel {
+            @observable a: boolean = false;
+        }
+        var viewModel = new ViewModel();
+        window.setTimeout(() => {
+            viewModel.a = undefined;
+        }, 10)
+        try {
+            var result = await Cascade.waitToEqual(viewModel, 'a', true, 100);
+        } catch (e) {
+            expect(e).to.not.be.undefined;
+        }
+        expect(result).to.not.equal(true);
+    });
+});

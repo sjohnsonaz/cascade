@@ -175,6 +175,38 @@ export default class Cascade {
         }
     }
 
+    static waitToEqual<T>(obj: any, property: string, testValue: T, timeout?: number) {
+        var graph: Graph = obj._graph;
+        if (graph) {
+            return new Promise<T>((resolve, reject) => {
+                let resolved = false;
+                let subscriberFunction = (value: T) => {
+                    if (value === testValue) {
+                        if (timerId) {
+                            window.clearTimeout(timerId);
+                        }
+                        if (!resolved) {
+                            resolved = true;
+                            window.setTimeout(() => {
+                                graph.unsubscribe(property, subscriberFunction);
+                            })
+                            resolve(value);
+                        }
+                    }
+                };
+                if (timeout) {
+                    var timerId = window.setTimeout(() => {
+                        graph.unsubscribe(property, subscriberFunction);
+                        reject('Timeout elapsed');
+                    }, timeout);
+                }
+                graph.subscribeOnly(property, subscriberFunction);
+            });
+        } else {
+            return Promise.reject('Cannot subscribe to Object');
+        }
+    }
+
     /**
      * 
      * @param obj 
