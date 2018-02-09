@@ -145,12 +145,13 @@ describe('VirtualNode.toNode', function () {
         if (typeof SVGElement === 'undefined') this.skip();
         var root = (
             <svg height="210" width="400" xmlns="http://www.w3.org/2000/svg">
-                <path d="M150 0 L75 200 L225 200 Z" xmlns="http://www.w3.org/2000/svg" />
+                <path d="M 150 0 L 75 200 L 225 200 Z" xmlns="http://www.w3.org/2000/svg" />
                 Sorry, your browser does not support inline SVG.
             </svg>
         );
         Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.children[0].getAttribute('d')).to.equal('M150 0 L75 200 L225 200 Z');
+            let path = element.childNodes[0] as SVGElement;
+            expect(path.getAttribute('d')).to.equal('M 150 0 L 75 200 L 225 200 Z');
         });
     });
 

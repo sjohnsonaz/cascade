@@ -3,6 +3,14 @@ import { expect } from 'chai';
 import Cascade, { IHash } from '../scripts/modules/Cascade';
 
 describe('Cascade.createObservableHash', () => {
+    before(function () {
+        let $IEversion = window['$IEVersion'];
+        let ie = 0 < $IEversion && $IEversion <= 11;
+        if (ie) {
+            this.skip();
+        }
+    });
+
     it('should initialize undefined to empty', () => {
         class ViewModel {
             value: IHash<any>;

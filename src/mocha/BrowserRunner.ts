@@ -3,6 +3,25 @@
 import 'es6-shim';
 import 'reflect-metadata';
 
+let $IEVersion: number = (function () {
+    let { userAgent } = window.navigator;
+    let matches = userAgent.match(/MSIE ([0-9\.]*)/);
+    if (matches) {
+        return parseInt(matches[1]);
+    }
+    matches = userAgent.match(/Trident\/([0-9\.]*)/);
+    if (matches) {
+        return 11;
+    }
+    matches = userAgent.match(/Edge\/([0-9\.]*)/);
+    if (matches) {
+        return parseInt(matches[1]);
+    }
+    return 0;
+})();
+
+window['$IEVersion'] = $IEVersion;
+
 import '../tests/Cascade.createObservable_Test';
 import '../tests/Cascade.createObservableArray_Test';
 import '../tests/Cascade.createObservableHash_Test';
