@@ -3,6 +3,14 @@ import { expect } from 'chai';
 import Cascade, { ObservableArrayLegacy, array, observable } from '../scripts/modules/Cascade';
 
 describe('ObservableArrayLegacy', () => {
+    before(function () {
+        let $IEversion = window['$IEVersion'];
+        let ie = $IEversion === 0 || $IEversion > 11;
+        if (ie) {
+            this.skip();
+        }
+    });
+
     it('should initialize to an emtpy Array', () => {
         var value = new ObservableArrayLegacy();
         expect(value.getValue().length).to.equal(0);

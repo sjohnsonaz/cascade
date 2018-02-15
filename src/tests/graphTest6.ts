@@ -7,24 +7,6 @@ var runsChild = 0;
 var childObservable = undefined;
 var childStatic = undefined;
 
-class Parent {
-    @observable a = 1;
-    @observable b = 2;
-    @observable get ab() {
-        runsParent++;
-        return this.a + this.b;
-    }
-    @observable childObservable: Child;
-    childStatic: Child;
-    constructor() {
-        var ab = this.ab;
-        childObservable = new Child(this);
-        childStatic = new Child(this);
-        this.childObservable = childObservable;
-        this.childStatic = childStatic;
-    }
-}
-
 class Child {
     parent: Parent;
     @observable c = 1;
@@ -41,6 +23,24 @@ class Child {
         });
         this.parent = parent;
         var abcd = this.abcd;
+    }
+}
+
+class Parent {
+    @observable a = 1;
+    @observable b = 2;
+    @observable get ab() {
+        runsParent++;
+        return this.a + this.b;
+    }
+    @observable childObservable: Child;
+    childStatic: Child;
+    constructor() {
+        var ab = this.ab;
+        childObservable = new Child(this);
+        childStatic = new Child(this);
+        this.childObservable = childObservable;
+        this.childStatic = childStatic;
     }
 }
 

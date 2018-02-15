@@ -18,22 +18,6 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
-    static fixChildrenArrays(children: Array<any>, fixedChildren?: any[]) {
-        fixedChildren = fixedChildren || [];
-        for (var index = 0, length = children.length; index < length; index++) {
-            var child = children[index];
-            // Remove undefined and null elements
-            if (typeof child !== 'undefined' && child !== null) {
-                if (child instanceof Array) {
-                    VirtualNode.fixChildrenArrays(child, fixedChildren);
-                } else {
-                    fixedChildren.push(child);
-                }
-            }
-        }
-        return fixedChildren;
-    }
-
     toNode() {
         if (this.props.xmlns) {
             var node = document.createElementNS(this.props.xmlns, this.type);
@@ -86,6 +70,22 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
         var container = document.createElement('div') as HTMLElement;
         container.appendChild(this.toNode());
         return container.innerHTML;
+    }
+
+    static fixChildrenArrays(children: Array<any>, fixedChildren?: any[]) {
+        fixedChildren = fixedChildren || [];
+        for (var index = 0, length = children.length; index < length; index++) {
+            var child = children[index];
+            // Remove undefined and null elements
+            if (typeof child !== 'undefined' && child !== null) {
+                if (child instanceof Array) {
+                    VirtualNode.fixChildrenArrays(child, fixedChildren);
+                } else {
+                    fixedChildren.push(child);
+                }
+            }
+        }
+        return fixedChildren;
     }
 
     static setAttribute(element: HTMLElement, property: string, value: any, isSvg: boolean = false) {

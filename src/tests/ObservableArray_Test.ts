@@ -81,10 +81,17 @@ describe('ObservableArray', function () {
         value.subscribeOnly((currentValue) => {
             count++;
         });
-        delete value.peek().length;
-        window.setTimeout(() => {
-            expect(count).to.equal(0);
-            done();
-        }, 100);
+        try {
+            delete value.peek().length;
+        }
+        catch (e) {
+
+        }
+        finally {
+            window.setTimeout(() => {
+                expect(count).to.equal(0);
+                done();
+            }, 100);
+        }
     });
 });
