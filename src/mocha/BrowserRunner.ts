@@ -43,6 +43,7 @@ import '../tests/ComputedTest';
 import '../tests/DecoratorUtil_Test';
 import '../tests/diffTest';
 import '../tests/documentTest';
+import '../tests/Fragment_Test';
 import '../tests/graphTest0';
 import '../tests/graphTest1';
 import '../tests/graphTest2';

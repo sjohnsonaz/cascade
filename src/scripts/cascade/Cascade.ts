@@ -11,6 +11,7 @@ import ObservableHash from '../graph/ObservableHash';
 
 import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 import VirtualNode from '../dom/VirtualNode';
+import Fragment from '../dom/Fragment';
 import ComponentNode from '../dom/ComponentNode';
 import { Component } from '../dom/Component';
 
@@ -285,7 +286,11 @@ export default class Cascade {
             return new VirtualNode(type, props, ...children);
         } else {
             var component = new type(props, ...children);
-            component.init();
+            if (!(component instanceof Fragment)) {
+                component.init();
+            } else {
+                console.log('fragment!');
+            }
             return component;
             //return new ComponentNode(type, props, ...children);
         }
@@ -313,6 +318,8 @@ export default class Cascade {
             }
         });
     }
+
+    static Fragment = Fragment;
 
     static proxyAvailable: boolean = typeof Proxy !== 'undefined';
     static reflectAvailable: boolean = (typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function');
