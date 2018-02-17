@@ -16,7 +16,7 @@ describe('Fragment.toNode', function () {
         });
     });
 
-    it('should be able to Diff', (done) => {
+    it.skip('should be able to Diff', (done) => {
         class ViewModel {
             @observable value = false;
         }
