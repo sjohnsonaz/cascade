@@ -1,13 +1,13 @@
-import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
+import { IVirtualNode, IVirtualElementProps } from './IVirtualNode';
 
-export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {
+export default class VirtualNode<T> implements IVirtualNode<T> {
     type: string;
-    props: T;
+    props: T & IVirtualElementProps;
     children: any;
     key: string;
     element: Node;
 
-    constructor(type: string, props?: T, ...children: Array<any>) {
+    constructor(type: string, props?: T & IVirtualElementProps, ...children: Array<any>) {
         this.type = type;
         this.props = props || ({} as any);
         this.key = this.props.key;
@@ -19,10 +19,12 @@ export default class VirtualNode<T extends IVirtualNodeProps> implements IVirtua
     }
 
     toNode() {
+        let node: HTMLElement;
         if (this.props.xmlns) {
-            var node = document.createElementNS(this.props.xmlns, this.type);
+            // Casting potential Element to HtmlElement.
+            node = document.createElementNS(this.props.xmlns, this.type) as any;
         } else {
-            var node = document.createElement(this.type);
+            node = document.createElement(this.type);
         }
         let isSvg = !!this.props.xmlns;
         for (var name in this.props) {

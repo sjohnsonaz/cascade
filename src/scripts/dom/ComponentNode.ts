@@ -2,16 +2,16 @@ import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import { Component } from './Component';
 import VirtualNode from './VirtualNode';
 
-export default class ComponentNode<T extends IVirtualNodeProps> implements IVirtualNode<T> {
+export default class ComponentNode<T> implements IVirtualNode<T> {
     componentConstructor: new (props?: T, ...children: any[]) => Component<T>;
-    props: T;
+    props: T & IVirtualNodeProps;
     children: any;
     key: string;
     element: Node;
     component: Component<T>;
 
     constructor(
-        componentConstructor: new (props?: T, ...children: any[]) => Component<T>,
+        componentConstructor: new (props?: T & IVirtualNodeProps, ...children: any[]) => Component<T>,
         props?: T,
         ...children: Array<any>
     ) {

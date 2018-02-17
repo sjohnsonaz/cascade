@@ -5,7 +5,7 @@ import ComponentNode from './ComponentNode';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import Diff, { DiffOperation } from '../util/Diff';
 
-// Store ConponentContext in window to prevent multiple Cascade instance problem.
+// Store ComponentContext in window to prevent multiple Cascade instance problem.
 export interface IComponentContext {
     componentContexts: Component<IVirtualNodeProps>[][];
     context: Component<IVirtualNodeProps>[];
@@ -15,18 +15,18 @@ window['$_cascade_component_context'] = componentContext;
 componentContext.componentContexts = componentContext.componentContexts || [];
 componentContext.context = componentContext.context || undefined;
 
-export abstract class Component<T extends IVirtualNodeProps> implements IVirtualNode<T> {
+export abstract class Component<T> implements IVirtualNode<T> {
     // TODO: Remove unused uniqueId?
     uniqueId: number;
-    props: T;
+    props: T & IVirtualNodeProps;
     children: any;
     key: string;
     root: any;
     element: Node;
-    context: Component<IVirtualNodeProps>[];
+    context: Component<any>[];
     rendered: boolean = false;
 
-    constructor(props?: T, ...children: any[]) {
+    constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
         // TODO: Remove unused uniqueId?
         this.uniqueId = Math.floor(Math.random() * 1000000);
         this.props = props || ({} as any);

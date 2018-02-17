@@ -6,7 +6,7 @@ declare global {
     namespace JSX {
         export interface Element extends IVirtualNode<IVirtualNodeProps> { }
 
-        export interface ElementClass extends Component<IVirtualNodeProps> {
+        export interface ElementClass extends Component<{}> {
             render(): any;
         }
 
