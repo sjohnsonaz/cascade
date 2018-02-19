@@ -305,6 +305,15 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
         newRoot.afterRender(output, true);
 
+        if (!output) {
+            output = document.createComment('Empty Component');
+        }
+
+        // Swap root elements if necessary
+        if (output !== oldElement && oldElement && oldElement.parentNode) {
+            oldElement.parentNode.replaceChild(output, oldElement);
+        }
+
         return output;
     }
 
@@ -343,8 +352,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
                         // TODO: Remove extra casts
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
-                                newChild.element = oldElement.childNodes[childIndex];
-                                this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement);
+                                let output = this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement);
+                                newChild.element = output;
                             } else if (newChild instanceof VirtualNode) {
                                 // TODO: This is the only case where we don't know if oldChild exists and has the same type as newChild.
                                 // Perhaps we should figure that out here intead of inside diffVirtualNodes.

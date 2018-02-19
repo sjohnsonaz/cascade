@@ -109,14 +109,16 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             let hash: {
                 [index: string]: IObservable<any>;
             } = {};
+            let references: IObservable<any>[] = [];
             for (var index = 0, length: number = context.length; index < length; index++) {
                 var reference = context[index];
                 if (!hash[reference.id]) {
                     hash[reference.id] = reference;
+                    references.push(reference);
                     reference.subscribeOnly(this);
                 }
             }
-            this.references = context;
+            this.references = references;
         }
         return output;
     }
