@@ -4,7 +4,6 @@ import ComputedQueue from './ComputedQueue';
 
 export default class Computed<T> extends Observable<T> implements ISubscriber {
 
-    id: number;
     references: IObservable<any>[];
     definition: (n?: T) => T;
     setter: (n: T) => any;
@@ -13,15 +12,11 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     disposed: boolean;
     error: Error;
 
-    static id: number = 0;
     static computedQueue: ComputedQueue = new ComputedQueue();
 
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
     constructor(definition: (n?: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any) {
         super(undefined);
-        this.id = Computed.id;
-        Computed.id++;
-
         this.references = [];
         this.definition = definition;
         this.thisArg = thisArg;
@@ -110,10 +105,16 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         }
         var context = Observable.popContext();
         if (!this.error) {
-            //TODO: Prevent redundant subscription.
+            //TODO: Use non-hash method to prevent redundant subscriptions.
+            let hash: {
+                [index: string]: IObservable<any>;
+            } = {};
             for (var index = 0, length: number = context.length; index < length; index++) {
                 var reference = context[index];
-                reference.subscribeOnly(this);
+                if (!hash[reference.id]) {
+                    hash[reference.id] = reference;
+                    reference.subscribeOnly(this);
+                }
             }
             this.references = context;
         }

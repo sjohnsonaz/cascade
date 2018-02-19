@@ -11,12 +11,18 @@ observableContext.computedContexts = observableContext.computedContexts || [];
 observableContext.context = observableContext.context || undefined;
 
 export default class Observable<T> implements IObservable<T> {
+    id: number;
     value: T;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
+
+    static id: number = 0;
 
     constructor(value?: T) {
         this.value = value;
         this.subscribers = [];
+
+        this.id = Observable.id;
+        Observable.id++;
     }
 
     // TODO: Change this to push only unique
