@@ -289,7 +289,8 @@ export default class Cascade {
             if (!(component instanceof Fragment)) {
                 component.init();
             } else {
-                console.log('fragment!');
+                // TODO: Add Fragment support
+                //console.log('fragment!');
             }
             return component;
             //return new ComponentNode(type, props, ...children);
