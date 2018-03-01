@@ -115,7 +115,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             } else if (property === 'xmlns') {
                 // do nothing
             } else {
-                element.setAttributeNS(namespace, property, value);
+                element.setAttribute(property, value);
             }
         }
     }
@@ -149,7 +149,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             } else if (property === 'xmlns') {
                 // do nothing
             } else {
-                element.removeAttributeNS(namespace, property);
+                element.removeAttribute(property);
             }
         }
     }
