@@ -105,9 +105,63 @@ describe('Component.diff', () => {
         Cascade.render(container, root);
         viewModel.value = true;
         expect(container.childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
         window.setTimeout(() => {
             expect(container.childNodes[0].childNodes.length).to.equal(1);
-            done();
+            expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
+            viewModel.value = false;
+            window.setTimeout(() => {
+                expect(container.childNodes[0].childNodes.length).to.equal(1);
+                expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
+                done();
+            }, 20);
+        }, 20);
+    });
+
+    it('should update empty Components', (done) => {
+        class ViewModel {
+            @observable value = false;
+        }
+        interface IContentProps {
+            value: boolean;
+        }
+        class Content extends Component<IContentProps> {
+            render() {
+                return this.props.value ? true : null;
+            }
+        }
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+        class View extends Component<IViewProps> {
+            render() {
+                return (
+                    <div>
+                        <Content value={viewModel.value} />
+                    </div>
+                );
+            }
+        }
+        var viewModel = new ViewModel();
+        var root = (
+            <div>
+                <View viewModel={viewModel} />
+            </div>
+        );
+        var container = document.createElement('div')
+        Cascade.render(container, root);
+        viewModel.value = true;
+        expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
+        window.setTimeout(() => {
+            expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+            expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
+            viewModel.value = false;
+            window.setTimeout(() => {
+                expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+                expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
+                done();
+            }, 20);
         }, 20);
     });
 

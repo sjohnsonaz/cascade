@@ -8,6 +8,7 @@ export interface ISubscriberFunction<T> {
 }
 
 export interface IObservable<T> {
+    id: number;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
     getValue(): T;
     peek(): T;
