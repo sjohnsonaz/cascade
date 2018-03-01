@@ -145,7 +145,7 @@ describe('VirtualNode.toNode', function () {
         if (typeof SVGElement === 'undefined') this.skip();
         var root = (
             <svg height="210" width="400" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 150 0 L 75 200 L 225 200 Z" xmlns="http://www.w3.org/2000/svg" />
+                <path d="M 150 0 L 75 200 L 225 200 Z" />
                 Sorry, your browser does not support inline SVG.
             </svg>
         );

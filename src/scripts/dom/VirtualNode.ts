@@ -18,20 +18,20 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
-    toNode() {
+    toNode(namespace?: string) {
         let node: HTMLElement;
-        if (this.props.xmlns) {
+        namespace = namespace || this.props.xmlns;
+        if (namespace) {
             // Casting potential Element to HtmlElement.
-            node = document.createElementNS(this.props.xmlns, this.type) as any;
+            node = document.createElementNS(namespace, this.type) as any;
         } else {
             node = document.createElement(this.type);
         }
-        let isSvg = !!this.props.xmlns;
         for (var name in this.props) {
             if (this.props.hasOwnProperty(name)) {
                 let value = this.props[name];
                 if (value !== undefined && value !== null) {
-                    VirtualNode.setAttribute(node, name, this.props[name], isSvg);
+                    VirtualNode.setAttribute(node, name, this.props[name], namespace);
                 }
             }
         }
@@ -44,7 +44,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                 case 'object':
                     if (child) {
                         if ((child as IVirtualNode<any>).toNode) {
-                            var renderedNode = (child as IVirtualNode<any>).toNode();
+                            var renderedNode = (child as IVirtualNode<any>).toNode(namespace);
                             if (renderedNode instanceof Node) {
                                 node.appendChild(renderedNode);
                             }
@@ -90,8 +90,8 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         return fixedChildren;
     }
 
-    static setAttribute(element: HTMLElement, property: string, value: any, isSvg: boolean = false) {
-        if (!isSvg) {
+    static setAttribute(element: HTMLElement, property: string, value: any, namespace?: string) {
+        if (!namespace) {
             if (property === 'style') {
                 element.style.cssText = value;
             } else if (property.indexOf('-') >= 0) {
@@ -112,15 +112,17 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                 element[property] = value;
             } else if (property === 'className') {
                 element[property] = value;
+            } else if (property === 'xmlns') {
+                // do nothing
             } else {
-                element.setAttribute(property, value);
+                element.setAttributeNS(namespace, property, value);
             }
         }
     }
 
     // TODO: Should we both set to empty string and delete?
-    static removeAttribute(element: HTMLElement, property: string, isSvg: boolean = false) {
-        if (!isSvg) {
+    static removeAttribute(element: HTMLElement, property: string, namespace?: string) {
+        if (!namespace) {
             if (property === 'style') {
                 element.style.cssText = undefined;
             } else if (property.indexOf('-') >= 0) {
@@ -144,8 +146,10 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             } else if (property === 'className') {
                 element[property] = '';
                 delete element[property];
+            } else if (property === 'xmlns') {
+                // do nothing
             } else {
-                element.removeAttribute(property);
+                element.removeAttributeNS(namespace, property);
             }
         }
     }

@@ -12,6 +12,6 @@ export interface IVirtualNode<T> {
     children: any;
     key: string;
 
-    toNode(): Node;
+    toNode(namespace?: string): Node;
     toString(): string;
 }

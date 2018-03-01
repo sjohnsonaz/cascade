@@ -63,7 +63,15 @@ export abstract class Component<T> implements IVirtualNode<T> {
         Cascade.subscribe(this, 'root', (root: any, oldRoot: any) => {
             if (this.rendered) {
                 var element = this.element;
-                this.toNode(oldRoot);
+                // Get namespace from current element
+                // If element is an svg, use undefined, as it may change
+                // Otherwise, assume the namespace comes from parent
+                let namespace;
+                if (element && element.nodeName !== 'svg') {
+                    let namespaceURI = element.namespaceURI;
+                    namespace = (namespaceURI && namespaceURI.endsWith('svg')) ? namespaceURI : undefined;
+                }
+                this.toNode(namespace, oldRoot);
                 if (element !== this.element) {
                     if (element) {
                         var parentNode = element.parentNode;
@@ -82,7 +90,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
     abstract render(): any;
 
-    toNode(oldRoot?: any): Node {
+    toNode(namespace?: string, oldRoot?: any): Node {
         var root = Cascade.peek(this, 'root');
         var oldElement = this.element;
 
@@ -109,21 +117,21 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             if (root.constructor === oldRoot.constructor && root.key === oldRoot.key) {
                                 // Root and OldRoot are both the same Component - Diff this case
                                 root.element = oldElement;
-                                element = this.diffComponents(root, oldRoot, oldElement);
+                                element = this.diffComponents(root, oldRoot, oldElement, namespace);
                                 noDispose = true;
                             } else {
                                 // Root is a different Component
-                                element = root.toNode();
+                                element = root.toNode(namespace);
                             }
                         } else if (root.type) {
                             // Root is a VirtualNode
                             if (root.type === oldRoot.type && root.key === oldRoot.key) {
                                 // Root and OldRoot are both the same VirtualNode - Diff this case
                                 root.element = oldElement;
-                                element = this.diffVirtualNodes(root, oldRoot, oldElement as HTMLElement);
+                                element = this.diffVirtualNodes(root, oldRoot, oldElement as HTMLElement, namespace);
                             } else {
                                 // Root is a different VirtualNode
-                                element = root.toNode();
+                                element = root.toNode(namespace);
                             }
                         } else {
                             // Root is an Object
@@ -155,7 +163,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
                 case 'object':
                     if (root) {
                         if (root.toNode) {
-                            element = root.toNode();
+                            element = root.toNode(namespace);
                         } else {
                             element = document.createTextNode(root.toString());
                         }
@@ -224,7 +232,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
     }
 
-    diffComponents(newRoot: Component<IVirtualNodeProps>, oldRoot: Component<IVirtualNodeProps>, oldElement: Node) {
+    diffComponents(newRoot: Component<IVirtualNodeProps>, oldRoot: Component<IVirtualNodeProps>, oldElement: Node, namespace: string) {
         var output: Node;
         var innerRoot = Cascade.peek(newRoot, 'root');
         var innerOldRoot = Cascade.peek(oldRoot, 'root');
@@ -238,7 +246,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
                 case 'object':
                     if (innerRoot) {
                         if (innerRoot.toNode) {
-                            output = innerRoot.toNode();
+                            output = innerRoot.toNode(namespace);
                         } else {
                             output = document.createTextNode(innerRoot.toString());
                         }
@@ -258,18 +266,18 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             // InnerRoot is a Component
                             if (innerOldRoot instanceof Component && innerRoot.constructor === innerOldRoot.constructor && innerRoot.key === innerOldRoot.key) {
                                 // InnerRoot is the same Component as InnerOldRoot - Diff this case
-                                output = this.diffComponents(innerRoot, innerOldRoot, oldElement);
+                                output = this.diffComponents(innerRoot, innerOldRoot, oldElement, namespace);
                             } else {
                                 // Replace
-                                output = innerRoot.toNode();
+                                output = innerRoot.toNode(namespace);
                             }
                         } else if (innerRoot instanceof VirtualNode) {
                             if (innerOldRoot instanceof VirtualNode && innerRoot.type === innerOldRoot.type && innerRoot.key === innerOldRoot.key) {
                                 // InnerRoot is the same VirtualNode as InnerOldRoot - Diff this case
-                                output = this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement as HTMLElement);
+                                output = this.diffVirtualNodes(innerRoot, innerOldRoot, oldElement as HTMLElement, namespace);
                             } else {
                                 // Replace
-                                output = innerRoot.toNode();
+                                output = innerRoot.toNode(namespace);
                             }
                         }
                     }
@@ -308,23 +316,23 @@ export abstract class Component<T> implements IVirtualNode<T> {
         return output;
     }
 
-    diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement) {
+    diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement, namespace: string) {
         // TODO: This case should not happen.
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
-            oldElement = newRoot.toNode();
+            oldElement = newRoot.toNode(namespace);
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
             var propertyDiff = Diff.compareHash(oldRoot.props, newRoot.props);
-            var isSvg = !!oldElement.getAttribute('xmlns');
+            namespace = namespace || ((oldElement && oldElement.namespaceURI && oldElement.namespaceURI.endsWith('svg')) ? oldElement.namespaceURI : undefined)
             for (var name in propertyDiff) {
                 if (propertyDiff.hasOwnProperty(name)) {
                     var property = propertyDiff[name];
                     if (property === null) {
-                        VirtualNode.removeAttribute(oldElement, name, isSvg);
+                        VirtualNode.removeAttribute(oldElement, name, namespace);
                     } else {
-                        VirtualNode.setAttribute(oldElement, name, property, isSvg);
+                        VirtualNode.setAttribute(oldElement, name, property, namespace);
                     }
                 }
             }
@@ -344,11 +352,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
                                 newChild.element = oldElement.childNodes[childIndex];
-                                this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement);
+                                this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace);
                             } else if (newChild instanceof VirtualNode) {
                                 // TODO: This is the only case where we don't know if oldChild exists and has the same type as newChild.
                                 // Perhaps we should figure that out here intead of inside diffVirtualNodes.
-                                this.diffVirtualNodes(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement);
+                                this.diffVirtualNodes(newChild as any, oldChild as any, oldElement.childNodes[childIndex] as HTMLElement, namespace);
                             }
                         }
                         childIndex--;
@@ -365,7 +373,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             case 'object':
                                 if (newChild) {
                                     if ((newChild as any).toNode) {
-                                        newElement = (newChild as any).toNode();
+                                        newElement = (newChild as any).toNode(namespace);
                                     } else {
                                         newElement = document.createTextNode(newChild.toString());
                                     }
