@@ -101,7 +101,7 @@ export namespace Elements {
         onmouseup?: (ev?: MouseEvent) => any;
         onmousewheel?: (ev?: WheelEvent) => any;
         onmscontentzoom?: (ev?: UIEvent) => any;
-        onmsmanipulationstatechanged?: (ev?: MSManipulationEvent) => any;
+        onmsmanipulationstatechanged?: (ev?: Event) => any;
         onpaste?: (ev?: ClipboardEvent) => any;
         onpause?: (ev?: Event) => any;
         onplay?: (ev?: Event) => any;

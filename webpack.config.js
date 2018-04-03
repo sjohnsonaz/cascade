@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
+    mode: 'production',
     entry: {
         'cascade': ['./src/scripts/modules/Cascade.ts']
     },
@@ -13,9 +14,9 @@ module.exports = {
         extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.tsx?$/,
-            loader: 'ts-loader'
+            use: ['ts-loader']
         }]
     },
     plugins: [

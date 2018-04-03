@@ -1,4 +1,5 @@
 module.exports = {
+    mode: 'development',
     entry: {
         'cascade': ['./src/scripts/modules/Cascade.ts'],
         'mochaRunner': './src/mocha/BrowserRunner.ts'
@@ -17,9 +18,9 @@ module.exports = {
         chai: 'chai'
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.tsx?$/,
-            loader: 'ts-loader'
+            use: ['ts-loader']
         }]
     }
 };
