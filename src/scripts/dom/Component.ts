@@ -27,6 +27,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
     rendered: boolean = false;
 
     constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
+        this.create(props, ...children);
+    }
+
+    create(props?: T & IVirtualNodeProps, ...children: any[]) {
         // TODO: Remove unused uniqueId?
         this.uniqueId = Math.floor(Math.random() * 1000000);
         this.props = props || ({} as any);
@@ -36,6 +40,13 @@ export abstract class Component<T> implements IVirtualNode<T> {
         // delete this.props.key;
         // }
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+    }
+
+    update(props?: T & IVirtualNodeProps, ...children: any[]) {
+        this.create(props, ...children);
+        let root = this.render();
+        this.root = root;
+        return root;
     }
 
     init() {
@@ -91,6 +102,9 @@ export abstract class Component<T> implements IVirtualNode<T> {
     abstract render(): any;
 
     toNode(namespace?: string, oldRoot?: any): Node {
+        if (!this.rendered) {
+            this.init();
+        }
         var root = Cascade.peek(this, 'root');
         var oldElement = this.element;
 
@@ -116,7 +130,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             // Root is a Component
                             if (root.constructor === oldRoot.constructor && root.key === oldRoot.key) {
                                 // Root and OldRoot are both the same Component - Diff this case
-                                root.element = oldElement;
                                 element = this.diffComponents(root, oldRoot, oldElement, namespace);
                                 noDispose = true;
                             } else {
@@ -234,11 +247,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
     diffComponents(newRoot: Component<IVirtualNodeProps>, oldRoot: Component<IVirtualNodeProps>, oldElement: Node, namespace: string) {
         var output: Node;
-        var innerRoot = Cascade.peek(newRoot, 'root');
         var innerOldRoot = Cascade.peek(oldRoot, 'root');
-
-        // Update new root as rendered
-        newRoot.rendered = true;
+        var innerRoot = oldRoot.update(newRoot.props, ...newRoot.children);
 
         if (!innerOldRoot) {
             // We are replacing
@@ -307,11 +317,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
         }
 
         // Call the ref for newRoot
-        if (newRoot.props.ref) {
-            newRoot.props.ref(output);
+        if (oldRoot.props.ref) {
+            oldRoot.props.ref(output);
         }
 
-        newRoot.afterRender(output, true);
+        oldRoot.afterRender(output, true);
 
         if (!output) {
             output = document.createComment('Empty Component');
@@ -360,8 +370,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
                         // TODO: Remove extra casts
                         if (typeof newChild === 'object') {
                             if (newChild instanceof Component) {
-                                let output = this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace);
-                                newChild.element = output;
+                                this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace);
                             } else if (newChild instanceof VirtualNode) {
                                 // TODO: This is the only case where we don't know if oldChild exists and has the same type as newChild.
                                 // Perhaps we should figure that out here intead of inside diffVirtualNodes.

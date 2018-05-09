@@ -287,7 +287,7 @@ export default class Cascade {
         } else {
             var component = new type(props, ...children);
             if (!(component instanceof Fragment)) {
-                component.init();
+                //component.init();
             } else {
                 // TODO: Add Fragment support
                 //console.log('fragment!');

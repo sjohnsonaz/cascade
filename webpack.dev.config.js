@@ -5,7 +5,7 @@ module.exports = {
         'mochaRunner': './src/mocha/BrowserRunner.ts'
     },
     output: {
-        filename: './dist/bundle/[name].js',
+        filename: './bundle/[name].js',
         libraryTarget: 'var',
         library: '[name]'
     },

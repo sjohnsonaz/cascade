@@ -35,7 +35,7 @@ class Child extends Component<IChildProps> {
 }
 
 describe('Component', function () {
-    it('should update when observables change', function () {
+    it('should update when observables change', function (done) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs: string[] = [];
@@ -50,6 +50,7 @@ describe('Component', function () {
             runs.push((child.childNodes[1] as Text).data);
             expect(runs[0]).to.equal('test');
             expect(runs[1]).to.equal('abcd');
+            done();
         }, 20);
     });
 });
