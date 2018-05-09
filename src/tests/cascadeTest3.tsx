@@ -42,7 +42,7 @@ class Child extends Component<IChildProps> {
 }
 
 describe('Component', function () {
-    it('should updated nested Components', function () {
+    it('should updated nested Components', function (done) {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
@@ -54,6 +54,7 @@ describe('Component', function () {
             setTimeout(function () {
                 expect(viewModel.runsA).to.equal(2);
                 expect(viewModel.runsB).to.equal(3);
+                done();
             }, 20);
         }, 1);
     });
