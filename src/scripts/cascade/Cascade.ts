@@ -217,6 +217,13 @@ export default class Cascade {
         return obj._graph ? (obj._graph as Graph).peek(property) : undefined;
     }
 
+    static stash(obj: any, property: string, value: any) {
+        let graph: Graph = obj._graph;
+        if (graph) {
+            graph.stash(property, value);
+        }
+    }
+
     /**
      * 
      * @param obj 
@@ -285,6 +292,7 @@ export default class Cascade {
         if (typeof type === 'string') {
             return new VirtualNode(type, props, ...children);
         } else {
+            /*
             var component = new type(props, ...children);
             if (!(component instanceof Fragment)) {
                 //component.init();
@@ -293,7 +301,8 @@ export default class Cascade {
                 //console.log('fragment!');
             }
             return component;
-            //return new ComponentNode(type, props, ...children);
+            */
+            return new ComponentNode(type, props, ...children);
         }
     }
 

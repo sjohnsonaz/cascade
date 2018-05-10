@@ -27,10 +27,12 @@ export default class ComponentNode<T> implements IVirtualNode<T> {
         return this.component;
     }
 
-    toNode(): Node {
+    toNode(namespace?: string): Node {
+        //console.log('Rendering:', this.componentConstructor.name);
         if (!this.component) {
             this.toComponent();
         }
-        return this.component.toNode();
+        //console.log('Rendered: ', this.componentConstructor.name, this.component.uniqueId);
+        return this.component.toNode(namespace);
     }
 }

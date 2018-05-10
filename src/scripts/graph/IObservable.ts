@@ -12,6 +12,7 @@ export interface IObservable<T> {
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
     getValue(): T;
     peek(): T;
+    stash(value: T): void;
     setValue(value: T): void;
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;

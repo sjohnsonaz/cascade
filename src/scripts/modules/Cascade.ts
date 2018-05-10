@@ -13,6 +13,7 @@ export { default as Graph } from '../graph/Graph';
 export { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
 export { default as VirtualNode } from '../dom/VirtualNode';
 export { default as Fragment } from '../dom/Fragment';
+export { default as ComponentNode } from '../dom/ComponentNode';
 export { Component } from '../dom/Component';
 
 export { default as DecoratorUtil, ObservableFactory } from '../util/DecoratorUtil';

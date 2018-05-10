@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import Cascade, { VirtualNode, Component, observable } from '../scripts/modules/Cascade';
 
 describe('Fragment.toNode', function () {
-    it('should render Fragment Nodes', () => {
+    it.skip('should render Fragment Nodes', () => {
         var root = (
             <>
                 <div id="testId"></div>

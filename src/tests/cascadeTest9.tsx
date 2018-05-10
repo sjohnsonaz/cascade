@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { Component, VirtualNode } from '../scripts/modules/Cascade';
+import Cascade, { Component, ComponentNode, VirtualNode } from '../scripts/modules/Cascade';
 import Diff, { DiffOperation } from '../scripts/util/Diff';
 
 interface IComponentProps {
@@ -29,10 +29,10 @@ class NewComponent extends Component<IComponentProps> {
 
 describe('Component', function () {
     it('should be comparable with Diff', function () {
-        var oldComponent: Component<any> = <OldComponent /> as any;
-        var newComponent: Component<any> = <NewComponent /> as any;
-        oldComponent.init();
-        newComponent.init();
+        let oldComponentNode: ComponentNode<any> = <OldComponent /> as any;
+        let newComponentNode: ComponentNode<any> = <NewComponent /> as any;
+        let oldComponent = oldComponentNode.toComponent();
+        let newComponent = newComponentNode.toComponent();
         var diff = Diff.compare<VirtualNode<any>>(
             (oldComponent.root as any).children,
             (newComponent.root as any).children,

@@ -27,6 +27,10 @@ export default class Graph {
         return this.observables[property].peek();
     }
 
+    stash(property: string, value: any) {
+        this.observables[property].stash(value);
+    }
+
     /**
      * 
      * @param property 
