@@ -62,6 +62,9 @@ export abstract class Component<T> implements IVirtualNode<T> {
     init() {
         // This should subscribe to all observables used by render.
         Cascade.createComputed(this, 'root', () => {
+            Cascade.wrapContext(() => {
+                this.beforeRender(this.mounted);
+            });
             return this.build();
         });
         // Only update if we are re-rendering
@@ -238,6 +241,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
                 component.dispose();
             }
         }
+    }
+
+    beforeRender(updating: boolean) {
+
     }
 
     afterRender(node: Node, updating: boolean) {

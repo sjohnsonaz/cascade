@@ -315,6 +315,39 @@ describe('Cascade.render Component', () => {
         expect(container.childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
+    it('should use beforeRender', async () => {
+        class ViewModel {
+            @observable value: boolean = false;
+        }
+
+        let beforeRenderCount = 0;
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+        class View extends Component<IViewProps> {
+            beforeRender() {
+                beforeRenderCount++;
+            }
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div>{viewModel.value}</div>
+                );
+            }
+        }
+        var container = document.createElement('div');
+        var viewModel = new ViewModel();
+        Cascade.render(container, <View viewModel={viewModel} />);
+
+        await wait(0);
+
+        viewModel.value = true;
+
+        await wait(0);
+
+        expect(beforeRenderCount).to.equal(2);
+    });
+
     it('should use afterRender and ref', () => {
         class ViewModel {
             parentNode: Node;
