@@ -81,7 +81,7 @@ describe('Component.update', () => {
         expect(container.childNodes[0].childNodes[0].textContent).to.equal('1');
     });
 
-    it('should dispose of nested Components', async () => {
+    it('should update nested Components', async () => {
         class ViewModel {
             @observable valueA: string = 'value A';
             @observable valueB: string = 'value B';
