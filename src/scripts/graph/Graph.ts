@@ -27,6 +27,10 @@ export default class Graph {
         return this.observables[property].peek();
     }
 
+    peekDirty(property: string) {
+        return this.observables[property].peekDirty();
+    }
+
     /**
      * 
      * @param property 

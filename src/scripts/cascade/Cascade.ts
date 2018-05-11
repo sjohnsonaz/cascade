@@ -222,6 +222,15 @@ export default class Cascade {
      * @param obj 
      * @param property 
      */
+    static peekDirty(obj: any, property: string) {
+        return obj._graph ? (obj._graph as Graph).peekDirty(property) : undefined;
+    }
+
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static update(obj: any, property: string) {
         let graph: Graph = obj._graph;
         if (graph) {

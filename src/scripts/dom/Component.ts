@@ -47,7 +47,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
     update(props?: T & IVirtualNodeProps, ...children: any[]) {
         this.storeProps(props, ...children);
 
-        this.oldRoot = Cascade.peek(this, 'root');
+        this.oldRoot = Cascade.peekDirty(this, 'root');
         // Dispose old root Computed
         // TODO: Run again instead of disposing
         var computed = Cascade.getObservable(this, 'root') as Computed<any>;
@@ -70,6 +70,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
         // Render
         var root = this.render();
+        console.log('Render', this.constructor.name, this.uniqueId, root);
 
         // Store the new context
         this.context = Component.popContext();
@@ -79,15 +80,18 @@ export abstract class Component<T> implements IVirtualNode<T> {
     init() {
         // This should subscribe to all observables used by render.
         Cascade.createComputed(this, 'root', () => {
+            console.log('Create', this.constructor.name);
             return this.build();
         });
         // Only update if we are re-rendering
         Cascade.subscribe(this, 'root', (root: any, oldRoot: any) => {
             if (this.oldRoot) {
+                console.log('Restoring oldRoot', this.oldRoot, oldRoot);
                 oldRoot = this.oldRoot;
                 this.oldRoot = undefined;
             }
             if (this.rendered) {
+                console.log('Diff  ', this.constructor.name);
                 var element = this.element;
                 // Get namespace from current element
                 // If element is an svg, use undefined, as it may change
@@ -267,7 +271,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         let oldRoot = oldRootComponentNode.component;
         oldRootComponentNode.component = undefined;
         newRootComponentNode.component = oldRoot;
-        var innerOldRoot = Cascade.peek(oldRoot, 'root');
+        var innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
         var innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
 
         if (!innerOldRoot) {

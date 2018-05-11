@@ -35,6 +35,9 @@ export default class Observable<T> implements IObservable<T> {
     peek() {
         return this.value;
     }
+    peekDirty() {
+        return this.value;
+    }
     stash(value: T) {
         this.value = value;
     }

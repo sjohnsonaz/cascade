@@ -46,6 +46,9 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         }
         return this.value;
     }
+    peekDirty() {
+        return this.value;
+    }
     setValue(value: T) {
         if (this.setter) {
             this.setter(value);
