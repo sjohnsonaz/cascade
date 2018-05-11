@@ -38,9 +38,6 @@ export default class Observable<T> implements IObservable<T> {
     peekDirty() {
         return this.value;
     }
-    stash(value: T) {
-        this.value = value;
-    }
     setValue(value: T) {
         if (this.value !== value) {
             var oldValue = this.value;
