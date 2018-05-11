@@ -198,7 +198,7 @@ export default class Cascade {
                 if (timeout) {
                     var timerId = window.setTimeout(() => {
                         graph.unsubscribe(property, subscriberFunction);
-                        reject('Timeout elapsed');
+                        reject(new Error('Timeout elapsed'));
                     }, timeout);
                 }
                 graph.subscribeOnly(property, subscriberFunction);
