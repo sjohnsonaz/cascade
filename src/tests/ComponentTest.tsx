@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 describe('Component.toNode', function () {
     it('should render a Node', function () {
         interface ICustomComponentProps {
@@ -49,7 +51,7 @@ describe('Component.toNode', function () {
     });
 
 
-    it('should render object values', () => {
+    it('should render object values', async () => {
         class ViewModel {
             @observable values: any[] = [];
         }
@@ -79,30 +81,22 @@ describe('Component.toNode', function () {
         );
         var element = document.createElement('div');
         Cascade.render(element, root);
-        window.setTimeout(() => {
-            viewModel.values.push(1);
-            window.setTimeout(() => {
-                viewModel.values.push(null);
-                window.setTimeout(() => {
-                    viewModel.values.push(2);
-                    window.setTimeout(() => {
-                        viewModel.values.push({});
-                        window.setTimeout(() => {
-                            viewModel.values.push(3);
-                            window.setTimeout(() => {
-                                viewModel.values.push(undefined);
-                                window.setTimeout(() => {
-                                    viewModel.values.push(4);
-                                    window.setTimeout(() => {
-                                        expect(element.childNodes[0].childNodes.length).to.equal(5);
-                                    });
-                                }, 20);
-                            }, 0);
-                        }, 0);
-                    }, 0);
-                }, 0);
-            }, 0);
-        }, 0);
+        await wait(0);
+        viewModel.values.push(1);
+        await wait(0);
+        viewModel.values.push(null);
+        await wait(0);
+        viewModel.values.push(2);
+        await wait(0);
+        viewModel.values.push({});
+        await wait(0);
+        viewModel.values.push(3);
+        await wait(0);
+        viewModel.values.push(undefined);
+        await wait(20);
+        viewModel.values.push(4);
+        await wait(0);
+        expect(element.childNodes[0].childNodes.length).to.equal(5);
     });
 
     it('should pass children directly into high order Components', () => {

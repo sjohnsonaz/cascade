@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import Cascade, { ObservableArray } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 // TODO: Remove Proxy check
 describe('ObservableArray', function () {
     it('should initialize to an emtpy Array', function () {
@@ -73,7 +75,7 @@ describe('ObservableArray', function () {
         delete value.peek()[0];
     });
 
-    it('should not notify subscribers on delete length', function (done) {
+    it('should not notify subscribers on delete length', async function () {
         if (!Cascade.proxyAvailable) this.skip();
 
         var value = new ObservableArray<number>([1]);
@@ -88,10 +90,9 @@ describe('ObservableArray', function () {
 
         }
         finally {
-            window.setTimeout(() => {
-                expect(count).to.equal(0);
-                done();
-            }, 100);
+            await wait(100);
+
+            expect(count).to.equal(0);
         }
     });
 });
