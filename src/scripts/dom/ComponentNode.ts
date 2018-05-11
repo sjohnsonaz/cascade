@@ -1,13 +1,13 @@
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import { Component } from './Component';
 import VirtualNode from './VirtualNode';
+import Fragment from './Fragment';
 
 export default class ComponentNode<T> implements IVirtualNode<T> {
     componentConstructor: new (props?: T, ...children: any[]) => Component<T>;
     props: T & IVirtualNodeProps;
     children: any;
     key: string;
-    element: Node;
     component: Component<T>;
 
     constructor(
@@ -19,20 +19,32 @@ export default class ComponentNode<T> implements IVirtualNode<T> {
         this.props = props || ({} as any);
         this.key = this.props.key;
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+
+        // Push this to the current context
+        let context = Component.getContext()
+        if (context) {
+            context.push(this);
+        }
     }
 
     toComponent(): Component<T> {
         this.component = new this.componentConstructor(this.props, ...this.children);
-        this.component.init();
+        if (!(this.component instanceof Fragment)) {
+            this.component.init();
+        }
         return this.component;
     }
 
-    toNode(namespace?: string): Node {
-        //console.log('Rendering:', this.componentConstructor.name);
+    toNode(namespace: string): Node {
         if (!this.component) {
             this.toComponent();
         }
-        //console.log('Rendered: ', this.componentConstructor.name, this.component.uniqueId);
         return this.component.toNode(namespace);
+    }
+
+    dispose() {
+        if (this.component) {
+            this.component.dispose();
+        }
     }
 }

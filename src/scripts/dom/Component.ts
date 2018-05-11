@@ -7,8 +7,8 @@ import Diff, { DiffOperation } from '../util/Diff';
 
 // Store ComponentContext in window to prevent multiple Cascade instance problem.
 export interface IComponentContext {
-    componentContexts: Component<IVirtualNodeProps>[][];
-    context: Component<IVirtualNodeProps>[];
+    componentContexts: ComponentNode<IVirtualNodeProps>[][];
+    context: ComponentNode<IVirtualNodeProps>[];
 }
 var componentContext: IComponentContext = window['$_cascade_component_context'] || {};
 window['$_cascade_component_context'] = componentContext;
@@ -22,17 +22,19 @@ export abstract class Component<T> implements IVirtualNode<T> {
     children: any;
     key: string;
     root: any;
+    oldRoot: any;
     element: Node;
-    context: Component<any>[];
+    context: ComponentNode<any>[];
+    oldContext: ComponentNode<any>[];
     rendered: boolean = false;
 
     constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
         // TODO: Remove unused uniqueId?
         this.uniqueId = Math.floor(Math.random() * 1000000);
-        this.create(props, ...children);
+        this.storeProps(props, ...children);
     }
 
-    create(props?: T & IVirtualNodeProps, ...children: any[]) {
+    storeProps(props?: T & IVirtualNodeProps, ...children: any[]) {
         this.props = props || ({} as any);
         this.key = this.props.key;
         // TODO: Remove key and ref?
@@ -43,37 +45,53 @@ export abstract class Component<T> implements IVirtualNode<T> {
     }
 
     update(props?: T & IVirtualNodeProps, ...children: any[]) {
-        this.create(props, ...children);
-        let root = this.render();
-        this.root = root;
+        this.storeProps(props, ...children);
+
+        this.oldRoot = Cascade.peek(this, 'root');
+        // Dispose old root Computed
+        // TODO: Run again instead of disposing
+        var computed = Cascade.getObservable(this, 'root') as Computed<any>;
+        computed.dispose();
+
+        this.rendered = false;
+        // Initialize again
+        this.init();
+
+        //return root;
+        return Cascade.peek(this, 'root');
+    }
+
+    build() {
+        // Store old context
+        this.oldContext = this.context;
+
+        // Create a new context
+        Component.pushContext();
+
+        // Render
+        var root = this.render();
+        console.log('Render', this.constructor.name, this.uniqueId, root);
+
+        // Store the new context
+        this.context = Component.popContext();
         return root;
     }
 
     init() {
         // This should subscribe to all observables used by render.
         Cascade.createComputed(this, 'root', () => {
-            // Dispose of old context
-            this.disposeContext();
-
-            // Push this to the current context
-            if (componentContext.context) {
-                componentContext.context.push(this);
-            }
-
-            // Create a new context
-            Component.pushContext();
-
-            // Render
-            var root = this.render();
-            //console.log(this.constructor.name, this.uniqueId, root);
-
-            // Store the new context
-            this.context = Component.popContext();
-            return root;
+            console.log('Create', this.constructor.name);
+            return this.build();
         });
         // Only update if we are re-rendering
         Cascade.subscribe(this, 'root', (root: any, oldRoot: any) => {
+            if (this.oldRoot) {
+                console.log('Restoring oldRoot', this.oldRoot, oldRoot);
+                oldRoot = this.oldRoot;
+                this.oldRoot = undefined;
+            }
             if (this.rendered) {
+                console.log('Diff  ', this.constructor.name);
                 var element = this.element;
                 // Get namespace from current element
                 // If element is an svg, use undefined, as it may change
@@ -83,9 +101,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
                     let namespaceURI = element.namespaceURI;
                     namespace = (namespaceURI && namespaceURI.endsWith('svg')) ? namespaceURI : undefined;
                 }
-                //console.log('Re-rendering:', this.constructor.name, this.uniqueId);
                 this.toNode(namespace, oldRoot);
-                //console.log('Re-rendered:', this.constructor.name, this.uniqueId);
+
+                // Dispose of old context
+                this.disposeContext();
+
                 if (element !== this.element) {
                     if (element) {
                         var parentNode = element.parentNode;
@@ -98,6 +118,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
                         }
                     }
                 }
+            } else {
+                this.rendered = true
             }
         });
     }
@@ -105,7 +127,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
     abstract render(): any;
 
     toNode(namespace?: string, oldRoot?: any): Node {
+        // Get root
         var root = Cascade.peek(this, 'root');
+
+        // Store old element
         var oldElement = this.element;
 
         var element: Node;
@@ -215,12 +240,9 @@ export abstract class Component<T> implements IVirtualNode<T> {
     dispose() {
         var computed = Cascade.getObservable(this, 'root') as Computed<any>;
         computed.dispose();
-        
         if (this.context) {
             for (var index = 0, length = this.context.length; index < length; index++) {
                 let component = this.context[index];
-                var computed = Cascade.getObservable(component, 'root') as Computed<any>;
-                computed.dispose();
                 component.dispose();
             }
         }
@@ -228,11 +250,9 @@ export abstract class Component<T> implements IVirtualNode<T> {
     }
 
     disposeContext() {
-        if (this.context) {
-            for (var index = 0, length = this.context.length; index < length; index++) {
-                let component = this.context[index];
-                var computed = Cascade.getObservable(component, 'root') as Computed<any>;
-                computed.dispose();
+        if (this.oldContext) {
+            for (var index = 0, length = this.oldContext.length; index < length; index++) {
+                let component = this.oldContext[index];
                 component.dispose();
             }
         }
@@ -249,10 +269,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
     diffComponents(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, oldElement: Node, namespace: string) {
         var output: Node;
         let oldRoot = oldRootComponentNode.component;
+        oldRootComponentNode.component = undefined;
+        newRootComponentNode.component = oldRoot;
         var innerOldRoot = Cascade.peek(oldRoot, 'root');
         var innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
-
-        newRootComponentNode.component = oldRoot;
 
         if (!innerOldRoot) {
             // We are replacing
@@ -284,6 +304,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             } else {
                                 // Replace
                                 output = innerRoot.toNode(namespace);
+                                // Dispose innerOldRoot
                                 innerOldRoot.dispose();
                             }
                         } else if (innerRoot instanceof VirtualNode) {
@@ -321,7 +342,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
             }
         }
 
-        // Call the ref for newRoot
+        // Call the ref for oldRoot
         if (oldRoot.props.ref) {
             oldRoot.props.ref(output);
         }
@@ -336,6 +357,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
         if (output !== oldElement && oldElement && oldElement.parentNode) {
             oldElement.parentNode.replaceChild(output, oldElement);
         }
+
+        oldRoot.element = output;
 
         return output;
     }
@@ -366,9 +389,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
                 switch (diffItem.operation) {
                     case DiffOperation.REMOVE:
                         var oldChild = diffItem.item;
-                        if (oldChild instanceof ComponentNode && oldChild.component) {
-                            oldChild.component.dispose();
-                        }
                         oldElement.removeChild(oldElement.childNodes[childIndex]);
                         childIndex--;
                         break;

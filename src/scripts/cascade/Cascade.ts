@@ -217,10 +217,18 @@ export default class Cascade {
         return obj._graph ? (obj._graph as Graph).peek(property) : undefined;
     }
 
-    static stash(obj: any, property: string, value: any) {
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
+    static update(obj: any, property: string) {
         let graph: Graph = obj._graph;
         if (graph) {
-            graph.stash(property, value);
+            let observable = graph.observables[property] as Computed<any>;
+            if (observable && observable.update) {
+                return observable.update();
+            }
         }
     }
 
@@ -292,16 +300,6 @@ export default class Cascade {
         if (typeof type === 'string') {
             return new VirtualNode(type, props, ...children);
         } else {
-            /*
-            var component = new type(props, ...children);
-            if (!(component instanceof Fragment)) {
-                //component.init();
-            } else {
-                // TODO: Add Fragment support
-                //console.log('fragment!');
-            }
-            return component;
-            */
             return new ComponentNode(type, props, ...children);
         }
     }
