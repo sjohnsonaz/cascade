@@ -44,23 +44,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
-    update(props?: T & IVirtualNodeProps, ...children: any[]) {
-        this.storeProps(props, ...children);
-
-        this.oldRoot = Cascade.peekDirty(this, 'root');
-        // Dispose old root Computed
-        // TODO: Run again instead of disposing
-        var computed = Cascade.getObservable(this, 'root') as Computed<any>;
-        computed.dispose();
-
-        this.rendered = false;
-        // Initialize again
-        this.init();
-
-        //return root;
-        return Cascade.peek(this, 'root');
-    }
-
     build() {
         // Store old context
         this.oldContext = this.context;
@@ -118,6 +101,12 @@ export abstract class Component<T> implements IVirtualNode<T> {
                 this.rendered = true
             }
         });
+    }
+
+    update(props?: T & IVirtualNodeProps, ...children: any[]) {
+        this.storeProps(props, ...children);
+        this.rendered = false;
+        return Cascade.update(this, 'root');
     }
 
     abstract render(): any;
