@@ -2,8 +2,10 @@ import { expect } from 'chai';
 
 import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 describe('Component.diff', () => {
-    it.skip('should update nested roots', (done) => {
+    it.skip('should update nested roots', async () => {
         class ViewModel {
             @observable value = false;
         }
@@ -26,13 +28,13 @@ describe('Component.diff', () => {
         var container = document.createElement('div')
         Cascade.render(container, <View viewModel={viewModel} />);
         viewModel.value = true;
-        window.setTimeout(() => {
-            expect(container.textContent).to.equal('');
-            done();
-        }, 200);
+
+        await wait(200);
+
+        expect(container.textContent).to.equal('');
     });
 
-    it('should update nested roots', (done) => {
+    it('should update nested roots', async () => {
         class ViewModel {
             @observable value = false;
         }
@@ -67,13 +69,13 @@ describe('Component.diff', () => {
         var container = document.createElement('div')
         Cascade.render(container, <View viewModel={viewModel} />);
         viewModel.value = true;
-        window.setTimeout(() => {
-            expect(container.childNodes[0].childNodes[1].textContent).to.equal('true');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes[1].textContent).to.equal('true');
     });
 
-    it('should update empty nested Components', (done) => {
+    it('should update empty nested Components', async () => {
         class ViewModel {
             @observable value = false;
         }
@@ -106,19 +108,20 @@ describe('Component.diff', () => {
         viewModel.value = true;
         expect(container.childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
-        window.setTimeout(() => {
-            expect(container.childNodes[0].childNodes.length).to.equal(1);
-            expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
-            viewModel.value = false;
-            window.setTimeout(() => {
-                expect(container.childNodes[0].childNodes.length).to.equal(1);
-                expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
-                done();
-            }, 20);
-        }, 20);
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
+        viewModel.value = false;
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
-    it('should update empty Components', (done) => {
+    it('should update empty Components', async () => {
         class ViewModel {
             @observable value = false;
         }
@@ -153,19 +156,20 @@ describe('Component.diff', () => {
         viewModel.value = true;
         expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
-        window.setTimeout(() => {
-            expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
-            expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
-            viewModel.value = false;
-            window.setTimeout(() => {
-                expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
-                expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
-                done();
-            }, 20);
-        }, 20);
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
+        viewModel.value = false;
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
 
-    it('should delete null values', (done) => {
+    it('should delete null values', async () => {
         class ViewModel {
             @observable nonNull = 'nonNull';
             @observable nonUndefined = 'nonUndefined';
@@ -191,17 +195,17 @@ describe('Component.diff', () => {
         Cascade.render(container, root);
         viewModel.nonNull = null;
         viewModel.nonUndefined = undefined;
-        window.setTimeout(() => {
-            let div = container.childNodes[0].childNodes[0] as HTMLElement;
-            expect(div.className).to.not.equal('nonNull');
-            expect(div.id).to.not.equal('nonUndefined');
-            expect(div.className).to.not.equal('null');
-            expect(div.id).to.not.equal('undefined');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        let div = container.childNodes[0].childNodes[0] as HTMLElement;
+        expect(div.className).to.not.equal('nonNull');
+        expect(div.id).to.not.equal('nonUndefined');
+        expect(div.className).to.not.equal('null');
+        expect(div.id).to.not.equal('undefined');
     });
 
-    it('should handle new child Components', (done) => {
+    it('should handle new child Components', async () => {
         class ViewModel {
             @observable visible: boolean = false;
         }
@@ -241,24 +245,25 @@ describe('Component.diff', () => {
         );
         var container = document.createElement('div')
         Cascade.render(container, root);
-        window.setTimeout(() => {
-            viewModel.visible = true;
-            window.setTimeout(() => {
-                let divRoot = container.childNodes[0] as HTMLElement;
-                let divParent = divRoot.childNodes[0] as HTMLElement;
-                let divStatic = divParent.childNodes[0] as HTMLElement;
-                let divDynamic = divParent.childNodes[1] as HTMLElement;
-                expect(divStatic).to.not.be.undefined;
-                expect(divDynamic).to.not.be.undefined;
-                if (divDynamic) {
-                    expect(divDynamic.id).to.equal('dynamic');
-                }
-                done();
-            }, 20);
-        })
+
+        await wait(0);
+
+        viewModel.visible = true;
+
+        await wait(20);
+
+        let divRoot = container.childNodes[0] as HTMLElement;
+        let divParent = divRoot.childNodes[0] as HTMLElement;
+        let divStatic = divParent.childNodes[0] as HTMLElement;
+        let divDynamic = divParent.childNodes[1] as HTMLElement;
+        expect(divStatic).to.not.be.undefined;
+        expect(divDynamic).to.not.be.undefined;
+        if (divDynamic) {
+            expect(divDynamic.id).to.equal('dynamic');
+        }
     });
 
-    it('should handle change from null child Components', (done) => {
+    it('should handle change from null child Components', async () => {
         class ViewModel {
             @observable visible: boolean = false;
         }
@@ -298,24 +303,25 @@ describe('Component.diff', () => {
         );
         var container = document.createElement('div')
         Cascade.render(container, root);
-        window.setTimeout(() => {
-            viewModel.visible = true;
-            window.setTimeout(() => {
-                let divRoot = container.childNodes[0] as HTMLElement;
-                let divParent = divRoot.childNodes[0] as HTMLElement;
-                let divStatic = divParent.childNodes[0] as HTMLElement;
-                let divDynamic = divParent.childNodes[1] as HTMLElement;
-                expect(divStatic).to.not.be.undefined;
-                expect(divDynamic).to.not.be.undefined;
-                if (divDynamic) {
-                    expect(divDynamic.id).to.equal('dynamic');
-                }
-                done();
-            }, 20);
-        })
+
+        await wait(0);
+
+        viewModel.visible = true;
+
+        await wait(20);
+
+        let divRoot = container.childNodes[0] as HTMLElement;
+        let divParent = divRoot.childNodes[0] as HTMLElement;
+        let divStatic = divParent.childNodes[0] as HTMLElement;
+        let divDynamic = divParent.childNodes[1] as HTMLElement;
+        expect(divStatic).to.not.be.undefined;
+        expect(divDynamic).to.not.be.undefined;
+        if (divDynamic) {
+            expect(divDynamic.id).to.equal('dynamic');
+        }
     });
 
-    it('should handle change to null child Components', (done) => {
+    it('should handle change to null child Components', async () => {
         class ViewModel {
             @observable visible: boolean = true;
         }
@@ -355,22 +361,23 @@ describe('Component.diff', () => {
         );
         var container = document.createElement('div')
         Cascade.render(container, root);
-        window.setTimeout(() => {
-            viewModel.visible = false;
-            window.setTimeout(() => {
-                let divRoot = container.childNodes[0] as HTMLElement;
-                let divParent = divRoot.childNodes[0] as HTMLElement;
-                let divStatic = divParent.childNodes[0] as HTMLElement;
-                let divDynamic = divParent.childNodes[1] as HTMLElement;
-                expect(divStatic).to.not.be.undefined;
-                expect(divDynamic).to.be.undefined;
-                done();
-            }, 20);
-        })
+
+        await wait(0);
+
+        viewModel.visible = false;
+
+        await wait(20);
+
+        let divRoot = container.childNodes[0] as HTMLElement;
+        let divParent = divRoot.childNodes[0] as HTMLElement;
+        let divStatic = divParent.childNodes[0] as HTMLElement;
+        let divDynamic = divParent.childNodes[1] as HTMLElement;
+        expect(divStatic).to.not.be.undefined;
+        expect(divDynamic).to.be.undefined;
     });
 
 
-    it('should handle change null to null', (done) => {
+    it('should handle change null to null', async () => {
         class ViewModel {
             @observable visible: boolean = false;
         }
@@ -410,17 +417,18 @@ describe('Component.diff', () => {
         );
         var container = document.createElement('div')
         Cascade.render(container, root);
-        window.setTimeout(() => {
-            viewModel.visible = true;
-            window.setTimeout(() => {
-                let divRoot = container.childNodes[0] as HTMLElement;
-                let divParent = divRoot.childNodes[0] as HTMLElement;
-                let divStatic = divParent.childNodes[0] as HTMLElement;
-                let divDynamic = divParent.childNodes[1] as HTMLElement;
-                expect(divStatic).to.not.be.undefined;
-                expect(divDynamic).to.be.undefined;
-                done();
-            }, 20);
-        })
+
+        await wait(0);
+
+        viewModel.visible = true;
+
+        await wait(20);
+
+        let divRoot = container.childNodes[0] as HTMLElement;
+        let divParent = divRoot.childNodes[0] as HTMLElement;
+        let divStatic = divParent.childNodes[0] as HTMLElement;
+        let divDynamic = divParent.childNodes[1] as HTMLElement;
+        expect(divStatic).to.not.be.undefined;
+        expect(divDynamic).to.be.undefined;
     });
 });

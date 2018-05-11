@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import Cascade, { VirtualNode, Component, observable } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 describe('Fragment.toNode', function () {
     it('should render Fragment Nodes', () => {
         var root = (
@@ -16,7 +18,7 @@ describe('Fragment.toNode', function () {
         });
     });
 
-    it.skip('should be able to Diff', (done) => {
+    it.skip('should be able to Diff', async () => {
         class ViewModel {
             @observable value = false;
         }
@@ -56,14 +58,14 @@ describe('Fragment.toNode', function () {
         var container = document.createElement('div')
         Cascade.render(container, <View viewModel={viewModel} />);
         viewModel.value = true;
-        window.setTimeout(() => {
-            let span = container.childNodes[0];
-            let div = span.childNodes[0];
-            let text = div.textContent;
-            expect(span.childNodes.length).to.equal(1);
-            expect(div.childNodes.length).to.equal(1);
-            expect(text).to.equal('c');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        let span = container.childNodes[0];
+        let div = span.childNodes[0];
+        let text = div.textContent;
+        expect(span.childNodes.length).to.equal(1);
+        expect(div.childNodes.length).to.equal(1);
+        expect(text).to.equal('c');
     });
 });

@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 describe('Cascade.render Component', () => {
     it('should render VirtualNodes', () => {
         interface IViewProps {
@@ -358,7 +360,7 @@ describe('Cascade.render Component', () => {
         expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
     });
 
-    it('should use afterRender and ref after update', (done) => {
+    it('should use afterRender and ref after update', async () => {
         class ViewModel {
             parentNode: Node;
             childNode: Node;
@@ -404,11 +406,11 @@ describe('Cascade.render Component', () => {
         viewModel.parentNode = undefined;
         viewModel.childNode = undefined;
         viewModel.value = 2;
-        window.setTimeout(() => {
-            expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
-            expect((viewModel.parentNode as HTMLElement).tagName).to.equal('DIV');
-            expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
+        expect((viewModel.parentNode as HTMLElement).tagName).to.equal('DIV');
+        expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
     });
 });

@@ -5,7 +5,7 @@ import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 import { wait } from '../scripts/util/PromiseUtil';
 
 describe('Component.update', () => {
-    it('should update from inherited observables', (done) => {
+    it('should update from inherited observables', async () => {
         class Parent {
             @observable parentValue: number = 0;
         }
@@ -35,13 +35,13 @@ describe('Component.update', () => {
         var container = document.createElement('div');
         Cascade.render(container, root);
         child.parentValue = 1;
-        window.setTimeout(() => {
-            expect(container.childNodes[0].childNodes[0].textContent).to.equal('1');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes[0].textContent).to.equal('1');
     });
 
-    it('should update from inherited abstract observables', (done) => {
+    it('should update from inherited abstract observables', async () => {
         abstract class Parent {
             @observable parentValue: number = 0;
             abstract init(): void;
@@ -75,10 +75,10 @@ describe('Component.update', () => {
         var container = document.createElement('div');
         Cascade.render(container, root);
         child.parentValue = 1;
-        window.setTimeout(() => {
-            expect(container.childNodes[0].childNodes[0].textContent).to.equal('1');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        expect(container.childNodes[0].childNodes[0].textContent).to.equal('1');
     });
 
     it('should dispose of nested Components', async () => {
