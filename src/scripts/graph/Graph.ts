@@ -119,7 +119,7 @@ export default class Graph {
      */
     unsubscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
         if (this.observables[property]) {
-            this.observables[property].subscribe(subscriber);
+            this.observables[property].unsubscribe(subscriber);
         }
     }
 }
