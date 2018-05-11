@@ -22,7 +22,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
     children: any;
     key: string;
     root: any;
-    oldRoot: any;
     element: Node;
     context: ComponentNode<any>[];
     oldContext: ComponentNode<any>[];
@@ -67,10 +66,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
         });
         // Only update if we are re-rendering
         Cascade.subscribe(this, 'root', (root: any, oldRoot: any) => {
-            if (this.oldRoot) {
-                oldRoot = this.oldRoot;
-                this.oldRoot = undefined;
-            }
             if (this.rendered) {
                 var element = this.element;
                 // Get namespace from current element
