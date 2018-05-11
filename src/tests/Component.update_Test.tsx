@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 describe('Component.update', () => {
     it('should update from inherited observables', (done) => {
         class Parent {
@@ -156,9 +158,3 @@ describe('Component.update', () => {
         expect(childRenderCount).to.equal(4);
     });
 });
-
-export function wait(time: number) {
-    return new Promise((resolve) => {
-        window.setTimeout(resolve, time);
-    });
-}

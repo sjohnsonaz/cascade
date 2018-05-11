@@ -1,6 +1,8 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
-import Cascade, {Component, observable} from '../scripts/modules/Cascade';
+import Cascade, { Component, observable } from '../scripts/modules/Cascade';
+
+import { wait } from '../scripts/util/PromiseUtil';
 
 class ViewModel {
     runsA: number = 0;
@@ -34,21 +36,23 @@ class CustomComponent extends Component<ICustomComponentProps> {
     }
 }
 
-describe('Component', function() {
-    it('should render once per update', function() {
+describe('Component', function () {
+    it('should render once per update', async function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
-        Cascade.render(container, <CustomComponent viewModel={viewModel} />, function() {
+        Cascade.render(container, <CustomComponent viewModel={viewModel} />, function () {
         });
         viewModel.a = 'a1';
         viewModel.b = 'b1';
-        setTimeout(function() {
-            viewModel.b = 'b2';
-            setTimeout(function() {
-                    expect(viewModel.runsA).to.equal(3);
-                    expect(viewModel.runsB).to.equal(3);
-            }, 20);
-        }, 1);
+
+        await wait(1);
+
+        viewModel.b = 'b2';
+
+        await wait(20);
+
+        expect(viewModel.runsA).to.equal(3);
+        expect(viewModel.runsB).to.equal(3);
     });
 });

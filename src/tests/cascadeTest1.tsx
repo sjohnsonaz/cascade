@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
+import { wait } from '../scripts/util/PromiseUtil';
+
 class ViewModel {
     runs: number = 0;
     @observable info: string = 'test';
@@ -35,7 +37,7 @@ class Child extends Component<IChildProps> {
 }
 
 describe('Component', function () {
-    it('should update when observables change', function (done) {
+    it('should update when observables change', async function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         var runs: string[] = [];
@@ -45,12 +47,12 @@ describe('Component', function () {
             runs.push((child.childNodes[1] as Text).data);
         });
         viewModel.info = 'abcd';
-        setTimeout(function () {
-            var child = container.querySelector('#child');
-            runs.push((child.childNodes[1] as Text).data);
-            expect(runs[0]).to.equal('test');
-            expect(runs[1]).to.equal('abcd');
-            done();
-        }, 20);
+
+        await wait(20);
+
+        var child = container.querySelector('#child');
+        runs.push((child.childNodes[1] as Text).data);
+        expect(runs[0]).to.equal('test');
+        expect(runs[1]).to.equal('abcd');
     });
 });
