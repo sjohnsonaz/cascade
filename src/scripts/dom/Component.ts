@@ -26,6 +26,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
     element: Node;
     context: ComponentNode<any>[];
     oldContext: ComponentNode<any>[];
+    mounted: boolean = false;
     rendered: boolean = false;
 
     constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
@@ -212,13 +213,14 @@ export abstract class Component<T> implements IVirtualNode<T> {
             //oldRoot.dispose();
         }
 
-        this.afterRender(element, this.rendered);
+        this.afterRender(element, this.mounted);
 
         if (!element) {
             element = document.createComment('Empty Component');
         }
         this.element = element;
         this.rendered = true;
+        this.mounted = true;
         return element;
     }
 
