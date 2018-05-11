@@ -29,13 +29,11 @@ class NewComponent extends Component<IComponentProps> {
 
 describe('Component', function () {
     it('should be comparable with Diff', function () {
-        let oldComponentNode: ComponentNode<any> = <OldComponent /> as any;
-        let newComponentNode: ComponentNode<any> = <NewComponent /> as any;
-        let oldComponent = oldComponentNode.toComponent();
-        let newComponent = newComponentNode.toComponent();
+        let oldComponentNode = <OldComponent /> as ComponentNode<any>;
+        let newComponentNode = <NewComponent /> as ComponentNode<any>;
         var diff = Diff.compare<VirtualNode<any>>(
-            (oldComponent.root as any).children,
-            (newComponent.root as any).children,
+            oldComponentNode.toComponent().root.children,
+            newComponentNode.toComponent().root.children,
             (newNode: VirtualNode<any>, oldNode: VirtualNode<any>) => {
                 var output = false;
                 if (newNode && oldNode) {
