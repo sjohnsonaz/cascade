@@ -70,7 +70,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
         // Render
         var root = this.render();
-        console.log('Render', this.constructor.name, this.uniqueId, root);
 
         // Store the new context
         this.context = Component.popContext();
@@ -80,18 +79,15 @@ export abstract class Component<T> implements IVirtualNode<T> {
     init() {
         // This should subscribe to all observables used by render.
         Cascade.createComputed(this, 'root', () => {
-            console.log('Create', this.constructor.name);
             return this.build();
         });
         // Only update if we are re-rendering
         Cascade.subscribe(this, 'root', (root: any, oldRoot: any) => {
             if (this.oldRoot) {
-                console.log('Restoring oldRoot', this.oldRoot, oldRoot);
                 oldRoot = this.oldRoot;
                 this.oldRoot = undefined;
             }
             if (this.rendered) {
-                console.log('Diff  ', this.constructor.name);
                 var element = this.element;
                 // Get namespace from current element
                 // If element is an svg, use undefined, as it may change
