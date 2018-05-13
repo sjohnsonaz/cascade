@@ -41,8 +41,8 @@ describe('Component', function () {
         var viewModel = new ViewModel();
         var container = document.createElement('div');
         //document.body.appendChild(container);
-        Cascade.render(container, <CustomComponent viewModel={viewModel} />, function () {
-        });
+        Cascade.render(container, <CustomComponent viewModel={viewModel} />);
+
         viewModel.a = 'a1';
         viewModel.b = 'b1';
 

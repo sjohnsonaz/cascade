@@ -24,37 +24,33 @@ describe('VirtualNode.toNode', function () {
                 <span id="child">text</span>
             </div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            var child = element.querySelector('#child');
-            expect(!!child).to.equal(true);
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        var child = element.querySelector('#child');
+        expect(!!child).to.equal(true);
     });
 
     it('should not render undefined values', () => {
         var root = (
             <div id="parent">{}</div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.childNodes.length).to.equal(0);
-        });
+        let element = Cascade.render(document.createElement('div'), root);
+        expect(element.childNodes.length).to.equal(0);
     });
 
     it('should not render null values', () => {
         var root = (
             <div id="parent">{null}</div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.childNodes.length).to.equal(0);
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.childNodes.length).to.equal(0);
     });
 
     it('should render falsy values', () => {
         var root = (
             <div id="parent">{0}</div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect((element.childNodes[0] as Text).data).to.equal('0');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect((element.childNodes[0] as Text).data).to.equal('0');
     });
 
     it('should render Object.toString for Object values', () => {
@@ -66,36 +62,32 @@ describe('VirtualNode.toNode', function () {
         var root = (
             <div id="parent">{object}</div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect((element.childNodes[0] as Text).data).to.equal('String output');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect((element.childNodes[0] as Text).data).to.equal('String output');
     });
 
     it('should render standard attributes', () => {
         var root = (
             <div id="testId"></div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.id).to.equal('testId');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.id).to.equal('testId');
     });
 
     it('should not render undefined attributes', () => {
         var root = (
             <div id={undefined}></div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.id).to.not.equal('undefined');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.id).to.not.equal('undefined');
     });
 
     it('should not render null attributes', () => {
         var root = (
             <div id={null}></div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.id).to.not.equal('null');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.id).to.not.equal('null');
     });
 
     // This does not work for IE    
@@ -106,27 +98,24 @@ describe('VirtualNode.toNode', function () {
                 <input form="formId" />
             </div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect((element.childNodes[1] as HTMLInputElement).getAttribute('form')).to.equal('formId');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect((element.childNodes[1] as HTMLInputElement).getAttribute('form')).to.equal('formId');
     });
 
     it('should render custom attributes', () => {
         var root = (
             <div data-custom="test value"></div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.getAttribute('data-custom')).to.equal('test value');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.getAttribute('data-custom')).to.equal('test value');
     });
 
     it('should render style attributes', () => {
         var root = (
             <div style="width: 100%"></div>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.style.width).to.equal('100%');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.style.width).to.equal('100%');
     });
 
     it('should render event attributes with function references', () => {
@@ -134,10 +123,9 @@ describe('VirtualNode.toNode', function () {
         var root = (
             <button onclick={() => { count++; }}>OK</button>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            element.click();
-            expect(count).to.equal(1);
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        element.click();
+        expect(count).to.equal(1);
     });
 
     // TODO: Make this work without repeating xmlns
@@ -149,10 +137,9 @@ describe('VirtualNode.toNode', function () {
                 Sorry, your browser does not support inline SVG.
             </svg>
         );
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            let path = element.childNodes[0] as SVGElement;
-            expect(path.getAttribute('d')).to.equal('M 150 0 L 75 200 L 225 200 Z');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        let path = element.childNodes[0] as SVGElement;
+        expect(path.getAttribute('d')).to.equal('M 150 0 L 75 200 L 225 200 Z');
     });
 
     it('should render Components', function () {
@@ -175,9 +162,8 @@ describe('VirtualNode.toNode', function () {
             </div>
         );
 
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            var child = element.querySelector('#child');
-            expect(child.textContent).to.equal('Custom Component - test');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        var child = element.querySelector('#child');
+        expect(child.textContent).to.equal('Custom Component - test');
     });
 });

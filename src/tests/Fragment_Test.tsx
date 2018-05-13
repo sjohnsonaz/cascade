@@ -12,10 +12,9 @@ describe('Fragment.toNode', function () {
             </>
         );
         let rootElement = document.createElement('div');
-        Cascade.render(rootElement, root, function (element: HTMLElement) {
-            let div: HTMLElement = rootElement.childNodes[0] as any;
-            expect(div.id).to.equal('testId');
-        });
+        let element = Cascade.render(rootElement, root) as HTMLElement;
+        let div: HTMLElement = rootElement.childNodes[0] as any;
+        expect(div.id).to.equal('testId');
     });
 
     it.skip('should be able to Diff', async () => {

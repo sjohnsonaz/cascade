@@ -23,9 +23,8 @@ describe('Component.toNode', function () {
             <CustomComponent id="child" info="test">text</CustomComponent>
         );
 
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect(element.textContent).to.equal('Custom Component - test');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.textContent).to.equal('Custom Component - test');
     });
 
     it('should render falsy values', () => {
@@ -45,9 +44,8 @@ describe('Component.toNode', function () {
             <CustomComponent>0</CustomComponent>
         );
 
-        Cascade.render(document.createElement('div'), root, function (element: HTMLElement) {
-            expect((element.childNodes[0] as Text).data).to.equal('0');
-        });
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect((element.childNodes[0] as Text).data).to.equal('0');
     });
 
 
@@ -132,8 +130,7 @@ describe('Component.toNode', function () {
 
         var container = document.createElement('div');
 
-        Cascade.render(container, root, function () {
-            expect(length).to.equal(3);
-        });
+        Cascade.render(container, root);
+        expect(length).to.equal(3);
     });
 });

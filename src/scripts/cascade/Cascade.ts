@@ -313,7 +313,7 @@ export default class Cascade {
         }
     }
 
-    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>, callback?: (n: Node) => void, reRender?: (n: any) => void) {
+    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>) {
         var fixedNode = typeof node === 'string' ?
             document.getElementById(node) :
             node;
@@ -326,14 +326,7 @@ export default class Cascade {
         } else {
             console.error('Root render is not a Node.  Nothing was rendered, and nothing will be updated');
         }
-        if (callback) {
-            callback(renderedComponent);
-        }
-        Cascade.subscribe(virtualNode, 'root', function (root: any) {
-            if (reRender) {
-                reRender(root);
-            }
-        });
+        return renderedComponent;
     }
 
     static Fragment = Fragment;

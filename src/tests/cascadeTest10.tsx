@@ -28,10 +28,11 @@ describe('Component', function () {
         var container = document.createElement('div');
         var runs: string[] = [];
         //document.body.appendChild(container);
-        Cascade.render(container, <Parent viewModel={viewModel} />, function () {
-            var parent = container.querySelector('#parent');
-            runs.push((parent.childNodes[0] as HTMLElement).id);
-        });
+        Cascade.render(container, <Parent viewModel={viewModel} />);
+
+        var parent = container.querySelector('#parent');
+        runs.push((parent.childNodes[0] as HTMLElement).id);
+
         viewModel.id = 'newId';
 
         await wait(20);
