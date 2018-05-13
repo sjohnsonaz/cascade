@@ -1,5 +1,3 @@
-var webpack = require('webpack');
-
 module.exports = {
     mode: 'production',
     entry: {
@@ -18,8 +16,5 @@ module.exports = {
             test: /\.tsx?$/,
             use: ['ts-loader']
         }]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin()
-    ]
+    }
 };
