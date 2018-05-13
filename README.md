@@ -132,8 +132,7 @@ Cascade will render directly to any DOM node specified. Simply call
 ```typescript
 Cascade.render(
     node: HTMLElement | string,
-    virtualNode: IVirtualNode<any>,
-    callback?: (n: Node) => any
+    virtualNode: IVirtualNode<any>
 ): void;
 ```
 
