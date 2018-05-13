@@ -19,6 +19,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
     // TODO: Remove unused uniqueId?
     uniqueId: number;
     props: T & IVirtualNodeProps;
+    prevProps: T & IVirtualNodeProps;
     children: any;
     key: string;
     root: any;
@@ -35,6 +36,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
     }
 
     storeProps(props?: T & IVirtualNodeProps, ...children: any[]) {
+        this.prevProps = this.props;
         this.props = props || ({} as any);
         this.key = this.props.key;
         // TODO: Remove key and ref?

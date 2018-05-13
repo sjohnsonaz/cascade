@@ -190,7 +190,7 @@ export default class Cascade {
                             resolved = true;
                             window.setTimeout(() => {
                                 graph.unsubscribe(property, subscriberFunction);
-                            })
+                            });
                             resolve(value);
                         }
                     }
