@@ -222,8 +222,8 @@ export default class Cascade {
      * @param obj 
      * @param property 
      */
-    static peekDirty(obj: any, property: string) {
-        return obj._graph ? (obj._graph as Graph).peekDirty(property) : undefined;
+    static peekDirty<T, U extends keyof T>(obj: T, property: U) {
+        return obj['_graph'] ? (obj['_graph'] as Graph).peekDirty(property) : undefined;
     }
 
     /**
@@ -231,13 +231,33 @@ export default class Cascade {
      * @param obj 
      * @param property 
      */
-    static update(obj: any, property: string) {
+    static update<T, U extends keyof T>(obj: T, property: U) {
+        let graph: Graph = obj['_graph'];
+        let observable = (graph ? graph.observables[property] : undefined) as Computed<T[U]>;
+        if (observable && observable.update) {
+            return observable.update();
+        } else {
+            throw new Error('No observable attached to Object: ' + property);
+        }
+    }
+
+    static set<T>(obj: any, property: string, value: T) {
         let graph: Graph = obj._graph;
-        if (graph) {
-            let observable = graph.observables[property] as Computed<any>;
-            if (observable && observable.update) {
-                return observable.update();
-            }
+        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T>;
+        if (observable) {
+            observable.setValue(value);
+        } else {
+            throw new Error('No observable attached to Object: ' + property);
+        }
+    }
+
+    static setAsync<T>(obj: any, property: string, value: T) {
+        let graph: Graph = obj._graph;
+        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T>;
+        if (observable) {
+            return observable.setValueAsync(value);
+        } else {
+            throw new Error('No observable attached to Object: ' + property);
         }
     }
 

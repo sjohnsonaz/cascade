@@ -1,4 +1,4 @@
-import { IObservable, ISubscriber, ISubscriberFunction } from './IObservable';
+import { IObservable, ISubscriber, ISubscriberFunction, IPublishCallback } from './IObservable';
 
 // Store ObservableContext in window to prevent multiple Cascade instance problem.
 export interface IObservableContext {
@@ -38,12 +38,17 @@ export default class Observable<T> implements IObservable<T> {
     peekDirty() {
         return this.value;
     }
-    setValue(value: T) {
+    setValue(value: T, callback: IPublishCallback) {
         if (this.value !== value) {
             var oldValue = this.value;
             this.value = value;
-            this.publish(value, oldValue);
+            this.publish(value, oldValue, callback);
+        } else {
+            callback();
         }
+    }
+    setValueAsync(value: T): Promise<void> {
+        return new Promise(resolve => this.setValue(value, resolve));
     }
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>) {
         if (subscriber) {
@@ -68,13 +73,13 @@ export default class Observable<T> implements IObservable<T> {
             }
         }
     }
-    publish(value: T, oldValue?: T) {
+    publish(value: T, oldValue?: T, callbacks?: IPublishCallback | IPublishCallback[]) {
         for (var index = 0, length = this.subscribers.length; index < length; index++) {
             var subscriber = this.subscribers[index];
             if (typeof subscriber === 'function') {
                 subscriber(this.value, oldValue);
             } else {
-                subscriber.notify();
+                subscriber.notify(callbacks);
             }
         }
     }

@@ -1,4 +1,4 @@
-import { IObservable, ISubscriber } from './IObservable';
+import { IObservable, ISubscriber, IPublishCallback } from './IObservable';
 import Observable from './Observable';
 import ComputedQueue from './ComputedQueue';
 
@@ -49,18 +49,25 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     peekDirty() {
         return this.value;
     }
-    setValue(value: T) {
+    setValue(value: T, callback?: IPublishCallback) {
         if (this.setter) {
-            this.setter(value);
+            let newValue = this.setter(value);
+            if (this.value !== newValue) {
+                var oldValue = this.value;
+                this.value = newValue;
+                this.publish(newValue, oldValue, callback);
+            }
+        } else {
+            callback();
         }
     }
-    notify() {
+    notify(callbacks?: IPublishCallback | IPublishCallback[]) {
         if (!this.disposed) {
             this.notifyDirty();
             if (Computed.computedQueue.completed) {
                 Computed.computedQueue = new ComputedQueue();
             }
-            Computed.computedQueue.add(this);
+            Computed.computedQueue.add(this, callbacks);
         }
     }
     notifyDirty() {
@@ -74,13 +81,13 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             }
         }
     }
-    runUpdate() {
+    runUpdate(callbacks?: IPublishCallback | IPublishCallback[]) {
         if (!this.disposed && this.dirty) {
             var value = this.value;
             this.value = this.runDefinition(this.definition);
             this.dirty = false;
             if (this.value !== value) {
-                this.publish(this.value, value);
+                this.publish(this.value, value, callbacks);
             }
         }
         return this.value;

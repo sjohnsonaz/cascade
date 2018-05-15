@@ -1,4 +1,6 @@
+import { IPublishCallback } from './IObservable';
 import Computed from './Computed';
+import { wait } from '../util/PromiseUtil';
 
 export interface ComputedHash {
     [index: string]: Computed<any>;
@@ -9,6 +11,7 @@ export default class ComputedQueue {
     hash: ComputedHash;
     scheduled: boolean;
     completed: boolean;
+    callbacks: IPublishCallback[];
 
     constructor() {
         this.items = [];
@@ -17,10 +20,25 @@ export default class ComputedQueue {
         this.completed = false;
     }
 
-    add(computed: Computed<any>) {
+    async add(computed: Computed<any>, callbacks?: IPublishCallback | IPublishCallback[]) {
         if (!this.hash[computed.id]) {
             this.hash[computed.id] = computed;
             this.items.push(computed);
+            if (callbacks) {
+                if (!this.callbacks) {
+                    if (callbacks instanceof Array) {
+                        this.callbacks = callbacks;
+                    } else {
+                        this.callbacks = [callbacks];
+                    }
+                } else {
+                    if (callbacks instanceof Array) {
+                        this.callbacks = this.callbacks.concat(this.callbacks, callbacks);
+                    } else {
+                        this.callbacks.push(callbacks);
+                    }
+                }
+            }
             if (!this.scheduled) {
                 this.scheduled = true;
                 // TODO: Remove bind.  This is for IE9.
@@ -33,7 +51,7 @@ export default class ComputedQueue {
         self.completed = true;
         for (var index = 0, length = self.items.length; index < length; index++) {
             var computed = self.items[index];
-            computed.runUpdate();
+            computed.runUpdate(this.callbacks);
         }
     }
 }

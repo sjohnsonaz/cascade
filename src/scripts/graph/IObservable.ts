@@ -1,10 +1,14 @@
+export interface IPublishCallback {
+    (): void;
+}
+
 export interface ISubscriber {
-    notify(): void;
+    notify(callbacks?: IPublishCallback | IPublishCallback[]): void;
     dispose(recursive?: boolean): void;
 }
 
 export interface ISubscriberFunction<T> {
-    (n: T, o?: T): void
+    (n: T, o?: T): void;
 }
 
 export interface IObservable<T> {
@@ -13,11 +17,12 @@ export interface IObservable<T> {
     getValue(): T;
     peek(): T;
     peekDirty(): T;
-    setValue(value: T): void;
+    setValue(value: T, callback?: IPublishCallback): void;
+    setValueAsync(value: T): Promise<void>;
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     unsubscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
-    publish(value: T, oldValue?: T): void;
+    publish(value: T, oldValue?: T, callbacks?: IPublishCallback | IPublishCallback[]): void;
     dispose(recursive?: boolean): void;
 }
 
