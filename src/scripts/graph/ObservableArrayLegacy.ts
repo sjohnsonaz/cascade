@@ -16,12 +16,12 @@ export default class ObservableArrayLegacy<T> extends Observable<IArray<T>> {
         );
     }
 
-    setValue(value: Array<T>) {
+    async setValue(value: Array<T>) {
         if (this.value !== value) {
             var oldValue = this.value;
             value = this.wrapArray((value instanceof Array) ? value : []);
             this.value = value;
-            this.publish(value, oldValue);
+            await this.publish(value, oldValue);
         }
     }
 }

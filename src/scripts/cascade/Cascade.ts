@@ -245,17 +245,7 @@ export default class Cascade {
         let graph: Graph = obj['_graph'];
         let observable = (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
         if (observable) {
-            observable.setValue(value);
-        } else {
-            throw new Error('No observable attached to Object: ' + property);
-        }
-    }
-
-    static setAsync<T, U extends keyof T>(obj: T, property: U, value: T[U]) {
-        let graph: Graph = obj['_graph'];
-        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
-        if (observable) {
-            return observable.setValueAsync(value);
+            return observable.setValue(value);
         } else {
             throw new Error('No observable attached to Object: ' + property);
         }

@@ -1,9 +1,5 @@
-export interface IPublishCallback {
-    (): void;
-}
-
 export interface ISubscriber {
-    notify(callbacks?: IPublishCallback | IPublishCallback[]): void;
+    notify(): Promise<void>;
     dispose(recursive?: boolean): void;
 }
 
@@ -17,12 +13,11 @@ export interface IObservable<T> {
     getValue(): T;
     peek(): T;
     peekDirty(): T;
-    setValue(value: T, callback?: IPublishCallback): void;
-    setValueAsync(value: T): Promise<void>;
+    setValue(value: T): Promise<void>;
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     unsubscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;
-    publish(value: T, oldValue?: T, callbacks?: IPublishCallback | IPublishCallback[]): void;
+    publish(value: T, oldValue?: T): Promise<void>;
     dispose(recursive?: boolean): void;
 }
 

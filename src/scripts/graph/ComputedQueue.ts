@@ -1,4 +1,3 @@
-import { IPublishCallback } from './IObservable';
 import Computed from './Computed';
 import { wait } from '../util/PromiseUtil';
 
@@ -11,7 +10,7 @@ export default class ComputedQueue {
     hash: ComputedHash;
     scheduled: boolean;
     completed: boolean;
-    callbacks: IPublishCallback[];
+    promise: Promise<void>;
 
     constructor() {
         this.items = [];
@@ -20,38 +19,23 @@ export default class ComputedQueue {
         this.completed = false;
     }
 
-    async add(computed: Computed<any>, callbacks?: IPublishCallback | IPublishCallback[]) {
+    add(computed: Computed<any>) {
         if (!this.hash[computed.id]) {
             this.hash[computed.id] = computed;
             this.items.push(computed);
-            if (callbacks) {
-                if (!this.callbacks) {
-                    if (callbacks instanceof Array) {
-                        this.callbacks = callbacks;
-                    } else {
-                        this.callbacks = [callbacks];
-                    }
-                } else {
-                    if (callbacks instanceof Array) {
-                        this.callbacks = this.callbacks.concat(this.callbacks, callbacks);
-                    } else {
-                        this.callbacks.push(callbacks);
-                    }
-                }
-            }
             if (!this.scheduled) {
                 this.scheduled = true;
-                // TODO: Remove bind.  This is for IE9.
-                window.setTimeout(this.run.bind(this, this), 0, this);
+                this.promise = new Promise((resolve) => {
+                    window.setTimeout(async () => {
+                        this.completed = true;
+                        await Promise.all(this.items.map(computed => computed.runUpdate()));
+                        resolve();
+                    }, 0);
+                });
             }
-        }
-    }
-
-    run(self: ComputedQueue) {
-        self.completed = true;
-        for (var index = 0, length = self.items.length; index < length; index++) {
-            var computed = self.items[index];
-            computed.runUpdate(this.callbacks);
+            return this.promise;
+        } else {
+            return this.promise;
         }
     }
 }

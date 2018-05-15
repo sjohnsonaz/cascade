@@ -1,4 +1,4 @@
-import { IObservable, ISubscriber, IPublishCallback } from './IObservable';
+import { IObservable, ISubscriber } from './IObservable';
 import Observable from './Observable';
 import ComputedQueue from './ComputedQueue';
 
@@ -49,25 +49,29 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     peekDirty() {
         return this.value;
     }
-    setValue(value: T, callback?: IPublishCallback) {
+    setValue(value: T) {
         if (this.setter) {
             let newValue = this.setter(value);
             if (this.value !== newValue) {
                 var oldValue = this.value;
                 this.value = newValue;
-                this.publish(newValue, oldValue, callback);
+                return this.publish(newValue, oldValue);
+            } else {
+                return Promise.resolve();
             }
         } else {
-            callback();
+            return Promise.resolve();
         }
     }
-    notify(callbacks?: IPublishCallback | IPublishCallback[]) {
+    notify() {
         if (!this.disposed) {
             this.notifyDirty();
             if (Computed.computedQueue.completed) {
                 Computed.computedQueue = new ComputedQueue();
             }
-            Computed.computedQueue.add(this, callbacks);
+            return Computed.computedQueue.add(this);
+        } else {
+            return Promise.resolve();
         }
     }
     notifyDirty() {
@@ -81,13 +85,13 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             }
         }
     }
-    runUpdate(callbacks?: IPublishCallback | IPublishCallback[]) {
+    async runUpdate() {
         if (!this.disposed && this.dirty) {
             var value = this.value;
             this.value = this.runDefinition(this.definition);
             this.dirty = false;
             if (this.value !== value) {
-                this.publish(this.value, value, callbacks);
+                await this.publish(this.value, value);
             }
         }
         return this.value;

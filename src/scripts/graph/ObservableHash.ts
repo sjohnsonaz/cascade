@@ -19,12 +19,12 @@ export default class ObservableHash<T> extends Observable<IHash<T>> {
         );
     }
 
-    setValue(value?: IHash<T>) {
+    async setValue(value?: IHash<T>) {
         if (this.value !== value) {
             var oldValue = this.value;
             value = this.wrapHash((value instanceof Object) ? value : {});
             this.value = value;
-            this.publish(value, oldValue);
+            await this.publish(value, oldValue);
         }
     }
 }

@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 
-import { observable } from '../scripts/modules/Cascade';
+import Cascade, { observable } from '../scripts/modules/Cascade';
+import { wait } from '../scripts/util/PromiseUtil';
 
 class ViewModel {
     runs: number = 0;
@@ -47,5 +48,19 @@ describe('Graph', function () {
         viewModel.c = 13;
         viewModel.d = 14;
         complete = true;
+    });
+
+    it('should emit a Promise which resolves when push is complete', async () => {
+        var viewModel: any = new ViewModel();
+        await wait(20);
+        var abcd = undefined;
+        viewModel._graph.subscribe('abcd', function (value: number) {
+        });
+        viewModel.a = 11;
+        viewModel.b = 12;
+        viewModel.c = 13;
+        await Cascade.set(viewModel, 'd', 14);
+        abcd = Cascade.peekDirty(viewModel, 'abcd');
+        expect(abcd).to.equal(150);
     });
 });
