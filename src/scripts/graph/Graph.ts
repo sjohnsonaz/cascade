@@ -23,12 +23,12 @@ export default class Graph {
      * 
      * @param property 
      */
-    peek(property: string) {
-        return this.observables[property].peek();
+    peek<T>(property: string) {
+        return this.observables[property].peek() as T;
     }
 
-    peekDirty(property: string) {
-        return this.observables[property].peekDirty();
+    peekDirty<T>(property: string) {
+        return this.observables[property].peekDirty() as T;
     }
 
     /**
@@ -36,7 +36,7 @@ export default class Graph {
      * @param property 
      */
     getReferences(property: string) {
-        var observable = this.observables[property];
+        var observable = this.observables[property] as IObservable<any>;
         if (observable instanceof Computed) {
             return observable.references;
         } else {
@@ -48,8 +48,8 @@ export default class Graph {
      * 
      * @param property 
      */
-    getSubscribers(property: string) {
-        var observable = this.observables[property];
+    getSubscribers<T>(property: string) {
+        var observable = this.observables[property] as IObservable<T>;
         if (observable) {
             return observable.subscribers;
         } else {

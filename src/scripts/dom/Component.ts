@@ -114,7 +114,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
     toNode(namespace?: string, oldRoot?: any): Node {
         // Get root
-        var root = Cascade.peek(this, 'root');
+        var root = Cascade.peek(this, 'root') as any;
 
         // Store old element
         var oldElement = this.element;

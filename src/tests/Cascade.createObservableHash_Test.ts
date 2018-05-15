@@ -13,7 +13,7 @@ describe('Cascade.createObservableHash', () => {
 
     it('should initialize undefined to empty', () => {
         class ViewModel {
-            value: IHash<any>;
+            value: IHash<number>;
             constructor() {
                 Cascade.createObservableHash(this, 'value');
             }
@@ -24,7 +24,7 @@ describe('Cascade.createObservableHash', () => {
 
     it('should initialize in the constructor to a value', () => {
         class ViewModel {
-            value: IHash<any>;
+            value: IHash<number>;
             constructor() {
                 Cascade.createObservableHash(this, 'value', {
                     'property': 10

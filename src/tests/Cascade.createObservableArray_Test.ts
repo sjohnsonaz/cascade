@@ -5,7 +5,7 @@ import Cascade from '../scripts/modules/Cascade';
 describe('Cascade.createObservableArray', () => {
     it('should initialize undefined to empty', () => {
         class ViewModel {
-            value: any[];
+            value: number[];
             constructor() {
                 Cascade.createObservableArray(this, 'value');
             }
@@ -16,7 +16,7 @@ describe('Cascade.createObservableArray', () => {
 
     it('should initialize in the constructor to a value', () => {
         class ViewModel {
-            value: any[];
+            value: number[];
             constructor() {
                 Cascade.createObservableArray(this, 'value', [1]);
             }
