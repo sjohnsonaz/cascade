@@ -49,7 +49,9 @@ describe('Graph', function () {
         viewModel.d = 14;
         complete = true;
     });
+});
 
+describe('Cascade.track', () => {
     it('should emit a Promise which resolves when push is complete', async () => {
         var viewModel: any = new ViewModel();
         await wait(20);
@@ -59,7 +61,25 @@ describe('Graph', function () {
         viewModel.a = 11;
         viewModel.b = 12;
         viewModel.c = 13;
-        await Cascade.set(viewModel, 'd', 14);
+        viewModel.d = 14;
+        await Cascade.track(viewModel, 'd');
+        abcd = Cascade.peekDirty(viewModel, 'abcd');
+        expect(abcd).to.equal(150);
+    });
+});
+
+describe('Cascade.trackAll', () => {
+    it('should emit a Promise which resolves when push is complete', async () => {
+        var viewModel: any = new ViewModel();
+        await wait(20);
+        var abcd = undefined;
+        viewModel._graph.subscribe('abcd', function (value: number) {
+        });
+        viewModel.a = 11;
+        viewModel.b = 12;
+        viewModel.c = 13;
+        viewModel.d = 14;
+        await Cascade.trackAll(viewModel);
         abcd = Cascade.peekDirty(viewModel, 'abcd');
         expect(abcd).to.equal(150);
     });

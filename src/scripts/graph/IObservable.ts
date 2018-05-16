@@ -13,6 +13,7 @@ export interface IObservable<T> {
     getValue(): T;
     peek(): T;
     peekDirty(): T;
+    track(): Promise<void>;
     setValue(value: T): Promise<void>;
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>): void;
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>): void;

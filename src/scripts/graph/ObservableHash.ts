@@ -24,7 +24,8 @@ export default class ObservableHash<T> extends Observable<IHash<T>> {
             var oldValue = this.value;
             value = this.wrapHash((value instanceof Object) ? value : {});
             this.value = value;
-            await this.publish(value, oldValue);
+            this.promise = this.publish(value, oldValue);
+            await this.promise;
         }
     }
 }

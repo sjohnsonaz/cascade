@@ -31,6 +31,14 @@ export default class Graph {
         return this.observables[property].peekDirty() as T;
     }
 
+    track(property: string) {
+        return this.observables[property].track();
+    }
+
+    trackAll() {
+        return Promise.all<void>(Object.values(this.observables).map(observable => observable.track()));
+    }
+
     /**
      * 
      * @param property 

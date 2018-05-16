@@ -14,6 +14,7 @@ export default class Observable<T> implements IObservable<T> {
     id: number;
     value: T;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
+    protected promise: Promise<void>;
 
     static id: number = 0;
 
@@ -38,11 +39,15 @@ export default class Observable<T> implements IObservable<T> {
     peekDirty() {
         return this.value;
     }
+    track() {
+        return this.promise || Promise.resolve();
+    }
     async setValue(value: T) {
         if (this.value !== value) {
             var oldValue = this.value;
             this.value = value;
-            await this.publish(value, oldValue);
+            this.promise = this.publish(value, oldValue);
+            await this.promise;
         }
     }
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>) {

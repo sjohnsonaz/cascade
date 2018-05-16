@@ -231,6 +231,34 @@ export default class Cascade {
      * @param obj 
      * @param property 
      */
+    static track<T, U extends keyof T>(obj: T, property: U) {
+        let graph: Graph = obj['_graph'];
+        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
+        if (observable) {
+            return observable.track();
+        } else {
+            throw new Error('No observable attached to Object: ' + property);
+        }
+    }
+
+    /**
+     * 
+     * @param obj 
+     */
+    static trackAll<T>(obj: T) {
+        let graph: Graph = obj['_graph'];
+        if (graph) {
+            return graph.trackAll();
+        } else {
+            throw new Error('No observables attached to Object');
+        }
+    }
+
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     */
     static update<T, U extends keyof T>(obj: T, property: U) {
         let graph: Graph = obj['_graph'];
         let observable = (graph ? graph.observables[property] : undefined) as Computed<T[U]>;
