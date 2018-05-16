@@ -1,5 +1,5 @@
 export interface IVirtualNodeProps {
-    key?: string;
+    key?: string | number;
     ref?: (node: Node) => void;
 }
 
