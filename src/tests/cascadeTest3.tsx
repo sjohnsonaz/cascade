@@ -49,14 +49,10 @@ describe('Component', function () {
         var container = document.createElement('div');
         //document.body.appendChild(container);
         Cascade.render(container, <Parent viewModel={viewModel} />);
-        viewModel.a = 'a1';
-        viewModel.b = 'b1';
 
-        await wait(1);
-
-        viewModel.b = 'b2';
-
-        await wait(20);
+        Cascade.set(viewModel, 'a', 'a1');
+        await Cascade.set(viewModel, 'b', 'b1');
+        await Cascade.set(viewModel, 'b', 'b2');
 
         expect(viewModel.runsA).to.equal(2);
         expect(viewModel.runsB).to.equal(3);

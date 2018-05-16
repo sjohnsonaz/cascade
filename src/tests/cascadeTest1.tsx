@@ -2,8 +2,6 @@ import { expect } from 'chai';
 
 import Cascade, { Component, observable } from '../scripts/modules/Cascade';
 
-import { wait } from '../scripts/util/PromiseUtil';
-
 class ViewModel {
     runs: number = 0;
     @observable info: string = 'test';
@@ -47,9 +45,7 @@ describe('Component', function () {
         var child = container.querySelector('#child');
         runs.push((child.childNodes[1] as Text).data);
 
-        viewModel.info = 'abcd';
-
-        await wait(20);
+        await Cascade.set(viewModel, 'info', 'abcd');
 
         var child = container.querySelector('#child');
         runs.push((child.childNodes[1] as Text).data);

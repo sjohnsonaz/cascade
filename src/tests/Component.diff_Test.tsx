@@ -105,18 +105,25 @@ describe('Component.diff', () => {
         );
         var container = document.createElement('div')
         Cascade.render(container, root);
-        viewModel.value = true;
+
+        // Change the value
+        let result = Cascade.set(viewModel, 'value', true);
+
+        // Inspect immediately
         expect(container.childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
 
-        await wait(20);
+        // Wait for propagation
+        await result;
 
+        // Inspect again
         expect(container.childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
-        viewModel.value = false;
 
-        await wait(20);
+        // Change the value and wait
+        await Cascade.set(viewModel, 'value', false);
 
+        // Inspect again
         expect(container.childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
@@ -153,18 +160,25 @@ describe('Component.diff', () => {
         );
         var container = document.createElement('div')
         Cascade.render(container, root);
-        viewModel.value = true;
+
+        // Change the value
+        let result = Cascade.set(viewModel, 'value', true);
+
+        // Inspect immediately
         expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
 
-        await wait(20);
+        // Wait for propagation
+        await result;
 
+        // Inspect again
         expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.TEXT_NODE);
-        viewModel.value = false;
 
-        await wait(20);
+        // Change the value and wait
+        await Cascade.set(viewModel, 'value', false);
 
+        // Inspect again
         expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(1);
         expect(container.childNodes[0].childNodes[0].childNodes[0].nodeType).to.equal(Node.COMMENT_NODE);
     });
