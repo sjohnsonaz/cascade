@@ -5,7 +5,7 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
     type: string;
     children: any;
     props: IVirtualNodeProps;
-    key: string;
+    key: string | number;
     element: Node;
 
     constructor(props?: IVirtualNodeProps, ...children: Array<any>) {

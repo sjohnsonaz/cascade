@@ -10,7 +10,7 @@ export interface IVirtualElementProps extends IVirtualNodeProps {
 export interface IVirtualNode<T> {
     props: T & IVirtualNodeProps;
     children: any;
-    key: string;
+    key: string | number;
 
     toNode(namespace?: string): Node;
     toString(): string;

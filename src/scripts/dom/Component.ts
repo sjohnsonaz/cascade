@@ -21,7 +21,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
     props: T & IVirtualNodeProps;
     prevProps: T & IVirtualNodeProps;
     children: any;
-    key: string;
+    key: string | number;
     root: any;
     element: Node;
     context: ComponentNode<any>[];

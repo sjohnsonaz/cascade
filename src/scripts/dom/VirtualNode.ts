@@ -4,7 +4,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
     type: string;
     props: T & IVirtualElementProps;
     children: any;
-    key: string;
+    key: string | number;
     element: Node;
 
     constructor(type: string, props?: T & IVirtualElementProps, ...children: Array<any>) {

@@ -7,7 +7,7 @@ export default class ComponentNode<T> implements IVirtualNode<T> {
     componentConstructor: new (props?: T, ...children: any[]) => Component<T>;
     props: T & IVirtualNodeProps;
     children: any;
-    key: string;
+    key: string | number;
     component: Component<T>;
 
     constructor(
