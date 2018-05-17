@@ -12,6 +12,8 @@ export default class ComputedQueue {
     completed: boolean;
     promise: Promise<void>;
 
+    static computedQueue: ComputedQueue = new ComputedQueue();
+
     constructor() {
         this.items = [];
         this.hash = {};

@@ -12,8 +12,6 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     disposed: boolean;
     error: Error;
 
-    static computedQueue: ComputedQueue = new ComputedQueue();
-
     // TODO: Add alwaysNotify, alwaysUpdate, validation.
     constructor(definition: (n?: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any) {
         super(undefined);
@@ -66,10 +64,10 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     notify() {
         if (!this.disposed) {
             this.notifyDirty();
-            if (Computed.computedQueue.completed) {
-                Computed.computedQueue = new ComputedQueue();
+            if (ComputedQueue.computedQueue.completed) {
+                ComputedQueue.computedQueue = new ComputedQueue();
             }
-            return Computed.computedQueue.add(this);
+            return ComputedQueue.computedQueue.add(this);
         } else {
             return Promise.resolve();
         }
