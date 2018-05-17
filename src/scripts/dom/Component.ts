@@ -2,6 +2,7 @@ import Cascade from '../cascade/Cascade';
 import Computed from '../graph/Computed';
 import VirtualNode from './VirtualNode';
 import ComponentNode from './ComponentNode';
+import Fragment from './Fragment';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import Diff, { DiffOperation } from '../util/Diff';
 
@@ -141,7 +142,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             // Root is a Component
                             if (root.componentConstructor === oldRoot.componentConstructor && root.key === oldRoot.key) {
                                 // Root and OldRoot are both the same Component - Diff this case
-                                element = this.diffComponents(root, oldRoot, oldElement, namespace);
+                                if (oldRoot.component instanceof Fragment) {
+                                    element = this.diffFragments(root, oldRoot, oldElement, namespace);
+                                } else {
+                                    element = this.diffComponents(root, oldRoot, oldElement, namespace);
+                                }
                                 noDispose = true;
                             } else {
                                 // Root is a different Component
@@ -257,13 +262,26 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
     }
 
+    diffFragments(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, oldElement: Node, namespace: string, offsetIndex: number = 0) {
+        var output: Node;
+        let oldRoot: Fragment = oldRootComponentNode.component as any;
+        oldRootComponentNode.component = undefined;
+        newRootComponentNode.component = oldRoot as any;
+
+        oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
+        this.diffVirtualNodes(oldRoot as any, oldRoot as any, oldElement as any, namespace, offsetIndex);
+
+        return oldElement;
+    }
+
     diffComponents(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, oldElement: Node, namespace: string) {
         var output: Node;
         let oldRoot = oldRootComponentNode.component;
         oldRootComponentNode.component = undefined;
         newRootComponentNode.component = oldRoot;
-        var innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
-        var innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
+
+        let innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
+        let innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
 
         if (!innerOldRoot) {
             // We are replacing
@@ -291,7 +309,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
                             // InnerRoot is a Component
                             if (innerOldRoot instanceof ComponentNode && innerRoot.componentConstructor === innerOldRoot.componentConstructor && innerRoot.key === innerOldRoot.key) {
                                 // InnerRoot is the same Component as InnerOldRoot - Diff this case
-                                output = this.diffComponents(innerRoot, innerOldRoot, oldElement, namespace);
+                                if (innerOldRoot.component instanceof Fragment) {
+                                    output = this.diffFragments(innerRoot, innerOldRoot, oldElement, namespace);
+                                } else {
+                                    output = this.diffComponents(innerRoot, innerOldRoot, oldElement, namespace);
+                                }
                             } else {
                                 // Replace
                                 output = innerRoot.toNode(namespace);
@@ -338,7 +360,9 @@ export abstract class Component<T> implements IVirtualNode<T> {
             oldRoot.props.ref(output);
         }
 
-        oldRoot.afterRender(output, true);
+        if (oldRoot.afterRender) {
+            oldRoot.afterRender(output, true);
+        }
 
         if (!output) {
             output = document.createComment('Empty Component');
@@ -354,7 +378,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         return output;
     }
 
-    diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement, namespace: string) {
+    diffVirtualNodes(newRoot: VirtualNode<IVirtualNodeProps>, oldRoot: VirtualNode<IVirtualNodeProps>, oldElement: HTMLElement, namespace: string, offsetIndex?: number) {
         // TODO: This case should not happen.
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
@@ -374,14 +398,24 @@ export abstract class Component<T> implements IVirtualNode<T> {
                     }
                 }
             }
-            var childIndex = oldRoot.children.length - 1;
+            var childIndex = oldRoot.children.length - 1 + (offsetIndex || 0);
             for (var index = 0, length = diff.length; index < length; index++) {
                 var diffItem = diff[index];
                 switch (diffItem.operation) {
                     case DiffOperation.REMOVE:
                         var oldChild = diffItem.item;
-                        oldElement.removeChild(oldElement.childNodes[childIndex]);
-                        childIndex--;
+                        // We need to know if oldChild is a Fragment or a Component with a root Fragment
+                        if (oldChild.component && oldChild.component.element instanceof DocumentFragment) {
+                            let fragmentLength = oldChild.component.getChildLength();
+                            let fragmentIndexLength = fragmentLength + childIndex;
+                            for (let fragmentIndex = childIndex; fragmentIndex < fragmentIndexLength; fragmentIndex++) {
+                                oldElement.removeChild(oldElement.childNodes[fragmentIndex]);
+                            }
+                            childIndex -= fragmentLength;
+                        } else {
+                            oldElement.removeChild(oldElement.childNodes[childIndex]);
+                            childIndex--;
+                        }
                         break;
                     case DiffOperation.NONE:
                         var newChild = diffItem.itemB;
@@ -390,7 +424,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
                         // TODO: Remove extra casts
                         if (typeof newChild === 'object') {
                             if (newChild instanceof ComponentNode) {
-                                this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace);
+                                if (oldChild.component instanceof Fragment) {
+                                    this.diffVirtualNodes(newChild as any, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace, childIndex);
+                                } else {
+                                    this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace);
+                                }
                             } else if (newChild instanceof VirtualNode) {
                                 // TODO: This is the only case where we don't know if oldChild exists and has the same type as newChild.
                                 // Perhaps we should figure that out here intead of inside diffVirtualNodes.
@@ -437,6 +475,15 @@ export abstract class Component<T> implements IVirtualNode<T> {
             }
         }
         return oldElement;
+    }
+
+    getChildLength() {
+        let root = Cascade.peekDirty(this, 'root') as any;
+        if (root instanceof ComponentNode && root.component.getChildLength) {
+            return root.component.getChildLength();
+        } else {
+            return 1;
+        }
     }
 
     static getContext() {

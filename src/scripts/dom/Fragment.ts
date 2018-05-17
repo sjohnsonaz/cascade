@@ -9,6 +9,10 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
     element: Node;
 
     constructor(props?: IVirtualNodeProps, ...children: Array<any>) {
+        this.storeProps(props, ...children);
+    }
+
+    storeProps(props?: IVirtualNodeProps, ...children: any[]) {
         this.props = props || ({} as any);
         this.key = this.props.key;
         // TODO: Remove key and ref?
@@ -16,6 +20,10 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
         // delete this.props.key;
         // }
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+    }
+
+    update(props?: IVirtualNodeProps, ...children: Array<any>) {
+        this.storeProps(props, ...children);
     }
 
     toNode() {
@@ -57,5 +65,25 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
         var container = document.createElement('div') as HTMLElement;
         container.appendChild(this.toNode());
         return container.innerHTML;
+    }
+
+    dispose() {
+
+    }
+
+    getChildLength() {
+        let childLength = 0;
+        for (let child of this.children) {
+            if (child !== null && child !== undefined) {
+                if (child.getChildLength) {
+                    childLength += child.getChildLength();
+                } else if (child.children) {
+                    childLength += child.children.length;
+                } else {
+                    childLength++;
+                }
+            }
+        }
+        return childLength;
     }
 }

@@ -17,7 +17,139 @@ describe('Fragment.toNode', function () {
         expect(div.id).to.equal('testId');
     });
 
-    it.skip('should be able to Diff', async () => {
+    it('should be able to Diff Fragment and Element', async () => {
+        class ViewModel {
+            @observable value = false;
+        }
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+
+        class View extends Component<IViewProps> {
+            render() {
+                return (
+                    <span>
+                        {this.props.viewModel.value ?
+                            <div>c</div> :
+                            <>
+                                <div>a</div>
+                                <div>b</div>
+                            </>
+                        }
+                    </span>
+                );
+            }
+        }
+        var viewModel = new ViewModel();
+        var container = document.createElement('div')
+        Cascade.render(container, <View viewModel={viewModel} />);
+        viewModel.value = true;
+        await Cascade.track(viewModel, 'value');
+
+        let span = container.childNodes[0];
+        expect(span.childNodes.length).to.equal(1);
+        expect(span.childNodes[0].childNodes.length).to.equal(1);
+        expect(span.childNodes[0].textContent).to.equal('c');
+
+        viewModel.value = false;
+        await Cascade.track(viewModel, 'value');
+
+        span = container.childNodes[0];
+        expect(span.childNodes.length).to.equal(2);
+        expect(span.childNodes[0].textContent).to.equal('a');
+        expect(span.childNodes[1].textContent).to.equal('b');
+    });
+
+    it.skip('should be able to Diff Fragment and Fragment', async () => {
+        class ViewModel {
+            @observable value = false;
+        }
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+
+        class View extends Component<IViewProps> {
+            render() {
+                return (
+                    <span>
+                        {this.props.viewModel.value ?
+                            <>
+                                <div>c</div>
+                            </> :
+                            <>
+                                <div>a</div>
+                                <div>b</div>
+                            </>
+                        }
+                    </span>
+                );
+            }
+        }
+        var viewModel = new ViewModel();
+        var container = document.createElement('div')
+        Cascade.render(container, <View viewModel={viewModel} />);
+        viewModel.value = true;
+        await Cascade.track(viewModel, 'value');
+
+        let span = container.childNodes[0];
+        expect(span.childNodes.length).to.equal(1);
+        expect(span.childNodes[0].childNodes.length).to.equal(1);
+        expect(span.childNodes[0].textContent).to.equal('c');
+
+        viewModel.value = false;
+        await Cascade.track(viewModel, 'value');
+
+        span = container.childNodes[0];
+        expect(span.childNodes.length).to.equal(2);
+        expect(span.childNodes[0].textContent).to.equal('a');
+        expect(span.childNodes[1].textContent).to.equal('b');
+    });
+
+    it.skip('should be able to Diff root Fragment and Element', async () => {
+        class ViewModel {
+            @observable value = true;
+        }
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+
+        class View extends Component<IViewProps> {
+            render() {
+                if (this.props.viewModel.value) {
+                    return (
+                        <div>c</div>
+                    );
+                } else {
+                    return (
+                        <>
+                            <div>a</div>
+                            <div>b</div>
+                        </>
+                    );
+                }
+            }
+        }
+        var viewModel = new ViewModel();
+        var container = document.createElement('div')
+        Cascade.render(container, <View viewModel={viewModel} />);
+        viewModel.value = false;
+        await Cascade.track(viewModel, 'value');
+
+        let span = container.childNodes[0];
+        expect(span.childNodes.length).to.equal(2);
+        expect(span.childNodes[0].textContent).to.equal('a');
+        expect(span.childNodes[1].textContent).to.equal('b');
+
+        viewModel.value = true;
+        await Cascade.track(viewModel, 'value');
+
+        span = container.childNodes[0];
+        expect(span.childNodes.length).to.equal(2);
+        expect(span.childNodes[0].textContent).to.equal('a');
+        expect(span.childNodes[1].textContent).to.equal('b');
+    });
+
+    it('should be able to Diff nested root Fragment to Element', async () => {
         class ViewModel {
             @observable value = false;
         }
