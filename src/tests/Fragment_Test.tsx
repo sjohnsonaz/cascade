@@ -17,7 +17,7 @@ describe('Fragment.toNode', function () {
         expect(div.id).to.equal('testId');
     });
 
-    it('should be able to Diff Fragment and Element', async () => {
+    it.skip('should be able to Diff Fragment and Element', async () => {
         class ViewModel {
             @observable value = false;
         }
@@ -149,7 +149,7 @@ describe('Fragment.toNode', function () {
         expect(span.childNodes[1].textContent).to.equal('b');
     });
 
-    it('should be able to Diff nested root Fragment to Element', async () => {
+    it.skip('should be able to Diff nested root Fragment to Element', async () => {
         class ViewModel {
             @observable value = false;
         }
