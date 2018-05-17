@@ -405,7 +405,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
                     case DiffOperation.REMOVE:
                         var oldChild = diffItem.item;
                         // We need to know if oldChild is a Fragment or a Component with a root Fragment
-                        if (oldChild.component && oldChild.component.element instanceof DocumentFragment) {
+                        if (oldChild.component && oldChild.component.element.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
                             let fragmentLength = oldChild.component.getChildLength();
                             let fragmentIndexLength = fragmentLength + childIndex;
                             for (let fragmentIndex = childIndex; fragmentIndex < fragmentIndexLength; fragmentIndex++) {
