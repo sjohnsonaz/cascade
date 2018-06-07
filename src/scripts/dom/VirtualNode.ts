@@ -27,14 +27,6 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         } else {
             node = document.createElement(this.type);
         }
-        for (var name in this.props) {
-            if (this.props.hasOwnProperty(name)) {
-                let value = this.props[name];
-                if (value !== undefined && value !== null) {
-                    VirtualNode.setAttribute(node, name, this.props[name], namespace);
-                }
-            }
-        }
         for (var index = 0, length = this.children.length; index < length; index++) {
             var child = this.children[index];
             switch (typeof child) {
@@ -59,6 +51,14 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                 default:
                     node.appendChild(document.createTextNode(child.toString()));
                     break;
+            }
+        }
+        for (var name in this.props) {
+            if (this.props.hasOwnProperty(name)) {
+                let value = this.props[name];
+                if (value !== undefined && value !== null) {
+                    VirtualNode.setAttribute(node, name, this.props[name], namespace);
+                }
             }
         }
         if (this.props && this.props.ref) {
