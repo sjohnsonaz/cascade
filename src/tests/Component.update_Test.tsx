@@ -205,4 +205,89 @@ describe('Component.update', () => {
         expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('new value C');
         expect(childRenderCount).to.equal(4);
     });
+
+
+    it('should call afterProps on storeProps', async () => {
+        class ViewModel {
+            @observable valueA: string = 'value A';
+            @observable valueB: string = 'value B';
+        }
+
+        class View extends Component<{
+            viewModel: ViewModel;
+        }> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div key="view">
+                        <Parent viewModel={viewModel} />
+                        <div>{viewModel.valueA}</div>
+                    </div>
+                )
+            }
+        }
+
+        class Parent extends Component<{
+            viewModel: ViewModel;
+        }> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div key="parent">
+                        <Child viewModel={viewModel} />
+                        <div>{viewModel.valueB}</div>
+                    </div>
+                )
+            }
+        }
+
+        let childRenderCount = 0;
+        let childAfterPropsCount = 0;
+        class Child extends Component<{
+            viewModel: ViewModel;
+        }> {
+            @observable valueC: string = 'value C';
+            beforeRender(mounted: boolean) {
+                if (!mounted) {
+                    window.setTimeout(() => {
+                        this.valueC = 'new value C';
+                    });
+                }
+            }
+            afterProps() {
+                childAfterPropsCount++;
+            }
+            render() {
+                childRenderCount++;
+                return (
+                    <div key="child">{this.valueC}</div>
+                )
+            }
+        }
+
+        let viewModel = new ViewModel();
+
+        var root = (
+            <div>
+                <View viewModel={viewModel} />
+            </div>
+        );
+
+        var container = document.createElement('div');
+        Cascade.render(container, root);
+
+        await wait(0);
+
+        viewModel.valueA = 'new value A';
+
+        await wait(0);
+
+        viewModel.valueB = 'new value B';
+
+        await wait(20);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes.length).to.equal(1);
+        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('new value C');
+        expect(childRenderCount).to.equal(4);
+        expect(childAfterPropsCount).to.equal(3);
+    });
 });

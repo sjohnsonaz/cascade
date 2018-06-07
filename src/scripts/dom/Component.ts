@@ -45,6 +45,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         // delete this.props.key;
         // }
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+        this.afterProps(this.mounted);
     }
 
     build() {
@@ -248,6 +249,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
                 component.dispose();
             }
         }
+    }
+
+    afterProps(updating: boolean) {
+
     }
 
     beforeRender(updating: boolean) {
