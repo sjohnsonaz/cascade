@@ -206,7 +206,6 @@ describe('Component.update', () => {
         expect(childRenderCount).to.equal(4);
     });
 
-
     it('should call afterProps on storeProps', async () => {
         class ViewModel {
             @observable valueA: string = 'value A';
@@ -289,5 +288,40 @@ describe('Component.update', () => {
         expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('new value C');
         expect(childRenderCount).to.equal(4);
         expect(childAfterPropsCount).to.equal(3);
+    });
+
+    it('should update children before attributes', async () => {
+        class ViewModel {
+            @observable options: number[] = [1, 2, 3];
+            @observable value: number = 2;
+        }
+        interface IViewProps {
+            viewModel: ViewModel;
+        }
+
+        class View extends Component<IViewProps> {
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <select id="select" value={viewModel.value as any}>
+                        {viewModel.options.map(option => <option value={option as any}>{option}</option>)}
+                    </select>
+                );
+            }
+        }
+
+        let viewModel = new ViewModel();
+        let root = (
+            <View viewModel={viewModel} />
+        );
+        let select = Cascade.render(document.createElement('div'), root) as HTMLSelectElement;
+        expect(select.value).to.equal('2');
+
+        viewModel.options.push(4);
+        viewModel.value = 4;
+
+        await wait(20);
+
+        expect(select.value).to.equal('4');
     });
 });

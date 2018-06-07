@@ -390,7 +390,6 @@ describe('Component.diff', () => {
         expect(divDynamic).to.be.undefined;
     });
 
-
     it('should handle change null to null', async () => {
         class ViewModel {
             @observable visible: boolean = false;

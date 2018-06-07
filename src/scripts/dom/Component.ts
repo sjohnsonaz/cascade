@@ -393,16 +393,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
             var propertyDiff = Diff.compareHash(oldRoot.props, newRoot.props);
             namespace = namespace || ((oldElement && oldElement.namespaceURI && oldElement.namespaceURI.endsWith('svg')) ? oldElement.namespaceURI : undefined)
-            for (var name in propertyDiff) {
-                if (propertyDiff.hasOwnProperty(name)) {
-                    var property = propertyDiff[name];
-                    if (property === null) {
-                        VirtualNode.removeAttribute(oldElement, name, namespace);
-                    } else {
-                        VirtualNode.setAttribute(oldElement, name, property, namespace);
-                    }
-                }
-            }
             var childIndex = oldRoot.children.length - 1 + (offsetIndex || 0);
             for (var index = 0, length = diff.length; index < length; index++) {
                 var diffItem = diff[index];
@@ -471,6 +461,17 @@ export abstract class Component<T> implements IVirtualNode<T> {
                                 break;
                         }
                         break;
+                }
+            }
+
+            for (var name in propertyDiff) {
+                if (propertyDiff.hasOwnProperty(name)) {
+                    var property = propertyDiff[name];
+                    if (property === null) {
+                        VirtualNode.removeAttribute(oldElement, name, namespace);
+                    } else {
+                        VirtualNode.setAttribute(oldElement, name, property, namespace);
+                    }
                 }
             }
 

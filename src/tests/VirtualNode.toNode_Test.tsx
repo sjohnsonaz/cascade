@@ -166,4 +166,15 @@ describe('VirtualNode.toNode', function () {
         var child = element.querySelector('#child');
         expect(child.textContent).to.equal('Custom Component - test');
     });
+
+    it('should render children before attributes', async () => {
+        var root = (
+            <select id="select" value="2">
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        );
+        let select = Cascade.render(document.createElement('div'), root) as HTMLSelectElement;
+        expect(select.value).to.equal('2');
+    });
 });
