@@ -6,7 +6,6 @@ describe('ObservableArrayLegacy', () => {
     before(function () {
         let $IEversion = window['$IEVersion'];
         let modern = typeof $IEversion !== undefined || $IEversion === 0 || $IEversion > 11;
-        console.log('Modern Browser', modern);
         if (modern) {
             this.skip();
         }
