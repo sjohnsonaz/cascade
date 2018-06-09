@@ -11,7 +11,7 @@ export interface ObservableIndex {
 /**
  * 
  */
-export default class Graph {
+export default class Graph<T = any> {
     parent: any;
     observables: ObservableIndex = {};
 
@@ -23,16 +23,16 @@ export default class Graph {
      * 
      * @param property 
      */
-    peek<T>(property: string) {
-        return this.observables[property].peek() as T;
+    peek<U extends keyof T>(property: U) {
+        return this.observables[property as string].peek() as T[U];
     }
 
-    peekDirty<T>(property: string) {
-        return this.observables[property].peekDirty() as T;
+    peekDirty<U extends keyof T>(property: U) {
+        return this.observables[property as string].peekDirty() as T[U];
     }
 
-    track(property: string) {
-        return this.observables[property].track();
+    track<U extends keyof T>(property: U) {
+        return this.observables[property as string].track();
     }
 
     trackAll() {
@@ -43,8 +43,8 @@ export default class Graph {
      * 
      * @param property 
      */
-    getReferences(property: string) {
-        var observable = this.observables[property] as IObservable<any>;
+    getReferences<U extends keyof T>(property: U) {
+        var observable = this.observables[property as string] as IObservable<any>;
         if (observable instanceof Computed) {
             return observable.references;
         } else {
@@ -56,8 +56,8 @@ export default class Graph {
      * 
      * @param property 
      */
-    getSubscribers<T>(property: string) {
-        var observable = this.observables[property] as IObservable<T>;
+    getSubscribers<U extends keyof T>(property: U) {
+        var observable = this.observables[property as string] as IObservable<T[U]>;
         if (observable) {
             return observable.subscribers;
         } else {
@@ -97,12 +97,12 @@ export default class Graph {
      * @param property 
      * @param subscriber 
      */
-    subscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
-        if (!this.observables[property]) {
+    subscribe<U extends keyof T>(property: U, subscriber: ISubscriber | ISubscriberFunction<any>) {
+        if (!this.observables[property as string]) {
             // Force value to update.
             var value = this.parent[property];
         }
-        this.observables[property].subscribe(subscriber);
+        this.observables[property as string].subscribe(subscriber);
         return value;
     }
 
@@ -111,12 +111,12 @@ export default class Graph {
      * @param property 
      * @param subscriber 
      */
-    subscribeOnly(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
-        if (!this.observables[property]) {
+    subscribeOnly<U extends keyof T>(property: U, subscriber: ISubscriber | ISubscriberFunction<any>) {
+        if (!this.observables[property as string]) {
             // Force value to update.
             var value = this.parent[property];
         }
-        this.observables[property].subscribeOnly(subscriber);
+        this.observables[property as string].subscribeOnly(subscriber);
         return value;
     }
 
@@ -125,9 +125,9 @@ export default class Graph {
      * @param property 
      * @param subscriber 
      */
-    unsubscribe(property: string, subscriber: ISubscriber | ISubscriberFunction<any>) {
-        if (this.observables[property]) {
-            this.observables[property].unsubscribe(subscriber);
+    unsubscribe<U extends keyof T>(property: U, subscriber: ISubscriber | ISubscriberFunction<any>) {
+        if (this.observables[property as string]) {
+            this.observables[property as string].unsubscribe(subscriber);
         }
     }
 }

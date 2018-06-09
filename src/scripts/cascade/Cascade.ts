@@ -20,13 +20,13 @@ export default class Cascade {
      * Dispose all Observables in a Graph
      * @param obj 
      */
-    static disposeAll(obj: any) {
-        var graph = obj._graph;
-        for (var index in obj) {
-            if (obj.hasOwnProperty(index)) {
+    static disposeAll<T>(obj: T) {
+        var graph: Graph<T> = obj['_graph'];
+        for (var name in obj) {
+            if (obj.hasOwnProperty(name)) {
                 // Only dispose non-observable properties here.
-                if (!graph || !graph.observables[index]) {
-                    Cascade.disposeAll(obj[index]);
+                if (!graph || !graph.observables[name]) {
+                    Cascade.disposeAll(obj[name] as any);
                 }
             }
         }
@@ -66,11 +66,11 @@ export default class Cascade {
      */
     static createProperty<T, U extends keyof T>(obj: T, property: U, observable: IObservable<T[U]>) {
         var graph = Cascade.attachGraph(obj);
-        if (graph.observables[property]) {
+        if (graph.observables[property as string]) {
             // TODO: move or delete subscriptions?
-            observable.subscribers = graph.observables[property].subscribers;
+            observable.subscribers = graph.observables[property as string].subscribers;
         }
-        graph.observables[property] = observable;
+        graph.observables[property as string] = observable;
     }
 
     /**
@@ -214,7 +214,7 @@ export default class Cascade {
      * @param property 
      */
     static peek<T, U extends keyof T>(obj: T, property: U) {
-        return obj['_graph'] ? (obj['_graph'] as Graph).peek<T[U]>(property) : undefined;
+        return obj['_graph'] ? (obj['_graph'] as Graph<T>).peek<U>(property) : undefined;
     }
 
     /**
@@ -223,7 +223,7 @@ export default class Cascade {
      * @param property 
      */
     static peekDirty<T, U extends keyof T>(obj: T, property: U) {
-        return obj['_graph'] ? (obj['_graph'] as Graph).peekDirty<T[U]>(property) : undefined;
+        return obj['_graph'] ? (obj['_graph'] as Graph<T>).peekDirty<U>(property) : undefined;
     }
 
     /**
@@ -232,8 +232,8 @@ export default class Cascade {
      * @param property 
      */
     static track<T, U extends keyof T>(obj: T, property: U) {
-        let graph: Graph = obj['_graph'];
-        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
+        let graph: Graph<T> = obj['_graph'];
+        let observable = (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
         if (observable) {
             return observable.track();
         } else {
@@ -260,8 +260,8 @@ export default class Cascade {
      * @param property 
      */
     static update<T, U extends keyof T>(obj: T, property: U) {
-        let graph: Graph = obj['_graph'];
-        let observable = (graph ? graph.observables[property] : undefined) as Computed<T[U]>;
+        let graph: Graph<T> = obj['_graph'];
+        let observable = (graph ? graph.observables[property as string] : undefined) as Computed<T[U]>;
         if (observable && observable.update) {
             return observable.update();
         } else {
@@ -270,8 +270,8 @@ export default class Cascade {
     }
 
     static set<T, U extends keyof T>(obj: T, property: U, value: T[U]) {
-        let graph: Graph = obj['_graph'];
-        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
+        let graph: Graph<T> = obj['_graph'];
+        let observable = (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
         if (observable) {
             return observable.setValue(value);
         } else {
@@ -285,8 +285,8 @@ export default class Cascade {
      * @param property 
      */
     static run<T, U extends keyof T>(obj: T, property: U) {
-        let graph: Graph = obj['_graph'];
-        let observable = (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
+        let graph: Graph<T> = obj['_graph'];
+        let observable = (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
         if (observable) {
             if ((observable as Computed<T[U]>).runOnly) {
                 return (observable as Computed<T[U]>).runOnly();
@@ -304,8 +304,8 @@ export default class Cascade {
      * @param property 
      */
     static getObservable<T, U extends keyof T>(obj: T, property: U) {
-        var graph: Graph = obj['_graph'];
-        return (graph ? graph.observables[property] : undefined) as IObservable<T[U]>;
+        var graph: Graph<T> = obj['_graph'];
+        return (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
     }
 
     /**
@@ -314,8 +314,8 @@ export default class Cascade {
      * @param property 
      */
     static getSubscribers<T, U extends keyof T>(obj: T, property: U) {
-        var graph: Graph = obj['_graph'];
-        return graph ? graph.getSubscribers<T[U]>(property) : undefined;
+        var graph: Graph<T> = obj['_graph'];
+        return graph ? graph.getSubscribers<U>(property) : undefined;
     }
 
     /**
@@ -324,7 +324,7 @@ export default class Cascade {
      * @param property 
      */
     static getReferences<T, U extends keyof T>(obj: T, property: U) {
-        var graph: Graph = obj['_graph'];
+        var graph: Graph<T> = obj['_graph'];
         return graph ? graph.getReferences(property) : undefined;
     }
 

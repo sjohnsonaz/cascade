@@ -5,8 +5,9 @@ import Cascade, { ObservableArrayLegacy, array, observable } from '../scripts/mo
 describe('ObservableArrayLegacy', () => {
     before(function () {
         let $IEversion = window['$IEVersion'];
-        let ie = $IEversion === 0 || $IEversion > 11;
-        if (ie) {
+        let modern = typeof $IEversion !== undefined || $IEversion === 0 || $IEversion > 11;
+        console.log('Modern Browser', modern);
+        if (modern) {
             this.skip();
         }
     });
