@@ -286,11 +286,16 @@ export abstract class Component<T> implements IVirtualNode<T> {
         newRootComponentNode.component = oldRoot;
 
         let innerOldRoot;
+        let innerRoot;
         // TODO: Fix this.  It should always have a value, but occasionally it doesn't.
         if (oldRoot) {
             innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
+            innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
+        } else {
+            console.error('Old Component has never been rendered.  Replacing with new Component.');
+            newRootComponentNode.toComponent();
+            innerRoot = Cascade.peekDirty(newRootComponentNode.component, 'root');
         }
-        let innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
 
         if (!innerOldRoot) {
             // We are replacing
