@@ -282,20 +282,20 @@ export abstract class Component<T> implements IVirtualNode<T> {
     diffComponents(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, oldElement: Node, namespace: string) {
         var output: Node;
         let oldRoot = oldRootComponentNode.component;
+        if (newRootComponentNode === oldRootComponentNode) {
+            // No diff necessary.  We have the exact same Components
+            return oldElement;
+        }
+        if (!oldRoot) {
+            // This should never happen
+            throw 'Old Component has never been rendered.  Replacing with new Component.';
+        }
+
         oldRootComponentNode.component = undefined;
         newRootComponentNode.component = oldRoot;
 
-        let innerOldRoot;
-        let innerRoot;
-        // TODO: Fix this.  It should always have a value, but occasionally it doesn't.
-        if (oldRoot) {
-            innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
-            innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
-        } else {
-            console.error('Old Component has never been rendered.  Replacing with new Component.');
-            newRootComponentNode.toComponent();
-            innerRoot = Cascade.peekDirty(newRootComponentNode.component, 'root');
-        }
+        let innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
+        let innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
 
         if (!innerOldRoot) {
             // We are replacing
@@ -397,6 +397,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
         if (!oldRoot || oldRoot.type !== newRoot.type) {
             // We are cleanly replacing
             oldElement = newRoot.toNode(namespace);
+        } else if (newRoot === oldRoot) {
+            // No diff necessary.  We have the exact same VirtualNodes
         } else {
             // Old and New Roots match
             var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
