@@ -36,6 +36,7 @@ import '../tests/cascadeTest7';
 import '../tests/cascadeTest9';
 import '../tests/cascadeTest10';
 import '../tests/Component.diff_Test';
+import '../tests/Component.diff_Nested_Children_Test';
 import '../tests/Component.dispose_Test';
 import '../tests/Component.toNode_Test';
 import '../tests/Component.update_Test';

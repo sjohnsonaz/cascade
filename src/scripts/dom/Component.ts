@@ -282,12 +282,21 @@ export abstract class Component<T> implements IVirtualNode<T> {
     diffComponents(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, oldElement: Node, namespace: string) {
         var output: Node;
         let oldRoot = oldRootComponentNode.component;
+
+        // No diff necessary.  We have the exact same Components
         if (newRootComponentNode === oldRootComponentNode) {
-            // No diff necessary.  We have the exact same Components
             return oldElement;
         }
+
+        /*
+        // We have already rendered newRootComponentNode.  It is likely a child Component.
+        if (newRootComponentNode.component) {
+            output = newRootComponentNode.component.element;
+        }
+        */
+
+        // This should never happen
         if (!oldRoot) {
-            // This should never happen
             throw 'Old Component has never been rendered.  Replacing with new Component.';
         }
 
