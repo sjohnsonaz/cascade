@@ -93,10 +93,16 @@ describe('Component.diff Nested Children', () => {
         await Cascade.track(viewModel, 'value');
 
         expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('2');
+
+        // Parent should construct once and render once
         expect(parentCount).to.equal(1);
         expect(parentRenderCount).to.equal(1);
+
+        // Child should construct once and render twice
         expect(childCount).to.equal(1);
         expect(childRenderCount).to.equal(2);
+
+        // Two InjectedChild should each construct once and render once
         expect(injectedChildCount).to.equal(2);
         expect(injectedChildRenderCount).to.equal(2);
     });
