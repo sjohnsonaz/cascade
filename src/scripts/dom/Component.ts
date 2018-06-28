@@ -29,6 +29,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
     oldContext: ComponentNode<any>[];
     mounted: boolean = false;
     rendered: boolean = false;
+    portal: boolean = false;
 
     constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
         // TODO: Remove unused uniqueId?
@@ -228,6 +229,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
         this.element = element;
         this.rendered = true;
         this.mounted = true;
+
+        if (this.portal) {
+            element = document.createComment('Empty Component');
+        }
+
         return element;
     }
 
@@ -393,6 +399,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
         }
 
         oldRoot.element = output;
+
+        if (oldRoot.portal) {
+            output = document.createComment('Empty Component');
+        }
 
         return output;
     }
@@ -560,11 +570,17 @@ function compareVirtualNodes(nodeA: any, nodeB: any) {
 }
 
 function swapChildren(newNode: Node, oldNode: Node, parent?: HTMLElement, index?: number) {
-    if (newNode !== oldNode) {
+    if (newNode) {
+        if (newNode !== oldNode) {
+            if (oldNode && oldNode.parentNode) {
+                oldNode.parentNode.replaceChild(newNode, oldNode);
+            } else if (parent) {
+                parent.insertBefore(newNode, parent.childNodes[index + 1]);
+            }
+        }
+    } else {
         if (oldNode && oldNode.parentNode) {
-            oldNode.parentNode.replaceChild(newNode, oldNode);
-        } else if (parent) {
-            parent.insertBefore(newNode, parent.childNodes[index + 1]);
+            oldNode.parentNode.removeChild(oldNode);
         }
     }
 }
