@@ -98,6 +98,6 @@ describe('Component.diff Nested Children', () => {
         expect(childCount).to.equal(1);
         expect(childRenderCount).to.equal(2);
         expect(injectedChildCount).to.equal(2);
-        expect(injectedChildRenderCount).to.equal(4);
+        expect(injectedChildRenderCount).to.equal(2);
     });
 });

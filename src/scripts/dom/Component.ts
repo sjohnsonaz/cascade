@@ -146,7 +146,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
                                 if (oldRoot.component instanceof Fragment) {
                                     element = this.diffFragments(root, oldRoot, oldElement, namespace);
                                 } else {
-                                    element = this.diffComponents(root, oldRoot, oldElement, namespace);
+                                    element = this.diffComponents(root, oldRoot, namespace);
+                                    swapChildren(element, oldElement);
                                 }
                                 noDispose = true;
                             } else {
@@ -279,21 +280,20 @@ export abstract class Component<T> implements IVirtualNode<T> {
         return oldElement;
     }
 
-    diffComponents(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, oldElement: Node, namespace: string) {
-        var output: Node;
-        let oldRoot = oldRootComponentNode.component;
-
+    diffComponents(newRootComponentNode: ComponentNode<IVirtualNodeProps>, oldRootComponentNode: ComponentNode<IVirtualNodeProps>, namespace: string) {
         // No diff necessary.  We have the exact same Components
         if (newRootComponentNode === oldRootComponentNode) {
-            return oldElement;
+            return oldRootComponentNode.component.element;
         }
 
-        /*
         // We have already rendered newRootComponentNode.  It is likely a child Component.
         if (newRootComponentNode.component) {
-            output = newRootComponentNode.component.element;
+            return newRootComponentNode.component.element;
         }
-        */
+
+        var output: Node;
+        let oldRoot = oldRootComponentNode.component;
+        let oldElement = oldRoot.element;
 
         // This should never happen
         if (!oldRoot) {
@@ -335,7 +335,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
                                 if (innerOldRoot.component instanceof Fragment) {
                                     output = this.diffFragments(innerRoot, innerOldRoot, oldElement, namespace);
                                 } else {
-                                    output = this.diffComponents(innerRoot, innerOldRoot, oldElement, namespace);
+                                    output = this.diffComponents(innerRoot, innerOldRoot, namespace);
+                                    swapChildren(output, oldElement);
                                 }
                             } else {
                                 // Replace
@@ -391,11 +392,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
             output = document.createComment('Empty Component');
         }
 
-        // Swap root elements if necessary
-        if (output !== oldElement && oldElement && oldElement.parentNode) {
-            oldElement.parentNode.replaceChild(output, oldElement);
-        }
-
         oldRoot.element = output;
 
         return output;
@@ -442,7 +438,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
                                 if (oldChild.component instanceof Fragment) {
                                     this.diffVirtualNodes(newChild as any, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace, childIndex);
                                 } else {
-                                    this.diffComponents(newChild, oldChild, oldElement.childNodes[childIndex] as HTMLElement, namespace);
+                                    let newNode = this.diffComponents(newChild, oldChild, namespace);
+                                    swapChildren(newNode, oldElement.childNodes[childIndex] as HTMLElement, oldElement, childIndex);
                                 }
                             } else if (newChild instanceof VirtualNode) {
                                 // TODO: This is the only case where we don't know if oldChild exists and has the same type as newChild.
@@ -559,5 +556,15 @@ function compareVirtualNodes(nodeA: any, nodeB: any) {
         }
     } else {
         return false;
+    }
+}
+
+function swapChildren(newNode: Node, oldNode: Node, parent?: HTMLElement, index?: number) {
+    if (newNode !== oldNode) {
+        if (oldNode && oldNode.parentNode) {
+            oldNode.parentNode.replaceChild(newNode, oldNode);
+        } else if (parent) {
+            parent.insertBefore(newNode, parent.childNodes[index + 1]);
+        }
     }
 }
