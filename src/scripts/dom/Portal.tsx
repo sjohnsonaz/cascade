@@ -3,7 +3,6 @@ import { Component } from "./Component";
 
 export interface IPortalProps {
     element: HTMLElement;
-    front?: boolean;
 }
 
 export default class Portal extends Component<IPortalProps> {
@@ -13,12 +12,6 @@ export default class Portal extends Component<IPortalProps> {
         return (
             <div>{this.children}</div>
         );
-    }
-
-    beforeRender(mounted: boolean) {
-        if (mounted && this.element && this.props.front) {
-            this.props.element.appendChild(this.element);
-        }
     }
 
     afterRender(node: Node, updated: boolean) {
