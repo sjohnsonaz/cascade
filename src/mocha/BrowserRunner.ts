@@ -26,7 +26,7 @@ import '../tests/Cascade.createObservable_Test';
 import '../tests/Cascade.createObservableArray_Test';
 import '../tests/Cascade.createObservableHash_Test';
 import '../tests/Cascade.render_Component_Test';
-import '../tests/Cascade.portal_Test';
+import '../tests/Component.portal_Test';
 import '../tests/cascadeTest1';
 import '../tests/cascadeTest2';
 import '../tests/cascadeTest3';
