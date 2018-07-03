@@ -90,10 +90,26 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         return fixedChildren;
     }
 
+    static createCssText(style: Partial<CSSStyleDeclaration>) {
+        let dest = [];
+        for (let index in style) {
+            if (style.hasOwnProperty(index)) {
+                let name = index.replace(/$([a-z])$([A-Z])/, stringReplacer);
+                let value = style[index];
+                dest.push(name + ': ' + value);
+            }
+        }
+        return dest.join('; ');
+    }
+
     static setAttribute(element: HTMLElement, property: string, value: any, namespace?: string) {
         if (!namespace) {
             if (property === 'style') {
-                element.style.cssText = value;
+                if (typeof value === 'string') {
+                    element.style.cssText = value;
+                } else {
+                    element.style.cssText = this.createCssText(value);
+                }
             } else if (property.indexOf('-') >= 0) {
                 element.setAttribute(property, value);
             } else if (property === 'class') {
@@ -153,4 +169,8 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             }
         }
     }
+}
+
+function stringReplacer(match: string, lowerLetter: string, upperLetter: string) {
+    return lowerLetter + '-' + upperLetter.toLowerCase();
 }

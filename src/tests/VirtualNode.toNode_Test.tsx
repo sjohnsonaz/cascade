@@ -110,7 +110,15 @@ describe('VirtualNode.toNode', function () {
         expect(element.getAttribute('data-custom')).to.equal('test value');
     });
 
-    it('should render style attributes', () => {
+    it('should render style attribute objects', () => {
+        var root = (
+            <div style={{ width: "100%" }}></div>
+        );
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.style.width).to.equal('100%');
+    });
+
+    it('should render style attribute strings', () => {
         var root = (
             <div style="width: 100%"></div>
         );

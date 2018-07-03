@@ -123,7 +123,7 @@ export namespace Elements {
         outerHTML?: string;
         outerText?: string;
         spellcheck?: boolean;
-        style?: string;
+        style?: string | Partial<CSSStyleDeclaration>;
         tabIndex?: number;
         title?: string;
     }
