@@ -55,7 +55,11 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
             }
         }
         if (this.props && this.props.ref) {
-            this.props.ref(node);
+            if (typeof this.props.ref === 'function') {
+                this.props.ref(node);
+            } else {
+                this.props.ref.current = node;
+            }
         }
         this.element = node;
         return node;

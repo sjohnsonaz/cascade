@@ -15,6 +15,7 @@ export { default as VirtualNode } from '../dom/VirtualNode';
 export { default as Fragment } from '../dom/Fragment';
 export { default as ComponentNode } from '../dom/ComponentNode';
 export { Component } from '../dom/Component';
+export { default as Ref } from '../dom/Ref';
 export { default as Portal } from '../dom/Portal';
 
 export { default as DecoratorUtil, ObservableFactory } from '../util/DecoratorUtil';

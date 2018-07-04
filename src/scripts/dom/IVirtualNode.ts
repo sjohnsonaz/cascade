@@ -1,6 +1,8 @@
+import Ref from './Ref';
+
 export interface IVirtualNodeProps {
     key?: string | number;
-    ref?: (node: Node) => void;
+    ref?: Ref | ((node: Node) => void);
 }
 
 export interface IVirtualElementProps extends IVirtualNodeProps {

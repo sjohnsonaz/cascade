@@ -1,4 +1,5 @@
 import { IVirtualNode, IVirtualElementProps } from './IVirtualNode';
+import Ref from './Ref';
 
 export default class VirtualNode<T> implements IVirtualNode<T> {
     type: string;
@@ -62,7 +63,11 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             }
         }
         if (this.props && this.props.ref) {
-            this.props.ref(node);
+            if (typeof this.props.ref === 'function') {
+                this.props.ref(node);
+            } else {
+                this.props.ref.current = node;
+            }
         }
         this.element = node;
         return node;

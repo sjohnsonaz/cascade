@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { Component, observable } from '../scripts/modules/Cascade';
+import Cascade, { Component, observable, Ref } from '../scripts/modules/Cascade';
 
 import { wait } from '../scripts/util/PromiseUtil';
 
@@ -348,7 +348,7 @@ describe('Cascade.render Component', () => {
         expect(beforeRenderCount).to.equal(2);
     });
 
-    it('should use afterRender and ref', () => {
+    it('should use afterRender and callback ref', () => {
         class ViewModel {
             parentNode: Node;
             childNode: Node;
@@ -393,7 +393,7 @@ describe('Cascade.render Component', () => {
         expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
     });
 
-    it('should use afterRender and ref after update', async () => {
+    it('should use afterRender and callback ref after update', async () => {
         class ViewModel {
             parentNode: Node;
             childNode: Node;
@@ -445,5 +445,92 @@ describe('Cascade.render Component', () => {
         expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
         expect((viewModel.parentNode as HTMLElement).tagName).to.equal('DIV');
         expect((viewModel.childNode as HTMLElement).tagName).to.equal('SPAN');
+    });
+
+    it('should use afterRender and ref', () => {
+        class ViewModel {
+            afterRenderNode: Node;
+            parentRef = new Ref();
+            childRef = new Ref();
+        }
+
+        interface IParentProps {
+            viewModel: ViewModel;
+        }
+
+        class Parent extends Component<IParentProps> {
+            afterRender(node: Node) {
+                viewModel.afterRenderNode = node;
+            }
+
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div>
+                        <span ref={viewModel.childRef}>Text</span>
+                    </div>
+                );
+            }
+        }
+
+        var viewModel = new ViewModel();
+        var container = document.createElement('div');
+        var root = (
+            <div>
+                <Parent viewModel={viewModel} ref={viewModel.parentRef} />
+            </div>
+        );
+        Cascade.render(container, root);
+        expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
+        expect((viewModel.parentRef.current as HTMLElement).tagName).to.equal('DIV');
+        expect((viewModel.childRef.current as HTMLElement).tagName).to.equal('SPAN');
+    });
+
+    it('should use afterRender and ref after update', async () => {
+        class ViewModel {
+            afterRenderNode: Node;
+            @observable value = 1;
+            parentRef = new Ref();
+            childRef = new Ref();
+        }
+
+        interface IParentProps {
+            viewModel: ViewModel;
+        }
+
+        class Parent extends Component<IParentProps> {
+            afterRender(node: Node) {
+                viewModel.afterRenderNode = node;
+            }
+
+            render() {
+                let { viewModel } = this.props;
+                return (
+                    <div>
+                        <span ref={viewModel.childRef}>Text</span>
+                        <span>{viewModel.value}</span>
+                    </div>
+                );
+            }
+        }
+
+        var viewModel = new ViewModel();
+        var container = document.createElement('div');
+        var root = (
+            <div>
+                <Parent viewModel={viewModel} ref={viewModel.parentRef} />
+            </div>
+        );
+        Cascade.render(container, root);
+        viewModel.afterRenderNode = undefined;
+        viewModel.parentRef.current = undefined;
+        viewModel.childRef.current = undefined;
+        viewModel.value = 2;
+
+        await wait(20);
+
+        expect((viewModel.afterRenderNode as HTMLElement).tagName).to.equal('DIV');
+        expect((viewModel.parentRef.current as HTMLElement).tagName).to.equal('DIV');
+        expect((viewModel.childRef.current as HTMLElement).tagName).to.equal('SPAN');
     });
 });

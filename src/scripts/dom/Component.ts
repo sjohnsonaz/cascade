@@ -214,7 +214,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
         }
 
         if (this.props && this.props.ref) {
-            this.props.ref(element);
+            if (typeof this.props.ref === 'function') {
+                this.props.ref(element);
+            } else {
+                this.props.ref.current = element;
+            }
         }
 
         if (!noDispose && oldRoot && oldRoot instanceof ComponentNode) {
@@ -387,7 +391,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
         // Call the ref for oldRoot
         if (oldRoot.props.ref) {
-            oldRoot.props.ref(output);
+            if (typeof oldRoot.props.ref === 'function') {
+                oldRoot.props.ref(output);
+            } else {
+                oldRoot.props.ref.current = output;
+            }
         }
 
         if (oldRoot.afterRender) {
@@ -504,7 +512,11 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
             // Call the ref for newRoot
             if (newRoot.props.ref) {
-                newRoot.props.ref(oldElement);
+                if (typeof newRoot.props.ref === 'function') {
+                    newRoot.props.ref(oldElement);
+                } else {
+                    newRoot.props.ref.current = oldElement;
+                }
             }
         }
         return oldElement;
