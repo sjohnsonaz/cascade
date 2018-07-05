@@ -90,8 +90,7 @@ describe('VirtualNode.toNode', function () {
         expect(element.id).to.not.equal('null');
     });
 
-    // This does not work for IE    
-    it.skip('should render form attributes', () => {
+    it('should render form attributes', () => {
         var root = (
             <div>
                 <form id="formId" />
