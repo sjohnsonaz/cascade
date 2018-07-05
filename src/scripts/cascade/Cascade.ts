@@ -123,7 +123,7 @@ export default class Cascade {
      * @param property 
      * @param value 
      */
-    static createObservableArray<T, U extends keyof T, V extends keyof T[U]>(obj: T, property: U, value?: T[U]) {
+    static createObservableArray<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
         Cascade.attachObservable<T, U>(obj, property, Cascade.proxyAvailable ? new ObservableArray<any>(value as any) : new ObservableArrayLegacy<any>(value as any) as any);
     }
 
@@ -133,7 +133,7 @@ export default class Cascade {
      * @param property 
      * @param value 
      */
-    static createObservableHash<T, U extends keyof T, V extends keyof T[U]>(obj: T, property: U, value?: T[U]) {
+    static createObservableHash<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
         Cascade.attachObservable<T, U>(obj, property, new ObservableHash<T[U]>(value as any) as any);
     }
 
@@ -143,8 +143,8 @@ export default class Cascade {
      * @param property 
      * @param subscriberFunction 
      */
-    static subscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>, createDisposer: boolean = false) {
-        var graph: Graph = obj._graph;
+    static subscribe<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>, createDisposer: boolean = false) {
+        var graph: Graph<T> = obj['_graph'];
         if (graph) {
             graph.subscribe(property, subscriberFunction);
         }
@@ -159,8 +159,8 @@ export default class Cascade {
      * @param property 
      * @param subscriberFunction 
      */
-    static subscribeOnly<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>, createDisposer: boolean = false) {
-        var graph: Graph = obj._graph;
+    static subscribeOnly<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>, createDisposer: boolean = false) {
+        var graph: Graph<T> = obj['_graph'];
         if (graph) {
             graph.subscribeOnly(property, subscriberFunction);
         }
@@ -169,19 +169,19 @@ export default class Cascade {
         } : undefined;
     }
 
-    static unsubscribe<T>(obj: any, property: string, subscriberFunction: ISubscriberFunction<T>) {
-        var graph: Graph = obj._graph;
+    static unsubscribe<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>) {
+        var graph: Graph<T> = obj['_graph'];
         if (graph) {
             graph.unsubscribe(property, subscriberFunction);
         }
     }
 
-    static waitToEqual<T>(obj: any, property: string, testValue: T, timeout?: number) {
-        var graph: Graph = obj._graph;
+    static waitToEqual<T, U extends keyof T>(obj: T, property: U, testValue: T[U], timeout?: number) {
+        var graph: Graph<T> = obj['_graph'];
         if (graph) {
-            return new Promise<T>((resolve, reject) => {
+            return new Promise<T[U]>((resolve, reject) => {
                 let resolved = false;
-                let subscriberFunction = (value: T) => {
+                let subscriberFunction = (value: T[U]) => {
                     if (value === testValue) {
                         if (timerId) {
                             window.clearTimeout(timerId);
