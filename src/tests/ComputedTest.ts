@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Cascade, { Computed, observable, Observable } from '../scripts/modules/Cascade';
+import Cascade, { Computed, observable, Observable, IObservable } from '../scripts/modules/Cascade';
 
 describe('Computed', () => {
     it('should compute non-observable values', () => {
@@ -16,6 +16,23 @@ describe('Computed', () => {
             return obs.getValue();
         });
         expect(value.getValue()).to.equal(1);
+    });
+
+    it('should subscribe once per Observable', () => {
+        var obs = new Observable(1);
+        let readCount = 0;
+        let referenceCount = 0;
+        var value = new Computed(() => {
+            obs.getValue();
+            let observableContext = window['$_cascade_observable_context'];
+            let context: IObservable<any>[] = observableContext.context;
+            let output = obs.getValue();
+            readCount = context.length;
+            return output;
+        });
+        referenceCount = value.references.length;
+        expect(readCount).to.equal(2);
+        expect(referenceCount).to.equal(1);
     });
 });
 
