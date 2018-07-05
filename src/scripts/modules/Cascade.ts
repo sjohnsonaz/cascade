@@ -5,7 +5,6 @@ export { Elements } from '../jsx/Elements';
 export { IObservable, ISubscriber, ISubscriberFunction, IArray, IHash } from '../graph/IObservable';
 export { default as Observable } from '../graph/Observable';
 export { default as Computed } from '../graph/Computed';
-export { default as ObservableArrayLegacy } from '../graph/ObservableArrayLegacy';
 export { default as ObservableArray } from '../graph/ObservableArray';
 export { default as ObservableHash } from '../graph/ObservableHash';
 export { default as Graph } from '../graph/Graph';

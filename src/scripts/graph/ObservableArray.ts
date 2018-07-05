@@ -32,7 +32,6 @@ export default class ObservableArray<T> extends Observable<IArray<T>> {
 export class ProxyArray<T> extends Array<T> implements IArray<T> {
     constructor(value?: Array<T>, containingObservable?: Observable<Array<T>>) {
         super();
-        (value as IArray<T>).set = ProxyArray.prototype.set;
         let inner = new Proxy(value, {
             set: (target: Array<T>, property: string, value: T, receiver: ProxyArray<T>) => {
                 let result = true;
@@ -54,10 +53,5 @@ export class ProxyArray<T> extends Array<T> implements IArray<T> {
             }
         }) as ProxyArray<T>;
         return inner;
-    }
-
-    // TODO: This is included to be compatible with ObservableArrayLegacy.
-    set(index: number, value: T) {
-        this[index] = value;
     }
 }

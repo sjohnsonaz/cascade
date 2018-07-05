@@ -1,6 +1,5 @@
 import Cascade from './Cascade';
 import Observable from '../graph/Observable';
-import ObservableArrayLegacy from '../graph/ObservableArrayLegacy';
 import ObservableArray from '../graph/ObservableArray';
 import ObservableHash from '../graph/ObservableHash';
 import Computed from '../graph/Computed';
@@ -20,7 +19,7 @@ function createObservableIfNotExists<T>(obj: any, property: string, value?: T, s
 function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>, set?: boolean): ObservableArray<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
-        obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableArray<T>(value) : new ObservableArrayLegacy<T>(value);
+        obj._graph.observables[property] = new ObservableArray<T>(value);
     } else if (set) {
         obj._graph.observables[property].setValue(value);
     }
@@ -31,7 +30,7 @@ function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>,
 function createHashIfNotExists<T>(obj: any, property: string, value?: IHash<T>, set?: boolean): ObservableHash<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
-        obj._graph.observables[property] = Cascade.proxyAvailable ? new ObservableHash<T>(value) : new Observable<IHash<T>>(value);
+        obj._graph.observables[property] = new ObservableHash<T>(value);
     } else if (set) {
         obj._graph.observables[property].setValue(value);
     }

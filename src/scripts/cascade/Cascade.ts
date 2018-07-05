@@ -5,7 +5,6 @@ import Graph from '../graph/Graph';
 import { IObservable, ISubscriber, ISubscriberFunction, IArray, IHash } from '../graph/IObservable';
 import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
-import ObservableArrayLegacy from '../graph/ObservableArrayLegacy';
 import ObservableArray from '../graph/ObservableArray';
 import ObservableHash from '../graph/ObservableHash';
 
@@ -124,7 +123,7 @@ export default class Cascade {
      * @param value 
      */
     static createObservableArray<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
-        Cascade.attachObservable<T, U>(obj, property, Cascade.proxyAvailable ? new ObservableArray<any>(value as any) : new ObservableArrayLegacy<any>(value as any) as any);
+        Cascade.attachObservable<T, U>(obj, property, new ObservableArray<any>(value as any) as any);
     }
 
     /** 
@@ -357,6 +356,5 @@ export default class Cascade {
 
     static Fragment = Fragment;
 
-    static proxyAvailable: boolean = typeof Proxy !== 'undefined';
     static reflectAvailable: boolean = (typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function');
 }
