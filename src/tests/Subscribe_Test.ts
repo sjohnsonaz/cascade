@@ -46,4 +46,24 @@ describe('Cascade.subscribe', () => {
     it.skip('should return a disposer function', () => {
 
     });
+
+    it('should initialize an Observable', async () => {
+        class State {
+            @observable value: number;
+        }
+
+        let state = new State();
+        let values: number[] = [];
+
+        Cascade.subscribe(state, 'value', (value) => {
+            values.push(value);
+        });
+
+        state.value = 1;
+        await Cascade.track(state, 'value');
+
+        expect(values.length).to.equal(2);
+        expect(values[0]).to.equal(undefined);
+        expect(values[1]).to.equal(1);
+    });
 });

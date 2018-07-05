@@ -46,8 +46,8 @@ export default class Cascade {
      * Attach a Graph to an object
      * @param obj the object on which to attach a Graph
      */
-    static attachGraph(obj: any) {
-        if (!obj._graph) {
+    static attachGraph<T>(obj: T) {
+        if (!(obj as any)._graph) {
             Object.defineProperty(obj, '_graph', {
                 configurable: true,
                 writable: true,
@@ -55,7 +55,7 @@ export default class Cascade {
                 value: new Graph(obj)
             });
         }
-        return obj._graph as Graph;
+        return (obj as any)._graph as Graph<T>;
     }
 
     /**
@@ -144,10 +144,8 @@ export default class Cascade {
      * @param subscriberFunction 
      */
     static subscribe<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>, createDisposer: boolean = false) {
-        var graph: Graph<T> = obj['_graph'];
-        if (graph) {
-            graph.subscribe(property, subscriberFunction);
-        }
+        let graph = this.attachGraph(obj);
+        graph.subscribe(property, subscriberFunction);
         return createDisposer ? function () {
             graph.unsubscribe(property, subscriberFunction);
         } : undefined;
@@ -160,10 +158,8 @@ export default class Cascade {
      * @param subscriberFunction 
      */
     static subscribeOnly<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>, createDisposer: boolean = false) {
-        var graph: Graph<T> = obj['_graph'];
-        if (graph) {
-            graph.subscribeOnly(property, subscriberFunction);
-        }
+        let graph = this.attachGraph(obj);
+        graph.subscribeOnly(property, subscriberFunction);
         return createDisposer ? function () {
             graph.unsubscribe(property, subscriberFunction);
         } : undefined;
@@ -177,35 +173,31 @@ export default class Cascade {
     }
 
     static waitToEqual<T, U extends keyof T>(obj: T, property: U, testValue: T[U], timeout?: number) {
-        var graph: Graph<T> = obj['_graph'];
-        if (graph) {
-            return new Promise<T[U]>((resolve, reject) => {
-                let resolved = false;
-                let subscriberFunction = (value: T[U]) => {
-                    if (value === testValue) {
-                        if (timerId) {
-                            window.clearTimeout(timerId);
-                        }
-                        if (!resolved) {
-                            resolved = true;
-                            window.setTimeout(() => {
-                                graph.unsubscribe(property, subscriberFunction);
-                            });
-                            resolve(value);
-                        }
+        let graph = this.attachGraph(obj);
+        return new Promise<T[U]>((resolve, reject) => {
+            let resolved = false;
+            let subscriberFunction = (value: T[U]) => {
+                if (value === testValue) {
+                    if (timerId) {
+                        window.clearTimeout(timerId);
                     }
-                };
-                if (timeout) {
-                    var timerId = window.setTimeout(() => {
-                        graph.unsubscribe(property, subscriberFunction);
-                        reject(new Error('Timeout elapsed'));
-                    }, timeout);
+                    if (!resolved) {
+                        resolved = true;
+                        window.setTimeout(() => {
+                            graph.unsubscribe(property, subscriberFunction);
+                        });
+                        resolve(value);
+                    }
                 }
-                graph.subscribeOnly(property, subscriberFunction);
-            });
-        } else {
-            return Promise.reject('Cannot subscribe to Object');
-        }
+            };
+            if (timeout) {
+                var timerId = window.setTimeout(() => {
+                    graph.unsubscribe(property, subscriberFunction);
+                    reject(new Error('Timeout elapsed'));
+                }, timeout);
+            }
+            graph.subscribeOnly(property, subscriberFunction);
+        });
     }
 
     /**
@@ -232,8 +224,8 @@ export default class Cascade {
      * @param property 
      */
     static track<T, U extends keyof T>(obj: T, property: U) {
-        let graph: Graph<T> = obj['_graph'];
-        let observable = (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
+        let graph = this.attachGraph(obj);
+        let observable = graph.observables[property as string] as IObservable<T[U]>;
         if (observable) {
             return observable.track();
         } else {
@@ -246,12 +238,8 @@ export default class Cascade {
      * @param obj 
      */
     static trackAll<T>(obj: T) {
-        let graph: Graph = obj['_graph'];
-        if (graph) {
-            return graph.trackAll();
-        } else {
-            throw new Error('No observables attached to Object');
-        }
+        let graph = this.attachGraph(obj);
+        return graph.trackAll();
     }
 
     /**
@@ -260,8 +248,8 @@ export default class Cascade {
      * @param property 
      */
     static update<T, U extends keyof T>(obj: T, property: U) {
-        let graph: Graph<T> = obj['_graph'];
-        let observable = (graph ? graph.observables[property as string] : undefined) as Computed<T[U]>;
+        let graph = this.attachGraph(obj);
+        let observable = graph.observables[property as string] as Computed<T[U]>;
         if (observable && observable.update) {
             return observable.update();
         } else {
@@ -270,8 +258,8 @@ export default class Cascade {
     }
 
     static set<T, U extends keyof T>(obj: T, property: U, value: T[U]) {
-        let graph: Graph<T> = obj['_graph'];
-        let observable = (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
+        let graph = this.attachGraph(obj);
+        let observable = graph.observables[property as string] as IObservable<T[U]>;
         if (observable) {
             return observable.setValue(value);
         } else {
@@ -285,8 +273,8 @@ export default class Cascade {
      * @param property 
      */
     static run<T, U extends keyof T>(obj: T, property: U) {
-        let graph: Graph<T> = obj['_graph'];
-        let observable = (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
+        let graph = this.attachGraph(obj);
+        let observable = graph.observables[property as string] as IObservable<T[U]>;
         if (observable) {
             if ((observable as Computed<T[U]>).runOnly) {
                 return (observable as Computed<T[U]>).runOnly();
@@ -304,8 +292,8 @@ export default class Cascade {
      * @param property 
      */
     static getObservable<T, U extends keyof T>(obj: T, property: U) {
-        var graph: Graph<T> = obj['_graph'];
-        return (graph ? graph.observables[property as string] : undefined) as IObservable<T[U]>;
+        let graph = this.attachGraph(obj);
+        return graph.observables[property as string] as IObservable<T[U]>;
     }
 
     /**
@@ -314,8 +302,8 @@ export default class Cascade {
      * @param property 
      */
     static getSubscribers<T, U extends keyof T>(obj: T, property: U) {
-        var graph: Graph<T> = obj['_graph'];
-        return graph ? graph.getSubscribers<U>(property) : undefined;
+        let graph = this.attachGraph(obj);
+        return graph.getSubscribers<U>(property);
     }
 
     /**
@@ -324,8 +312,8 @@ export default class Cascade {
      * @param property 
      */
     static getReferences<T, U extends keyof T>(obj: T, property: U) {
-        var graph: Graph<T> = obj['_graph'];
-        return graph ? graph.getReferences(property) : undefined;
+        let graph = this.attachGraph(obj);
+        return graph.getReferences(property);
     }
 
     /**
