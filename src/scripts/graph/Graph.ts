@@ -130,4 +130,17 @@ export default class Graph<T = any> {
             this.observables[property as string].unsubscribe(subscriber);
         }
     }
+
+    /**
+     * 
+     * @param property 
+     * @param alwaysNotify 
+     */
+    setAlwaysNotify<U extends keyof T>(property: U, alwaysNotify: boolean) {
+        if (!this.observables[property as string]) {
+            // Force value to update.
+            var value = this.parent[property];
+        }
+        this.observables[property as string].alwaysNotify = alwaysNotify;
+    }
 }

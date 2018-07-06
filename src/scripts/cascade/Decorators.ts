@@ -15,7 +15,6 @@ function createObservableIfNotExists<T>(obj: any, property: string, value?: T, s
     return obj._graph.observables[property];
 }
 
-// TODO: Remove Proxy check
 function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>, set?: boolean): ObservableArray<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {
@@ -26,7 +25,6 @@ function createArrayIfNotExists<T>(obj: any, property: string, value?: Array<T>,
     return obj._graph.observables[property];
 }
 
-// TODO: Remove Proxy check
 function createHashIfNotExists<T>(obj: any, property: string, value?: IHash<T>, set?: boolean): ObservableHash<T> {
     Cascade.attachGraph(obj);
     if (!obj._graph.observables[property]) {

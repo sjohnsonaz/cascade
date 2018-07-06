@@ -38,6 +38,7 @@ import '../tests/graphTest7';
 import '../tests/graphTest8';
 import '../tests/Observable_Decorator_Test';
 import '../tests/Observable_Test';
+import '../tests/Observable.alwaysNotify_Test';
 import '../tests/ObservableArray_Decorator_Test';
 import '../tests/ObservableArray_Test';
 import '../tests/ObservableHash_Decorator_Test';

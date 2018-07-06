@@ -1,6 +1,3 @@
-// TODO: Remove Proxy check
-declare var Proxy: any;
-
 import Graph from '../graph/Graph';
 import { IObservable, ISubscriber, ISubscriberFunction, IArray, IHash } from '../graph/IObservable';
 import Observable from '../graph/Observable';
@@ -115,7 +112,6 @@ export default class Cascade {
         Cascade.attachObservable(obj, property, new Computed(definition, defer, undefined, setter), true);
     }
 
-    // TODO: Remove Proxy check
     /**
      * 
      * @param obj 
@@ -134,6 +130,17 @@ export default class Cascade {
      */
     static createObservableHash<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
         Cascade.attachObservable<T, U>(obj, property, new ObservableHash<T[U]>(value as any) as any);
+    }
+
+    /**
+     * 
+     * @param obj 
+     * @param property 
+     * @param alwaysNotify 
+     */
+    static setAlwaysNotify<T, U extends keyof T>(obj: T, property: U, alwaysNotify: boolean) {
+        let graph = this.attachGraph(obj);
+        graph.setAlwaysNotify(property, alwaysNotify);
     }
 
     /**

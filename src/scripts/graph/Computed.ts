@@ -12,7 +12,6 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     disposed: boolean;
     error: Error;
 
-    // TODO: Add alwaysNotify, alwaysUpdate, validation.
     constructor(definition: (n?: T) => T, defer: boolean = false, thisArg?: any, setter?: (n: T) => any) {
         super(undefined);
         this.references = [];
@@ -50,7 +49,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
     setValue(value: T) {
         if (this.setter) {
             let newValue = this.setter(value);
-            if (this.value !== newValue) {
+            if (this.value !== newValue || this.alwaysNotify) {
                 var oldValue = this.value;
                 this.value = newValue;
                 return this.publish(newValue, oldValue);
@@ -88,7 +87,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             var value = this.value;
             this.value = this.runDefinition(this.definition);
             this.dirty = false;
-            if (this.value !== value) {
+            if (this.value !== value || this.alwaysNotify) {
                 await this.publish(this.value, value);
             }
         }

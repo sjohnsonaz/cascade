@@ -11,6 +11,7 @@ export interface IObservable<T> {
     id: number;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
     value: T;
+    alwaysNotify: boolean;
     getValue(): T;
     peek(): T;
     peekDirty(): T;

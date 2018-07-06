@@ -14,6 +14,7 @@ export default class Observable<T> implements IObservable<T> {
     id: number;
     value: T;
     subscribers: (ISubscriber | ISubscriberFunction<T>)[];
+    alwaysNotify: boolean;
     protected promise: Promise<void>;
 
     static id: number = 0;
@@ -26,7 +27,6 @@ export default class Observable<T> implements IObservable<T> {
         Observable.id++;
     }
 
-    // TODO: Change this to push only unique
     getValue() {
         if (observableContext.context) {
             observableContext.context.push(this);
@@ -43,7 +43,7 @@ export default class Observable<T> implements IObservable<T> {
         return this.promise || Promise.resolve();
     }
     async setValue(value: T) {
-        if (this.value !== value) {
+        if (this.value !== value || this.alwaysNotify) {
             var oldValue = this.value;
             this.value = value;
             this.promise = this.publish(value, oldValue);

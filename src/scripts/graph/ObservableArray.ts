@@ -4,8 +4,11 @@ import Observable from './Observable';
 import { IArray } from './IObservable';
 
 export default class ObservableArray<T> extends Observable<IArray<T>> {
+    private _innerValue: Array<T>;
+
     constructor(value?: Array<T>) {
         super();
+        this._innerValue = value;
         this.value = this.wrapArray((value instanceof Array) ? value : []);
     }
 
@@ -19,7 +22,8 @@ export default class ObservableArray<T> extends Observable<IArray<T>> {
     }
 
     async setValue(value?: Array<T>) {
-        if (this.value !== value) {
+        if (this._innerValue !== value || this.alwaysNotify) {
+            this._innerValue = value;
             var oldValue = this.value;
             value = this.wrapArray((value instanceof Array) ? value : []);
             this.value = value;
@@ -36,7 +40,7 @@ export class ProxyArray<T> extends Array<T> implements IArray<T> {
             set: (target: Array<T>, property: string, value: T, receiver: ProxyArray<T>) => {
                 let result = true;
                 let oldValue = target[property];
-                if (oldValue !== value) {
+                if (oldValue !== value || containingObservable.alwaysNotify) {
                     result = (target[property] = value) === value;
                     if (result && isFinite(Number(property)) || property === 'length') {
                         containingObservable.publish(target, target);

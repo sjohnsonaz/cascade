@@ -135,7 +135,6 @@ describe('VirtualNode.toNode', function () {
         expect(count).to.equal(1);
     });
 
-    // TODO: Make this work without repeating xmlns
     it('should render SVG elements', function () {
         if (typeof SVGElement === 'undefined') this.skip();
         var root = (
