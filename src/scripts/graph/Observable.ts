@@ -33,15 +33,19 @@ export default class Observable<T> implements IObservable<T> {
         }
         return this.value;
     }
+
     peek() {
         return this.value;
     }
+
     peekDirty() {
         return this.value;
     }
+
     track() {
         return this.promise || Promise.resolve();
     }
+
     async setValue(value: T) {
         if (this.value !== value || this.alwaysNotify) {
             var oldValue = this.value;
@@ -50,11 +54,13 @@ export default class Observable<T> implements IObservable<T> {
             await this.promise;
         }
     }
+
     subscribeOnly(subscriber: ISubscriber | ISubscriberFunction<T>) {
         if (subscriber) {
             this.subscribers.push(subscriber);
         }
     }
+
     subscribe(subscriber: ISubscriber | ISubscriberFunction<T>) {
         if (subscriber) {
             this.subscribers.push(subscriber);
@@ -65,6 +71,7 @@ export default class Observable<T> implements IObservable<T> {
             }
         }
     }
+
     unsubscribe(subscriber: ISubscriber | ISubscriberFunction<T>) {
         if (subscriber) {
             var index = this.subscribers.indexOf(subscriber);
@@ -73,6 +80,7 @@ export default class Observable<T> implements IObservable<T> {
             }
         }
     }
+
     async publish(value: T, oldValue?: T) {
         if (this.subscribers.length) {
             let subscribers = this.subscribers.filter((subscriber) => {

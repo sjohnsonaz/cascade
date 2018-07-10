@@ -33,19 +33,23 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         }
         return this.value;
     }
+
     update() {
         this.dirty = true;
         return this.getValue();
     }
+
     peek() {
         if (this.dirty) {
             this.runUpdate();
         }
         return this.value;
     }
+
     peekDirty() {
         return this.value;
     }
+
     setValue(value: T) {
         if (this.setter) {
             let newValue = this.setter(value);
@@ -60,6 +64,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             return Promise.resolve();
         }
     }
+
     notify() {
         if (!this.disposed) {
             this.notifyDirty();
@@ -71,6 +76,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             return Promise.resolve();
         }
     }
+
     notifyDirty() {
         if (!this.dirty) {
             this.dirty = true;
@@ -82,6 +88,7 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
             }
         }
     }
+
     async runUpdate() {
         if (!this.disposed && this.dirty) {
             var value = this.value;
@@ -93,11 +100,13 @@ export default class Computed<T> extends Observable<T> implements ISubscriber {
         }
         return this.value;
     }
+
     runOnly() {
         this.value = this.runDefinition(this.definition);
         this.dirty = false;
         return this.value;
     }
+
     runDefinition(definition: (n: T) => T) {
         //TODO: Reduce unsubscribe calls.
         for (var index = 0, length: number = this.references.length; index < length; index++) {
