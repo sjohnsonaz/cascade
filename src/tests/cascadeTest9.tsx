@@ -32,8 +32,8 @@ describe('Component', function () {
         let oldComponentNode = <OldComponent /> as ComponentNode<any>;
         let newComponentNode = <NewComponent /> as ComponentNode<any>;
         var diff = Diff.compare<VirtualNode<any>>(
-            oldComponentNode.toComponent().root.props.children,
-            newComponentNode.toComponent().root.props.children,
+            oldComponentNode.toComponent().root.children,
+            newComponentNode.toComponent().root.children,
             (newNode: VirtualNode<any>, oldNode: VirtualNode<any>) => {
                 var output = false;
                 if (newNode && oldNode) {

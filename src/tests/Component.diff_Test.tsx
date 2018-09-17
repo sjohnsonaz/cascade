@@ -51,7 +51,7 @@ describe('Component.diff', () => {
                 return (
                     <section>
                         <header>Header</header>
-                        <div>{this.props.children}</div>
+                        <div>{this.children}</div>
                     </section>
                 );
             }

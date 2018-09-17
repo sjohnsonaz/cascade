@@ -18,9 +18,10 @@ componentContext.context = componentContext.context || undefined;
 
 export abstract class Component<T> implements IVirtualNode<T> {
     // TODO: Remove unused uniqueId?
-    uniqueId: number = Math.floor(Math.random() * 1000000);
+    uniqueId: number;
     props: T & IVirtualNodeProps;
     prevProps: T & IVirtualNodeProps;
+    children: any;
     key: string | number;
     root: any;
     element: Node;
@@ -30,14 +31,21 @@ export abstract class Component<T> implements IVirtualNode<T> {
     rendered: boolean = false;
     portal: boolean = false;
 
-    constructor(props?: T & IVirtualNodeProps) {
-        this.storeProps(props);
+    constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
+        // TODO: Remove unused uniqueId?
+        this.uniqueId = Math.floor(Math.random() * 1000000);
+        this.storeProps(props, ...children);
     }
 
-    storeProps(props?: T & IVirtualNodeProps) {
+    storeProps(props?: T & IVirtualNodeProps, ...children: any[]) {
         this.prevProps = this.props;
-        this.props = props;
+        this.props = props || ({} as any);
         this.key = this.props.key;
+        // TODO: Remove key and ref?
+        // if (this.props.key) {
+        // delete this.props.key;
+        // }
+        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
         this.afterProps(this.mounted);
     }
 
@@ -99,8 +107,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
         });
     }
 
-    update(props?: T & IVirtualNodeProps) {
-        this.storeProps(props);
+    update(props?: T & IVirtualNodeProps, ...children: any[]) {
+        this.storeProps(props, ...children);
         this.rendered = false;
         return Cascade.update(this, 'root');
     }
@@ -276,7 +284,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         oldRootComponentNode.component = undefined;
         newRootComponentNode.component = oldRoot as any;
 
-        oldRoot.update(newRootComponentNode.props);
+        oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
         this.diffVirtualNodes(oldRoot as any, oldRoot as any, oldElement as any, namespace, offsetIndex);
 
         return oldElement;
@@ -306,7 +314,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         newRootComponentNode.component = oldRoot;
 
         let innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
-        let innerRoot = oldRoot.update(newRootComponentNode.props);
+        let innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
 
         if (!innerOldRoot) {
             // We are replacing
@@ -416,10 +424,10 @@ export abstract class Component<T> implements IVirtualNode<T> {
             // No diff necessary.  We have the exact same VirtualNodes
         } else {
             // Old and New Roots match
-            var diff = Diff.compare(oldRoot.props.children, newRoot.props.children, compareVirtualNodes);
+            var diff = Diff.compare(oldRoot.children, newRoot.children, compareVirtualNodes);
             var propertyDiff = Diff.compareHash(oldRoot.props, newRoot.props);
             namespace = namespace || ((oldElement && oldElement.namespaceURI && oldElement.namespaceURI.endsWith('svg')) ? oldElement.namespaceURI : undefined)
-            var childIndex = oldRoot.props.children.length - 1 + (offsetIndex || 0);
+            var childIndex = oldRoot.children.length - 1 + (offsetIndex || 0);
             for (var index = 0, length = diff.length; index < length; index++) {
                 var diffItem = diff[index];
                 switch (diffItem.operation) {

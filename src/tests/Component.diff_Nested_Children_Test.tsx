@@ -25,8 +25,8 @@ describe('Component.diff Nested Children', () => {
         }
 
         class Parent extends Component<IProps> {
-            constructor(props: IProps) {
-                super(props);
+            constructor(props: IProps, ...children: any[]) {
+                super(props, ...children);
                 parentCount++;
             }
             render() {
@@ -44,14 +44,14 @@ describe('Component.diff Nested Children', () => {
         }
 
         class Child extends Component<IProps> {
-            constructor(props: IProps) {
-                super(props);
+            constructor(props: IProps, ...children: any[]) {
+                super(props, ...children);
                 childCount++;
             }
             render() {
                 childRenderCount++;
                 let { viewModel } = this.props;
-                let children = this.props.children.map(child => <li>{child}</li>);
+                let children = this.children.map(child => <li>{child}</li>);
                 if (viewModel.reverse) {
                     children.reverse();
                 }
@@ -64,13 +64,13 @@ describe('Component.diff Nested Children', () => {
         }
 
         class InjectedChild extends Component<IProps> {
-            constructor(props: IProps) {
-                super(props);
+            constructor(props: IProps, ...children: any[]) {
+                super(props, ...children);
                 injectedChildCount++;
             }
             render() {
                 injectedChildRenderCount++;
-                return <span>{this.props.children}</span>
+                return <span>{this.children}</span>
             }
         }
 

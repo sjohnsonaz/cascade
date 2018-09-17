@@ -337,13 +337,11 @@ export default class Cascade {
         return Observable.popContext();
     }
 
-    static createElement<T extends IVirtualNodeProps>(type: string | (new (props: T) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
-        props = props || {} as any;
-        props.children = props.children || children;
+    static createElement<T extends IVirtualNodeProps>(type: string | (new (props: T, ...children: Array<any>) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
         if (typeof type === 'string') {
-            return new VirtualNode(type, props);
+            return new VirtualNode(type, props, ...children);
         } else {
-            return new ComponentNode(type, props);
+            return new ComponentNode(type, props, ...children);
         }
     }
 

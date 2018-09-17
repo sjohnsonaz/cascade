@@ -1,13 +1,14 @@
-import { IVirtualNode, IVirtualElementProps, IVirtualNodeProps } from './IVirtualNode';
+import { IVirtualNode, IVirtualElementProps } from './IVirtualNode';
 import Ref from './Ref';
 
 export default class VirtualNode<T> implements IVirtualNode<T> {
     type: string;
     props: T & IVirtualElementProps;
+    children: any;
     key: string | number;
     element: Node;
 
-    constructor(type: string, props?: T & IVirtualElementProps) {
+    constructor(type: string, props?: T & IVirtualElementProps, ...children: Array<any>) {
         this.type = type;
         this.props = props || ({} as any);
         this.key = this.props.key;
@@ -15,7 +16,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         // if (this.props.key) {
         // delete this.props.key;
         // }
-        this.props.children = this.props.children ? VirtualNode.fixChildrenArrays(this.props.children) : [];
+        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
     toNode(namespace?: string) {
@@ -27,8 +28,8 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         } else {
             node = document.createElement(this.type);
         }
-        for (var index = 0, length = this.props.children.length; index < length; index++) {
-            var child = this.props.children[index];
+        for (var index = 0, length = this.children.length; index < length; index++) {
+            var child = this.children[index];
             switch (typeof child) {
                 case 'string':
                     node.appendChild(document.createTextNode(child as string));
@@ -53,20 +54,19 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                     break;
             }
         }
-        let { key, ref, children, ...props } = this.props as IVirtualNodeProps;
-        for (var name in props) {
-            if (props.hasOwnProperty(name)) {
-                let value = props[name];
+        for (var name in this.props) {
+            if (this.props.hasOwnProperty(name)) {
+                let value = this.props[name];
                 if (value !== undefined && value !== null) {
-                    VirtualNode.setAttribute(node, name, props[name], namespace);
+                    VirtualNode.setAttribute(node, name, this.props[name], namespace);
                 }
             }
         }
-        if (ref) {
-            if (typeof ref === 'function') {
-                ref(node);
+        if (this.props && this.props.ref) {
+            if (typeof this.props.ref === 'function') {
+                this.props.ref(node);
             } else {
-                ref.current = node;
+                this.props.ref.current = node;
             }
         }
         this.element = node;
