@@ -10,7 +10,7 @@ export default class Portal extends Component<IPortalProps> {
 
     render() {
         return (
-            <div>{this.children}</div>
+            <div>{this.props.children}</div>
         );
     }
 

@@ -42,7 +42,7 @@ class Child extends Component<IChildProps> {
                     {this.props.viewModel.b}
                 </div>
                 <div>
-                    {this.children}
+                    {this.props.children}
                 </div>
             </div>
         );

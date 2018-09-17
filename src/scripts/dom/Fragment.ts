@@ -8,28 +8,23 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
     key: string | number;
     element: Node;
 
-    constructor(props?: IVirtualNodeProps, ...children: Array<any>) {
-        this.storeProps(props, ...children);
+    constructor(props?: IVirtualNodeProps) {
+        this.storeProps(props);
     }
 
-    storeProps(props?: IVirtualNodeProps, ...children: any[]) {
-        this.props = props || ({} as any);
+    storeProps(props?: IVirtualNodeProps) {
+        this.props = props;
         this.key = this.props.key;
-        // TODO: Remove key and ref?
-        // if (this.props.key) {
-        // delete this.props.key;
-        // }
-        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
-    update(props?: IVirtualNodeProps, ...children: Array<any>) {
-        this.storeProps(props, ...children);
+    update(props?: IVirtualNodeProps) {
+        this.storeProps(props);
     }
 
     toNode() {
         var node = document.createDocumentFragment();
-        for (var index = 0, length = this.children.length; index < length; index++) {
-            var child = this.children[index];
+        for (var index = 0, length = this.props.children.length; index < length; index++) {
+            var child = this.props.children[index];
             switch (typeof child) {
                 case 'string':
                     node.appendChild(document.createTextNode(child as string));
@@ -77,7 +72,7 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
 
     getChildLength() {
         let childLength = 0;
-        for (let child of this.children) {
+        for (let child of this.props.children) {
             if (child !== null && child !== undefined) {
                 if (child.getChildLength) {
                     childLength += child.getChildLength();

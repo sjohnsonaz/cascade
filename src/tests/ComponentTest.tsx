@@ -35,7 +35,7 @@ describe('Component.toNode', function () {
         class CustomComponent extends Component<ICustomComponentProps> {
             render() {
                 return (
-                    <div>{this.children}</div>
+                    <div>{this.props.children}</div>
                 );
             }
         }
@@ -101,14 +101,14 @@ describe('Component.toNode', function () {
         let length: number = undefined;
         class Child extends Component<any> {
             render() {
-                length = this.children.length;
-                return <div>this.children</div>;
+                length = this.props.children.length;
+                return <div>this.props.children</div>;
             }
         }
         class Parent extends Component<any> {
             render() {
                 return (
-                    <Child>{this.children}</Child>
+                    <Child>{this.props.children}</Child>
                 );
             }
         }
