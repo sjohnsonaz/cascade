@@ -18,7 +18,7 @@ componentContext.context = componentContext.context || undefined;
 
 export abstract class Component<T> implements IVirtualNode<T> {
     // TODO: Remove unused uniqueId?
-    uniqueId: number;
+    uniqueId: number = Math.floor(Math.random() * 1000000);
     props: T & IVirtualNodeProps;
     prevProps: T & IVirtualNodeProps;
     children: any;
@@ -32,8 +32,6 @@ export abstract class Component<T> implements IVirtualNode<T> {
     portal: boolean = false;
 
     constructor(props?: T & IVirtualNodeProps, children?: any[]) {
-        // TODO: Remove unused uniqueId?
-        this.uniqueId = Math.floor(Math.random() * 1000000);
         this.storeProps(props, children);
     }
 
