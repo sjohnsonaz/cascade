@@ -18,7 +18,7 @@ export default class ComponentNode<T> implements IVirtualNode<T> {
         this.componentConstructor = componentConstructor;
         this.props = props || ({} as any);
         this.key = this.props.key;
-        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+        this.children = children;
 
         // Push this to the current context
         let context = Component.getContext()

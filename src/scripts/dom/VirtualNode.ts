@@ -16,7 +16,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         // if (this.props.key) {
         // delete this.props.key;
         // }
-        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+        this.children = children;
     }
 
     toNode(namespace?: string) {
@@ -81,14 +81,16 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
 
     static fixChildrenArrays(children: Array<any>, fixedChildren?: any[]) {
         fixedChildren = fixedChildren || [];
-        for (var index = 0, length = children.length; index < length; index++) {
-            var child = children[index];
-            // Remove undefined and null elements
-            if (typeof child !== 'undefined' && child !== null) {
-                if (child instanceof Array) {
-                    VirtualNode.fixChildrenArrays(child, fixedChildren);
-                } else {
-                    fixedChildren.push(child);
+        if (children) {
+            for (var index = 0, length = children.length; index < length; index++) {
+                var child = children[index];
+                // Remove undefined and null elements
+                if (typeof child !== 'undefined' && child !== null) {
+                    if (child instanceof Array) {
+                        VirtualNode.fixChildrenArrays(child, fixedChildren);
+                    } else {
+                        fixedChildren.push(child);
+                    }
                 }
             }
         }

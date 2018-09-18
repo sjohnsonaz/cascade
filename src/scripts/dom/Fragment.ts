@@ -19,7 +19,7 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
         // if (this.props.key) {
         // delete this.props.key;
         // }
-        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+        this.children = children;
     }
 
     update(props?: IVirtualNodeProps, children?: Array<any>) {

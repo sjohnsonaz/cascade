@@ -11,7 +11,7 @@ describe('VirtualNode.toNode', function () {
 
     it('should render recursively', function () {
         var root = new VirtualNode('div', { id: 'parent' }, [
-            new VirtualNode('span', { id: 'child' })
+            new VirtualNode('span', { id: 'child' }, [])
         ]);
         var node = root.toNode();
         var child = node.querySelector('#child');

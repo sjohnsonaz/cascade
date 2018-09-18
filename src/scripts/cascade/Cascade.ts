@@ -338,6 +338,7 @@ export default class Cascade {
     }
 
     static createElement<T extends IVirtualNodeProps>(type: string | (new (props: T, children: Array<any>) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
+        children = VirtualNode.fixChildrenArrays(children);
         if (typeof type === 'string') {
             return new VirtualNode(type, props, children);
         } else {

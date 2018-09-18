@@ -45,7 +45,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         // if (this.props.key) {
         // delete this.props.key;
         // }
-        this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
+        this.children = children;
         this.afterProps(this.mounted);
     }
 
