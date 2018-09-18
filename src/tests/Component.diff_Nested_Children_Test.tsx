@@ -25,8 +25,8 @@ describe('Component.diff Nested Children', () => {
         }
 
         class Parent extends Component<IProps> {
-            constructor(props: IProps, ...children: any[]) {
-                super(props, ...children);
+            constructor(props: IProps, children: any[]) {
+                super(props, children);
                 parentCount++;
             }
             render() {
@@ -44,8 +44,8 @@ describe('Component.diff Nested Children', () => {
         }
 
         class Child extends Component<IProps> {
-            constructor(props: IProps, ...children: any[]) {
-                super(props, ...children);
+            constructor(props: IProps, children: any[]) {
+                super(props, children);
                 childCount++;
             }
             render() {
@@ -64,8 +64,8 @@ describe('Component.diff Nested Children', () => {
         }
 
         class InjectedChild extends Component<IProps> {
-            constructor(props: IProps, ...children: any[]) {
-                super(props, ...children);
+            constructor(props: IProps, children: any[]) {
+                super(props, children);
                 injectedChildCount++;
             }
             render() {

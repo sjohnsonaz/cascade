@@ -4,11 +4,11 @@ import Ref from './Ref';
 export default class VirtualNode<T> implements IVirtualNode<T> {
     type: string;
     props: T & IVirtualElementProps;
-    children: any;
+    children: any[];
     key: string | number;
     element: Node;
 
-    constructor(type: string, props?: T & IVirtualElementProps, ...children: Array<any>) {
+    constructor(type: string, props?: T & IVirtualElementProps, children?: Array<any>) {
         this.type = type;
         this.props = props || ({} as any);
         this.key = this.props.key;

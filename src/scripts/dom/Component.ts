@@ -31,13 +31,13 @@ export abstract class Component<T> implements IVirtualNode<T> {
     rendered: boolean = false;
     portal: boolean = false;
 
-    constructor(props?: T & IVirtualNodeProps, ...children: any[]) {
+    constructor(props?: T & IVirtualNodeProps, children?: any[]) {
         // TODO: Remove unused uniqueId?
         this.uniqueId = Math.floor(Math.random() * 1000000);
-        this.storeProps(props, ...children);
+        this.storeProps(props, children);
     }
 
-    storeProps(props?: T & IVirtualNodeProps, ...children: any[]) {
+    storeProps(props?: T & IVirtualNodeProps, children?: any[]) {
         this.prevProps = this.props;
         this.props = props || ({} as any);
         this.key = this.props.key;
@@ -107,8 +107,8 @@ export abstract class Component<T> implements IVirtualNode<T> {
         });
     }
 
-    update(props?: T & IVirtualNodeProps, ...children: any[]) {
-        this.storeProps(props, ...children);
+    update(props?: T & IVirtualNodeProps, children?: any[]) {
+        this.storeProps(props, children);
         this.rendered = false;
         return Cascade.update(this, 'root');
     }
@@ -284,7 +284,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         oldRootComponentNode.component = undefined;
         newRootComponentNode.component = oldRoot as any;
 
-        oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
+        oldRoot.update(newRootComponentNode.props, newRootComponentNode.children);
         this.diffVirtualNodes(oldRoot as any, oldRoot as any, oldElement as any, namespace, offsetIndex);
 
         return oldElement;
@@ -314,7 +314,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
         newRootComponentNode.component = oldRoot;
 
         let innerOldRoot = Cascade.peekDirty(oldRoot, 'root');
-        let innerRoot = oldRoot.update(newRootComponentNode.props, ...newRootComponentNode.children);
+        let innerRoot = oldRoot.update(newRootComponentNode.props, newRootComponentNode.children);
 
         if (!innerOldRoot) {
             // We are replacing

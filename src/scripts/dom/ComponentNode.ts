@@ -4,16 +4,16 @@ import VirtualNode from './VirtualNode';
 import Fragment from './Fragment';
 
 export default class ComponentNode<T> implements IVirtualNode<T> {
-    componentConstructor: new (props?: T, ...children: any[]) => Component<T>;
+    componentConstructor: new (props?: T, children?: any[]) => Component<T>;
     props: T & IVirtualNodeProps;
     children: any;
     key: string | number;
     component: Component<T>;
 
     constructor(
-        componentConstructor: new (props?: T & IVirtualNodeProps, ...children: any[]) => Component<T>,
+        componentConstructor: new (props?: T & IVirtualNodeProps, children?: any[]) => Component<T>,
         props?: T,
-        ...children: Array<any>
+        children?: Array<any>
     ) {
         this.componentConstructor = componentConstructor;
         this.props = props || ({} as any);
@@ -28,7 +28,7 @@ export default class ComponentNode<T> implements IVirtualNode<T> {
     }
 
     toComponent(): Component<T> {
-        this.component = new this.componentConstructor(this.props, ...this.children);
+        this.component = new this.componentConstructor(this.props, this.children);
         if (!(this.component instanceof Fragment)) {
             this.component.init();
         }

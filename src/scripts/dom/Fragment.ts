@@ -3,16 +3,16 @@ import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 
 export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
     type: string;
-    children: any;
+    children: any[];
     props: IVirtualNodeProps;
     key: string | number;
     element: Node;
 
-    constructor(props?: IVirtualNodeProps, ...children: Array<any>) {
-        this.storeProps(props, ...children);
+    constructor(props?: IVirtualNodeProps, children?: Array<any>) {
+        this.storeProps(props, children);
     }
 
-    storeProps(props?: IVirtualNodeProps, ...children: any[]) {
+    storeProps(props?: IVirtualNodeProps, children?: any[]) {
         this.props = props || ({} as any);
         this.key = this.props.key;
         // TODO: Remove key and ref?
@@ -22,8 +22,8 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
         this.children = children ? VirtualNode.fixChildrenArrays(children) : [];
     }
 
-    update(props?: IVirtualNodeProps, ...children: Array<any>) {
-        this.storeProps(props, ...children);
+    update(props?: IVirtualNodeProps, children?: Array<any>) {
+        this.storeProps(props, children);
     }
 
     toNode() {

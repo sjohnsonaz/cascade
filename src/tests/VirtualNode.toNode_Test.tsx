@@ -4,15 +4,15 @@ import Cascade, { VirtualNode, Component } from '../scripts/modules/Cascade';
 
 describe('VirtualNode.toNode', function () {
     it('should render a Node', function () {
-        var root = new VirtualNode('div', {}, 'text');
+        var root = new VirtualNode('div', {}, ['text']);
         var node = root.toNode();
         expect(node.textContent).to.equal('text');
     });
 
     it('should render recursively', function () {
-        var root = new VirtualNode('div', { id: 'parent' },
+        var root = new VirtualNode('div', { id: 'parent' }, [
             new VirtualNode('span', { id: 'child' })
-        );
+        ]);
         var node = root.toNode();
         var child = node.querySelector('#child');
         expect(!!child).to.equal(true);
