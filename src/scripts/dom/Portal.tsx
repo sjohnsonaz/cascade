@@ -28,6 +28,8 @@ export default class Portal extends Component<IPortalProps> {
     }
 
     afterDispose(node: Node) {
-        this.props.element.removeChild(node);
+        if (this.props.element.contains(node)) {
+            this.props.element.removeChild(node);
+        }
     }
 }
