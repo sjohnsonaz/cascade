@@ -3,6 +3,7 @@ import { Component } from "./Component";
 
 export interface IPortalProps {
     element: HTMLElement;
+    remove?: boolean;
 }
 
 export default class Portal extends Component<IPortalProps> {
@@ -16,7 +17,13 @@ export default class Portal extends Component<IPortalProps> {
 
     afterRender(node: Node, updated: boolean) {
         if (!this.props.element.contains(node)) {
-            this.props.element.appendChild(node);
+            if (!this.props.remove) {
+                this.props.element.appendChild(node);
+            }
+        } else {
+            if (this.props.remove) {
+                this.props.element.removeChild(node);
+            }
         }
     }
 
