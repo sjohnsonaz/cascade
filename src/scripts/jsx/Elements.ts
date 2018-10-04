@@ -574,7 +574,7 @@ export namespace Elements {
     }
 
     export interface JSXMapElement extends JSXElement {
-        areas?: HTMLAreasCollection;
+        areas?: HTMLCollection;
         name?: string;
     }
 
