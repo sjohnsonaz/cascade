@@ -121,6 +121,8 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                 element.setAttribute(property, value);
             } else if (property === 'class') {
                 element.setAttribute(property, value);
+            } else if (property === 'role') {
+                element.setAttribute(property, value);
             } else {
                 try {
                     element[property] = value;
@@ -151,6 +153,8 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             } else if (property.indexOf('-') >= 0) {
                 element.removeAttribute(property);
             } else if (property === 'class') {
+                element.removeAttribute(property);
+            } else if (property === 'role') {
                 element.removeAttribute(property);
             } else {
                 try {

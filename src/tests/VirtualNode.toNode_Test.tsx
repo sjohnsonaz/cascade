@@ -109,6 +109,22 @@ describe('VirtualNode.toNode', function () {
         expect(element.getAttribute('data-custom')).to.equal('test value');
     });
 
+    it('should render role attributes', () => {
+        var root = (
+            <div role="button"></div>
+        );
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.getAttribute('role')).to.equal('button');
+    });
+
+    it('should render aria attributes', () => {
+        var root = (
+            <div aria-label="test value"></div>
+        );
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.getAttribute('aria-label')).to.equal('test value');
+    });
+
     it('should render style attribute objects', () => {
         var root = (
             <div style={{ width: "100%" }}></div>
