@@ -110,7 +110,7 @@ export function observable<T>(target: any, propertyKey: string, descriptor?: Typ
 }
 
 export function computed<T>(definition: (n?: T) => T, setter?: (n: T) => any) {
-    return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): any {
+    return function (target: any, propertyKey: string, descriptor?: TypedPropertyDescriptor<T>): any {
         return attachComputed(target, propertyKey, descriptor, definition, setter);
     }
 }
