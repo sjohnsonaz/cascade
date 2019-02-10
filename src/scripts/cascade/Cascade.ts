@@ -11,6 +11,8 @@ import Fragment from '../dom/Fragment';
 import ComponentNode from '../dom/ComponentNode';
 import { Component } from '../dom/Component';
 
+import { CascadeError } from '../util/CascadeError';
+
 export default class Cascade {
     /**
      * Dispose all Observables in a Graph
@@ -350,6 +352,9 @@ export default class Cascade {
         var fixedNode = typeof node === 'string' ?
             document.getElementById(node) :
             node;
+        if (!fixedNode) {
+            throw new Error(CascadeError.NoRootNode);
+        }
         var renderedComponent = virtualNode.toNode();
         while (fixedNode.firstChild) {
             fixedNode.removeChild(fixedNode.firstChild);
@@ -357,7 +362,7 @@ export default class Cascade {
         if (renderedComponent instanceof Node) {
             fixedNode.appendChild(renderedComponent);
         } else {
-            console.error('Root render is not a Node.  Nothing was rendered, and nothing will be updated');
+            throw new Error(CascadeError.InvalidRootRender);
         }
         return renderedComponent;
     }
