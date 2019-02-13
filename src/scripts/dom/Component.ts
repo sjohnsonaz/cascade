@@ -5,6 +5,7 @@ import ComponentNode from './ComponentNode';
 import Fragment from './Fragment';
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import Diff, { DiffOperation } from '../util/Diff';
+import { CascadeError } from '../util/CascadeError';
 
 // Store ComponentContext in window to prevent multiple Cascade instance problem.
 export interface IComponentContext {
@@ -305,7 +306,7 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
         // This should never happen
         if (!oldRoot) {
-            throw 'Old Component has never been rendered.  Replacing with new Component.';
+            throw new Error(CascadeError.NoOldComponent);
         }
 
         oldRootComponentNode.component = undefined;

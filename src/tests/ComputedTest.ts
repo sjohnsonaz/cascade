@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 
 import Cascade, { Computed, observable, Observable, IObservable } from '../scripts/modules/Cascade';
+import { CascadeError } from '../scripts/util/CascadeError';
 
 describe('Computed', () => {
     it('should compute non-observable values', () => {
@@ -118,7 +119,7 @@ describe('Cascade.waitToEqual', () => {
             var result = await Cascade.waitToEqual(viewModel, 'a', true, 100);
         } catch (e) {
             expect(e).to.not.be.undefined;
-            expect((e as Error).message).to.equal('Timeout elapsed');
+            expect((e as Error).message).to.equal(CascadeError.TimeoutElapsed);
         }
         expect(result).to.not.equal(true);
     });

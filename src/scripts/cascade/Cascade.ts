@@ -201,7 +201,7 @@ export default class Cascade {
             if (timeout) {
                 var timerId = window.setTimeout(() => {
                     graph.unsubscribe(property, subscriberFunction);
-                    reject(new Error('Timeout elapsed'));
+                    reject(new Error(CascadeError.TimeoutElapsed));
                 }, timeout);
             }
             graph.subscribeOnly(property, subscriberFunction);
@@ -237,7 +237,7 @@ export default class Cascade {
         if (observable) {
             return observable.track();
         } else {
-            throw new Error('No observable attached to Object: ' + property);
+            throw new Error(CascadeError.NoObservable + property);
         }
     }
 
@@ -261,7 +261,7 @@ export default class Cascade {
         if (observable && observable.update) {
             return observable.update();
         } else {
-            throw new Error('No observable attached to Object: ' + property);
+            throw new Error(CascadeError.NoObservable + property);
         }
     }
 
@@ -271,7 +271,7 @@ export default class Cascade {
         if (observable) {
             return observable.setValue(value);
         } else {
-            throw new Error('No observable attached to Object: ' + property);
+            throw new Error(CascadeError.NoObservable + property);
         }
     }
 
@@ -290,7 +290,7 @@ export default class Cascade {
                 return observable.peek();
             }
         } else {
-            throw new Error('No observable attached to Object: ' + property);
+            throw new Error(CascadeError.NoObservable + property);
         }
     }
 
