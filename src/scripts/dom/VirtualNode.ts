@@ -137,6 +137,9 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                 element[property] = value;
             } else if (property === 'className') {
                 element[property] = value;
+            } else if (property === 'href') {
+                // TODO: Remove once Safari fixes href                
+                element.setAttribute('xlink:href', value);
             } else if (property === 'xmlns') {
                 // do nothing
             } else {
