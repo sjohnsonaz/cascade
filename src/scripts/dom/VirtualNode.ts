@@ -133,7 +133,7 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
         } else {
             if (property === 'style') {
                 element.style.cssText = value;
-            } else if (property.indexOf('on') >= 0) {
+            } else if (property.indexOf('on') === 0) {
                 element[property] = value;
             } else if (property === 'className') {
                 element[property] = value;
