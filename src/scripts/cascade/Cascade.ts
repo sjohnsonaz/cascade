@@ -370,4 +370,11 @@ export default class Cascade {
     static Fragment = Fragment;
 
     static reflectAvailable: boolean = (typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function');
+
+    // TODO: Remove once Safari fixes href
+    static xlinkDeprecated: boolean = (function () {
+        let use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        use.setAttribute('href', 'abcd');
+        return use.href.baseVal === 'abcd';
+    })();
 }

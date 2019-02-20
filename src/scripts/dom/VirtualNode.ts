@@ -1,5 +1,5 @@
 import { IVirtualNode, IVirtualElementProps } from './IVirtualNode';
-import Ref from './Ref';
+import Cascade from '../cascade/Cascade';
 
 export default class VirtualNode<T> implements IVirtualNode<T> {
     type: string;
@@ -139,9 +139,11 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
                 element[property] = value;
             } else if (property === 'href') {
                 // TODO: Remove once Safari fixes href                
-                element.setAttribute('xlink:href', value);
-            } else if (property === 'xmlns') {
-                // do nothing
+                if (Cascade.xlinkDeprecated) {
+                    element.setAttribute('href', value);
+                } else {
+                    element.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', value);
+                }
             } else {
                 element.setAttribute(property, value);
             }
