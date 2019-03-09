@@ -9,8 +9,10 @@ dist/bundle/
 dist/tests/
 dist/mocha/
 
-# Sourcemap, log, packed files
-*.map
+src/tests/
+src/mocha/
+
+# log, packed files
 *.log
 *.tgz
 
