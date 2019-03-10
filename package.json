@@ -17,6 +17,7 @@
     "dev": "webpack --config webpack.dev.config.js --progress",
     "watch": "webpack --config webpack.dev.config.js --watch --progress",
     "dev-local": "tsc --declaration --watch",
+    "open": "opn src/mocha/index.html",
     "mkdocs": "mkdocs build",
     "mkdocs-serve": "mkdocs serve",
     "mkdocs-deploy": "mkdocs gh-deploy",
@@ -30,17 +31,18 @@
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "4.1.7",
-    "@types/mocha": "5.2.5",
+    "@types/mocha": "5.2.6",
     "chai": "4.2.0",
     "jsdom": "11.11.0",
-    "mocha": "5.2.0",
+    "mocha": "6.0.2",
+    "opn-cli": "4.0.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "2.6.3",
     "ts-loader": "5.3.3",
     "typedoc": "0.14.2",
-    "typescript": "3.2.4",
-    "webpack": "4.28.4",
-    "webpack-cli": "3.2.1"
+    "typescript": "3.3.3333",
+    "webpack": "4.29.6",
+    "webpack-cli": "3.2.3"
   },
   "keywords": [
     "cascade",
