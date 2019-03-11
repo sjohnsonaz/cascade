@@ -7,6 +7,7 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
     props: IVirtualNodeProps;
     key: string | number;
     element: Node;
+    elementArray: Node[];
 
     constructor(props?: IVirtualNodeProps, children?: Array<any>) {
         this.storeProps(props, children);
@@ -28,7 +29,7 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
 
     toNode() {
         var node = document.createDocumentFragment();
-        for (var index = 0, length = this.children.length; index < length; index++) {
+        for (let index = 0, length = this.children.length; index < length; index++) {
             var child = this.children[index];
             switch (typeof child) {
                 case 'string':
@@ -61,6 +62,12 @@ export default class Fragment implements IVirtualNode<IVirtualNodeProps> {
                 this.props.ref.current = node;
             }
         }
+        let elementArray: Node[] = [];
+        let childNodes = node.childNodes;
+        for (let index = 0, length = childNodes.length; index < length; index++) {
+            elementArray.push(childNodes[index]);
+        }
+        this.elementArray = elementArray;
         this.element = node;
         return node;
     }
