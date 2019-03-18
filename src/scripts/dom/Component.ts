@@ -302,12 +302,13 @@ export abstract class Component<T> implements IVirtualNode<T> {
 
         var output: Node;
         let oldRoot = oldRootComponentNode.component;
-        let oldElement = oldRoot.element;
 
         // This should never happen
         if (!oldRoot) {
             throw new Error(CascadeError.NoOldComponent);
         }
+
+        let oldElement = oldRoot.element;
 
         oldRootComponentNode.component = undefined;
         newRootComponentNode.component = oldRoot;
