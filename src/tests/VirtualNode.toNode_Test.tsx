@@ -133,6 +133,18 @@ describe('VirtualNode.toNode', function () {
         expect(element.style.width).to.equal('100%');
     });
 
+    it('should ignore undefined and null properties of style attribute objects', () => {
+        var root = (
+            <div style={{
+                '--test-0': undefined,
+                '--test-1': null
+            } as any}></div>
+        );
+        let element = Cascade.render(document.createElement('div'), root) as HTMLElement;
+        expect(element.style.getPropertyValue('--test-0')).to.equal('');
+        expect(element.style.getPropertyValue('--test-1')).to.equal('');
+    });
+
     it('should render style attribute strings', () => {
         var root = (
             <div style="width: 100%"></div>

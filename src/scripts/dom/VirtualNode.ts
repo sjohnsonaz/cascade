@@ -103,7 +103,9 @@ export default class VirtualNode<T> implements IVirtualNode<T> {
             if (style.hasOwnProperty(index)) {
                 let name = index.replace(/$([a-z])$([A-Z])/, stringReplacer);
                 let value = style[index];
-                dest.push(name + ': ' + value);
+                if (value !== undefined && value !== null) {
+                    dest.push(name + ': ' + value);
+                }
             }
         }
         return dest.join('; ');
