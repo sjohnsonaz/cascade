@@ -106,7 +106,7 @@ describe('Component.diff Nested Children', () => {
         expect(injectedChildCount).to.equal(2);
         expect(injectedChildRenderCount).to.equal(2);
     });
-/*
+
     it('should update around wrapped injected children', async () => {
         class ViewModel {
             @observable columns: number = 3;
@@ -123,9 +123,9 @@ describe('Component.diff Nested Children', () => {
                 let wrappedChildren: any[][] = [];
 
                 let innerWrapper: any[];
-                let slideSize = this.slideSize;
+                let columns = viewModel.columns;
                 this.children.forEach((child, index) => {
-                    if (index % slideSize === 0) {
+                    if (index % columns === 0) {
                         innerWrapper = [];
                         wrappedChildren.push(innerWrapper);
                     }
@@ -138,50 +138,31 @@ describe('Component.diff Nested Children', () => {
                     >
                         {wrappedChildren.map((children, index) => {
                             return (
-                                <CardContainer
-                                    className="space"
-                                    minWidth={minWidth}
-                                    maxWidth={maxWidth}
-                                    key={index}>
+                                <InnerChild
+                                    viewModel={viewModel}
+                                    key={index}
+                                >
                                     {children}
-                                </CardContainer>
+                                </InnerChild>
                             );
                         })}
-                    </Carousel> :
-                    undefined}
-                return (
-                    <div>
-                        <Child viewModel={viewModel}>
-                            <InjectedChild viewModel={viewModel}>1</InjectedChild>
-                            <InjectedChild viewModel={viewModel}>2</InjectedChild>
-                        </Child>
-                    </div>
-                )
+                    </Child>
+                );
             }
         }
 
         class Child extends Component<IProps> {
             render() {
-                let { viewModel } = this.props;
-                let children = this.children.map(child => <li>{child}</li>);
-                if (viewModel.reverse) {
-                    children.reverse();
-                }
                 return (
                     <ul>
-                        {children}
+                        {this.children}
                     </ul>
                 );
             }
         }
 
-        class InjectedChild extends Component<IProps> {
-            constructor(props: IProps, children: any[]) {
-                super(props, children);
-                injectedChildCount++;
-            }
+        class InnerChild extends Component<IProps> {
             render() {
-                injectedChildRenderCount++;
                 return <span>{this.children}</span>
             }
         }
@@ -194,11 +175,14 @@ describe('Component.diff Nested Children', () => {
         var container = document.createElement('div');
         Cascade.render(container, root);
 
+        /*
         expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('1');
+        */
 
-        viewModel.reverse = true;
-        await Cascade.track(viewModel, 'reverse');
+        // viewModel.columns = 2;
+        // await Cascade.track(viewModel, 'columns');
 
+        /*
         expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('2');
 
         viewModel.value = true;
@@ -217,6 +201,6 @@ describe('Component.diff Nested Children', () => {
         // Two InjectedChild should each construct once and render once
         expect(injectedChildCount).to.equal(2);
         expect(injectedChildRenderCount).to.equal(2);
+        */
     });
-    */
 });
