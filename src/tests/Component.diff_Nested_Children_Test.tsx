@@ -116,6 +116,25 @@ describe('Component.diff Nested Children', () => {
             viewModel: ViewModel;
         }
 
+        class View extends Component<IProps> {
+            render() {
+                let {
+                    viewModel
+                } = this.props;
+
+                return (
+                    <Parent viewModel={viewModel}>
+                        <Child viewModel={viewModel} key="child_0" />
+                        <Child viewModel={viewModel} key="child_1" />
+                        <Child viewModel={viewModel} key="child_2" />
+                        <Child viewModel={viewModel} key="child_3" />
+                        <Child viewModel={viewModel} key="child_4" />
+                        <Child viewModel={viewModel} key="child_5" />
+                    </Parent>
+                )
+            }
+        }
+
         class Parent extends Component<IProps> {
             render() {
                 let { viewModel } = this.props;
@@ -133,25 +152,23 @@ describe('Component.diff Nested Children', () => {
                 });
 
                 return (
-                    <Child
-                        viewModel={viewModel}
-                    >
+                    <div>
                         {wrappedChildren.map((children, index) => {
                             return (
-                                <InnerChild
+                                <Wrapper
                                     viewModel={viewModel}
                                     key={index}
                                 >
                                     {children}
-                                </InnerChild>
+                                </Wrapper>
                             );
                         })}
-                    </Child>
+                    </div>
                 );
             }
         }
 
-        class Child extends Component<IProps> {
+        class Container extends Component<IProps> {
             render() {
                 return (
                     <ul>
@@ -161,7 +178,17 @@ describe('Component.diff Nested Children', () => {
             }
         }
 
-        class InnerChild extends Component<IProps> {
+        class Wrapper extends Component<IProps> {
+            render() {
+                return (
+                    <li>
+                        {this.children}
+                    </li>
+                );
+            }
+        }
+
+        class Child extends Component<IProps> {
             render() {
                 return <span>{this.children}</span>
             }
@@ -169,38 +196,25 @@ describe('Component.diff Nested Children', () => {
 
         let viewModel = new ViewModel();
         var root = (
-            <Parent viewModel={viewModel} />
+            <View viewModel={viewModel} />
         );
 
         var container = document.createElement('div');
         Cascade.render(container, root);
 
-        /*
-        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('1');
-        */
+        // console.log(container);
 
-        // viewModel.columns = 2;
-        // await Cascade.track(viewModel, 'columns');
+        expect(container.childNodes[0].childNodes.length).to.equal(2);
+        expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(3);
+        expect(container.childNodes[0].childNodes[1].childNodes.length).to.equal(3);
 
-        /*
-        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('2');
+        viewModel.columns = 2;
+        await Cascade.track(viewModel, 'columns');
 
-        viewModel.value = true;
-        await Cascade.track(viewModel, 'value');
+        // console.log(container);
 
-        expect(container.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].textContent).to.equal('2');
-
-        // Parent should construct once and render once
-        expect(parentCount).to.equal(1);
-        expect(parentRenderCount).to.equal(1);
-
-        // Child should construct once and render twice
-        expect(childCount).to.equal(1);
-        expect(childRenderCount).to.equal(2);
-
-        // Two InjectedChild should each construct once and render once
-        expect(injectedChildCount).to.equal(2);
-        expect(injectedChildRenderCount).to.equal(2);
-        */
+        expect(container.childNodes[0].childNodes.length).to.equal(3);
+        expect(container.childNodes[0].childNodes[0].childNodes.length).to.equal(2);
+        expect(container.childNodes[0].childNodes[1].childNodes.length).to.equal(2);
     });
 });
