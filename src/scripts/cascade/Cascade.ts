@@ -1,5 +1,5 @@
 import Graph from '../graph/Graph';
-import { IObservable, ISubscriber, ISubscriberFunction, IArray, IHash } from '../graph/IObservable';
+import { IObservable, ISubscriberFunction } from '../graph/IObservable';
 import Observable from '../graph/Observable';
 import Computed from '../graph/Computed';
 import ObservableArray from '../graph/ObservableArray';

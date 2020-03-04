@@ -1,6 +1,5 @@
 import { IVirtualNode, IVirtualNodeProps } from './IVirtualNode';
 import { Component } from './Component';
-import VirtualNode from './VirtualNode';
 import Fragment from './Fragment';
 
 export default class ComponentNode<T> implements IVirtualNode<T> {
