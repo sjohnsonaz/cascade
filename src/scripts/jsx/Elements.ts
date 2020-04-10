@@ -631,15 +631,15 @@ export namespace Elements {
         textTracks?: TextTrackList;
         videoTracks?: VideoTrackList;
         volume?: number;
-        HAVE_CURRENT_DATA: number;
-        HAVE_ENOUGH_DATA: number;
-        HAVE_FUTURE_DATA: number;
-        HAVE_METADATA: number;
-        HAVE_NOTHING: number;
-        NETWORK_EMPTY: number;
-        NETWORK_IDLE: number;
-        NETWORK_LOADING: number;
-        NETWORK_NO_SOURCE: number;
+        HAVE_CURRENT_DATA?: number;
+        HAVE_ENOUGH_DATA?: number;
+        HAVE_FUTURE_DATA?: number;
+        HAVE_METADATA?: number;
+        HAVE_NOTHING?: number;
+        NETWORK_EMPTY?: number;
+        NETWORK_IDLE?: number;
+        NETWORK_LOADING?: number;
+        NETWORK_NO_SOURCE?: number;
     }
 
     export interface JSXMenuElement extends JSXElement {
