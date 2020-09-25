@@ -8,7 +8,7 @@
     "jsx": "react",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "declaration": false,
+    "declaration": true,
     "removeComments": true,
     "noLib": false,
     "preserveConstEnums": true,

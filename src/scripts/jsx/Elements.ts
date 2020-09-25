@@ -596,7 +596,7 @@ export namespace Elements {
     }
 
     export interface JSXMediaElement extends JSXElement {
-        audioTracks?: AudioTrackList;
+        // audioTracks?: AudioTrackList;
         autoplay?: boolean;
         buffered?: TimeRanges;
         controls?: boolean;
@@ -629,7 +629,7 @@ export namespace Elements {
         seeking?: boolean;
         src?: string;
         textTracks?: TextTrackList;
-        videoTracks?: VideoTrackList;
+        // videoTracks?: VideoTrackList;
         volume?: number;
         HAVE_CURRENT_DATA?: number;
         HAVE_ENOUGH_DATA?: number;
