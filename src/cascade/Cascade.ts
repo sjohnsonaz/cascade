@@ -5,12 +5,6 @@ import Computed from '../graph/Computed';
 import ObservableArray from '../graph/ObservableArray';
 import ObservableHash from '../graph/ObservableHash';
 
-import { IVirtualNode, IVirtualNodeProps } from '../dom/IVirtualNode';
-import VirtualNode from '../dom/VirtualNode';
-import Fragment from '../dom/Fragment';
-import ComponentNode from '../dom/ComponentNode';
-import { Component } from '../dom/Component';
-
 import { CascadeError } from '../util/CascadeError';
 
 export default class Cascade {
@@ -392,49 +386,6 @@ export default class Cascade {
         return Observable.popContext();
     }
 
-    static createElement<T extends IVirtualNodeProps>(
-        type: string | (new (props: T, children: Array<any>) => Component<T>),
-        props: T,
-        ...children: Array<any>
-    ): IVirtualNode<T> {
-        children = VirtualNode.fixChildrenArrays(children);
-        if (typeof type === 'string') {
-            return new VirtualNode(type, props, children);
-        } else {
-            return new ComponentNode(type, props, children);
-        }
-    }
-
-    static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>) {
-        var fixedNode = typeof node === 'string' ? document.getElementById(node) : node;
-        if (!fixedNode) {
-            throw new Error(CascadeError.NoRootNode);
-        }
-        var renderedComponent = virtualNode.toNode();
-        while (fixedNode.firstChild) {
-            fixedNode.removeChild(fixedNode.firstChild);
-        }
-        if (renderedComponent instanceof Node) {
-            fixedNode.appendChild(renderedComponent);
-        } else {
-            throw new Error(CascadeError.InvalidRootRender);
-        }
-        return renderedComponent;
-    }
-
-    static Fragment = Fragment;
-
     static reflectAvailable: boolean =
         typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function';
-
-    // TODO: Remove once Safari fixes href
-    static xlinkDeprecated: boolean = (function () {
-        if (typeof SVGElement === 'undefined') {
-            return true;
-        } else {
-            let use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-            use.setAttribute('href', 'abcd');
-            return use.href?.baseVal === 'abcd';
-        }
-    })();
 }

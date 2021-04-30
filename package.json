@@ -6,8 +6,8 @@
   "contributors": [],
   "homepage": "https://sjohnsonaz.github.io/cascade",
   "license": "MIT",
-  "main": "dist/modules/Cascade.js",
-  "typings": "dist/modules/Cascade.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "rimraf ./dist && tsc --declaration",
