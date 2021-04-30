@@ -6,8 +6,8 @@
   "contributors": [],
   "homepage": "https://sjohnsonaz.github.io/cascade",
   "license": "MIT",
-  "main": "dist/scripts/modules/Cascade.js",
-  "typings": "dist/scripts/modules/Cascade.d.ts",
+  "main": "dist/modules/Cascade.js",
+  "typings": "dist/modules/Cascade.d.ts",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "rimraf ./dist && tsc --declaration",
@@ -21,7 +21,7 @@
     "mkdocs": "mkdocs build",
     "mkdocs-serve": "mkdocs serve",
     "mkdocs-deploy": "mkdocs gh-deploy",
-    "typedoc": "typedoc --out ./docs/apidocs/ ./src/scripts/cascade/"
+    "typedoc": "typedoc --out ./docs/apidocs/ ./src/cascade/"
   },
   "repository": {
     "type": "git",
