@@ -16,7 +16,7 @@ import { CascadeError } from '../util/CascadeError';
 export default class Cascade {
     /**
      * Dispose all Observables in a Graph
-     * @param obj 
+     * @param obj
      */
     static disposeAll<T>(obj: T) {
         var graph: Graph<T> = obj['_graph'];
@@ -50,19 +50,23 @@ export default class Cascade {
                 configurable: true,
                 writable: true,
                 enumerable: false,
-                value: new Graph(obj)
+                value: new Graph(obj),
             });
         }
         return (obj as any)._graph as Graph<T>;
     }
 
     /**
-     * 
+     *
      * @param obj the object on which to define a property
      * @param property the name of the property
      * @param observable the IObservable to store the property value
      */
-    static createProperty<T, U extends keyof T>(obj: T, property: U, observable: IObservable<T[U]>) {
+    static createProperty<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        observable: IObservable<T[U]>,
+    ) {
         var graph = Cascade.attachGraph(obj);
         if (graph.observables[property as string]) {
             // TODO: move or delete subscriptions?
@@ -72,13 +76,18 @@ export default class Cascade {
     }
 
     /**
-     * 
+     *
      * @param obj the object on which to define a property
      * @param property the name of the property
      * @param observable the IObservable to store the property value
      * @param readOnly the Boolean specifying if this property is read only
      */
-    static attachObservable<T, U extends keyof T>(obj: T, property: U, observable: IObservable<T[U]>, readOnly: boolean = false) {
+    static attachObservable<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        observable: IObservable<T[U]>,
+        readOnly: boolean = false,
+    ) {
         Cascade.createProperty(obj, property, observable);
         Object.defineProperty(obj, property, {
             enumerable: true,
@@ -86,59 +95,80 @@ export default class Cascade {
             get: function () {
                 return observable.getValue();
             },
-            set: readOnly ? undefined : function (value: T[U] | Array<T[U]>) {
-                (observable as any).setValue(value);
-            }
+            set: readOnly
+                ? undefined
+                : function (value: T[U] | Array<T[U]>) {
+                      (observable as any).setValue(value);
+                  },
         });
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
-     * @param value 
+     *
+     * @param obj
+     * @param property
+     * @param value
      */
     static createObservable<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
         Cascade.attachObservable(obj, property, new Observable(value));
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
-     * @param definition 
-     * @param defer 
-     * @param setter 
+     *
+     * @param obj
+     * @param property
+     * @param definition
+     * @param defer
+     * @param setter
      */
-    static createComputed<T, U extends keyof T>(obj: T, property: U, definition: (n?: T[U]) => T[U], defer?: boolean, setter?: (n: T[U]) => any) {
-        Cascade.attachObservable(obj, property, new Computed(definition, defer, undefined, setter), true);
+    static createComputed<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        definition: (n?: T[U]) => T[U],
+        defer?: boolean,
+        setter?: (n: T[U]) => any,
+    ) {
+        Cascade.attachObservable(
+            obj,
+            property,
+            new Computed(definition, defer, undefined, setter),
+            true,
+        );
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
-     * @param value 
+     *
+     * @param obj
+     * @param property
+     * @param value
      */
     static createObservableArray<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
-        Cascade.attachObservable<T, U>(obj, property, new ObservableArray<any>(value as any) as any);
-    }
-
-    /** 
-     * 
-     * @param obj 
-     * @param property 
-     * @param value 
-     */
-    static createObservableHash<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
-        Cascade.attachObservable<T, U>(obj, property, new ObservableHash<T[U]>(value as any) as any);
+        Cascade.attachObservable<T, U>(
+            obj,
+            property,
+            new ObservableArray<any>(value as any) as any,
+        );
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
-     * @param alwaysNotify 
+     *
+     * @param obj
+     * @param property
+     * @param value
+     */
+    static createObservableHash<T, U extends keyof T>(obj: T, property: U, value?: T[U]) {
+        Cascade.attachObservable<T, U>(
+            obj,
+            property,
+            new ObservableHash<T[U]>(value as any) as any,
+        );
+    }
+
+    /**
+     *
+     * @param obj
+     * @param property
+     * @param alwaysNotify
      */
     static setAlwaysNotify<T, U extends keyof T>(obj: T, property: U, alwaysNotify: boolean) {
         let graph = this.attachGraph(obj);
@@ -146,41 +176,64 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
-     * @param subscriberFunction 
+     *
+     * @param obj
+     * @param property
+     * @param subscriberFunction
      */
-    static subscribe<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>, createDisposer: boolean = false) {
+    static subscribe<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        subscriberFunction: ISubscriberFunction<T[U]>,
+        createDisposer: boolean = false,
+    ) {
         let graph = this.attachGraph(obj);
         graph.subscribe(property, subscriberFunction);
-        return createDisposer ? function () {
-            graph.unsubscribe(property, subscriberFunction);
-        } : undefined;
+        return createDisposer
+            ? function () {
+                  graph.unsubscribe(property, subscriberFunction);
+              }
+            : undefined;
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
-     * @param subscriberFunction 
+     *
+     * @param obj
+     * @param property
+     * @param subscriberFunction
      */
-    static subscribeOnly<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>, createDisposer: boolean = false) {
+    static subscribeOnly<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        subscriberFunction: ISubscriberFunction<T[U]>,
+        createDisposer: boolean = false,
+    ) {
         let graph = this.attachGraph(obj);
         graph.subscribeOnly(property, subscriberFunction);
-        return createDisposer ? function () {
-            graph.unsubscribe(property, subscriberFunction);
-        } : undefined;
+        return createDisposer
+            ? function () {
+                  graph.unsubscribe(property, subscriberFunction);
+              }
+            : undefined;
     }
 
-    static unsubscribe<T, U extends keyof T>(obj: T, property: U, subscriberFunction: ISubscriberFunction<T[U]>) {
+    static unsubscribe<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        subscriberFunction: ISubscriberFunction<T[U]>,
+    ) {
         var graph: Graph<T> = obj['_graph'];
         if (graph) {
             graph.unsubscribe(property, subscriberFunction);
         }
     }
 
-    static waitToEqual<T, U extends keyof T>(obj: T, property: U, testValue: T[U], timeout?: number) {
+    static waitToEqual<T, U extends keyof T>(
+        obj: T,
+        property: U,
+        testValue: T[U],
+        timeout?: number,
+    ) {
         let graph = this.attachGraph(obj);
         return new Promise<T[U]>((resolve, reject) => {
             let resolved = false;
@@ -209,27 +262,27 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static peek<T, U extends keyof T>(obj: T, property: U) {
         return obj['_graph'] ? (obj['_graph'] as Graph<T>).peek<U>(property) : undefined;
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static peekDirty<T, U extends keyof T>(obj: T, property: U) {
         return obj['_graph'] ? (obj['_graph'] as Graph<T>).peekDirty<U>(property) : undefined;
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static track<T, U extends keyof T>(obj: T, property: U) {
         let graph = this.attachGraph(obj);
@@ -242,8 +295,8 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
+     *
+     * @param obj
      */
     static trackAll<T>(obj: T) {
         let graph = this.attachGraph(obj);
@@ -251,9 +304,9 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static update<T, U extends keyof T>(obj: T, property: U) {
         let graph = this.attachGraph(obj);
@@ -276,9 +329,9 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static run<T, U extends keyof T>(obj: T, property: U) {
         let graph = this.attachGraph(obj);
@@ -295,9 +348,9 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static getObservable<T, U extends keyof T>(obj: T, property: U) {
         let graph = this.attachGraph(obj);
@@ -305,9 +358,9 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static getSubscribers<T, U extends keyof T>(obj: T, property: U) {
         let graph = this.attachGraph(obj);
@@ -315,9 +368,9 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param obj 
-     * @param property 
+     *
+     * @param obj
+     * @param property
      */
     static getReferences<T, U extends keyof T>(obj: T, property: U) {
         let graph = this.attachGraph(obj);
@@ -325,9 +378,9 @@ export default class Cascade {
     }
 
     /**
-     * 
-     * @param callback 
-     * @param thisArg 
+     *
+     * @param callback
+     * @param thisArg
      */
     static wrapContext(callback: () => any, thisArg?: any) {
         Observable.pushContext();
@@ -339,7 +392,11 @@ export default class Cascade {
         return Observable.popContext();
     }
 
-    static createElement<T extends IVirtualNodeProps>(type: string | (new (props: T, children: Array<any>) => Component<T>), props: T, ...children: Array<any>): IVirtualNode<T> {
+    static createElement<T extends IVirtualNodeProps>(
+        type: string | (new (props: T, children: Array<any>) => Component<T>),
+        props: T,
+        ...children: Array<any>
+    ): IVirtualNode<T> {
         children = VirtualNode.fixChildrenArrays(children);
         if (typeof type === 'string') {
             return new VirtualNode(type, props, children);
@@ -349,9 +406,7 @@ export default class Cascade {
     }
 
     static render(node: HTMLElement | string, virtualNode: IVirtualNode<any>) {
-        var fixedNode = typeof node === 'string' ?
-            document.getElementById(node) :
-            node;
+        var fixedNode = typeof node === 'string' ? document.getElementById(node) : node;
         if (!fixedNode) {
             throw new Error(CascadeError.NoRootNode);
         }
@@ -369,7 +424,8 @@ export default class Cascade {
 
     static Fragment = Fragment;
 
-    static reflectAvailable: boolean = (typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function');
+    static reflectAvailable: boolean =
+        typeof Reflect === 'object' && typeof Reflect.getMetadata === 'function';
 
     // TODO: Remove once Safari fixes href
     static xlinkDeprecated: boolean = (function () {
@@ -378,7 +434,7 @@ export default class Cascade {
         } else {
             let use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
             use.setAttribute('href', 'abcd');
-            return use.href.baseVal === 'abcd';
+            return use.href?.baseVal === 'abcd';
         }
     })();
 }

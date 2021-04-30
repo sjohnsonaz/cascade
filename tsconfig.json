@@ -26,7 +26,11 @@
     "lib": [
       "dom",
       "es2017"
-    ]
+    ],
+    "types": [
+      "jest",
+      "reflect-metadata"
+    ],  
   },
   "include": [
     "src"
